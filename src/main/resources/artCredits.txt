@@ -1,0 +1,5 @@
+=== Art Credits ===
+
+• Drable - Ring textures
+• 7Soul1 - Various item art
+• yd - Scroll Parchment/Book gui texture/page turn sound

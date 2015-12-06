@@ -1,0 +1,30 @@
+itemGroup.augmentedaccessories=Augmented Accessories
+
+desc.augmentedaccessories.uses=Uses Left: %s
+desc.augmentedaccessories.infoShift=Hold <§2§oShift§r§7> for more info.
+desc.augmentedaccessories.vigor=Vigor
+desc.augmentedaccessories.metadata.0=Ignore Metadata
+desc.augmentedaccessories.metadata.1=Match Metadata
+desc.augmentedaccessories.nbt.0=Ignore NBT
+desc.augmentedaccessories.nbt.1=Match NBT
+
+item.augmentedaccessories.ironHammer.name=Iron Forge Hammer
+item.augmentedaccessories.diamondHammer.name=Diamond Forge Hammer
+item.augmentedaccessories.dustiron.name=Iron Dust
+item.augmentedaccessories.dustgold.name=Gold Dust
+item.augmentedaccessories.dusttin.name=Tin Dust
+item.augmentedaccessories.dustcopper.name=Copper Dust
+item.augmentedaccessories.dustaluminium.name=Aluminium Dust
+item.augmentedaccessories.dustzinc.name=Zinc Dust
+item.augmentedaccessories.dustsilver.name=Silver Dust
+item.augmentedaccessories.dustlead.name=Lead Dust
+item.augmentedaccessories.dustnickel.name=Nickel Dust
+item.augmentedaccessories.ring.name=Ring
+item.augmentedaccessories.void.0.name=Null Orb
+item.augmentedaccessories.void.1.name=Pocket Void
+item.augmentedaccessories.book.name=Mystical Accessories - Vol. 2
+
+tile.augmentedaccessories.ringForge.name=Ring Forge
+tile.augmentedaccessories.altar.item.name=Item Altar
+tile.augmentedaccessories.altar.infusion.name=Infusion Altar
+tile.augmentedaccessories.vigorGlass.name=Vigorous Glass

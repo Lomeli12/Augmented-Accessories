@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "normal": { "model": "augmentedaccessories:altar" },
+    "variant=infusion": { "model": "augmentedaccessories:altar" },
+    "variant=basic": { "model": "augmentedaccessories:altar" }
+  }
+}
