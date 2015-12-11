@@ -25,6 +25,14 @@ public class ItemRing extends ItemBase implements IBauble {
         this.setHasSubtypes(true);
     }
 
+    public static boolean hasGem(ItemStack stack) {
+        if (stack != null) {
+            NBTTagCompound mainTag = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
+            return mainTag.hasKey(ModNBT.RING_DATA, 10) && mainTag.getCompoundTag(ModNBT.RING_DATA).hasKey(ModNBT.GEM_COLOR, 3);
+        }
+        return false;
+    }
+
     public int getRingColor(ItemStack stack, int layer) {
         if (stack != null && stack.hasTagCompound()) {
             NBTTagCompound tagCompound = stack.getTagCompound();

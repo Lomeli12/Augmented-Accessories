@@ -83,7 +83,7 @@ public class MaterialRegistry implements IMaterialRegistry {
             Material material1 = getMaterial(in1, false);
             Material gemMaterial = getMaterial(gem, true);
             if (material0 != null && material1 != null) {
-                ring = new ItemStack(ModItems.ring, 1, gemMaterial == null ? 0 : 1);
+                ring = new ItemStack(ModItems.ring);
                 ((ItemRing) ModItems.ring).setRingColor(ring, 0, material0.getColor());
                 ((ItemRing) ModItems.ring).setRingColor(ring, 1, material1.getColor());
                 int boost = material0.getBoost() + material1.getBoost();

@@ -59,7 +59,7 @@ public class GuiRingForge extends GuiContainer {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (this.textField.textboxKeyTyped(typedChar, keyCode))
-            tile.setRingName(this.textField.getText());
+            Augment.proxy.setForgeName(tile.getPos(), tile.getWorld().provider.getDimensionId(), this.textField.getText());
         else
             super.keyTyped(typedChar, keyCode);
     }
@@ -79,7 +79,7 @@ public class GuiRingForge extends GuiContainer {
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         List<String> list = new ArrayList<>();
-        list.add(FluidRegistry.LAVA.getLocalizedName(null) + ": " + tile.getTank().getFluidAmount() + "/" + tile.getTank().getCapacity());
+        list.add(LangUtil.translate("gui.augmentedaccessories.fluidinfo", FluidRegistry.LAVA.getLocalizedName(null), tile.getTank().getFluidAmount(), tile.getTank().getCapacity()));
         this.drawToolTipOverArea(mouseX, mouseY, k + 177, l + 6, 16, 56, list, mc.fontRendererObj);
     }
 
@@ -97,7 +97,7 @@ public class GuiRingForge extends GuiContainer {
         if (this.textField.isFocused())
             this.drawTexturedModalRect(k + 85, l + 65, 0, 166, 84, 16);
 
-        RenderUtils.drawFluid(this.mc, tile.getTank().getFluid(), k + 200, l + 6, zLevel, 16, 56, tile.getTank().getCapacity());
+        RenderUtils.drawFluid(this.mc, tile.getTank().getFluid(), k + 177, l + 62, zLevel, 16, 56, tile.getTank().getCapacity());
 
         RenderUtils.bindTexture(guiTexture);
         this.drawTexturedModalRect(k + 183, l + 6, 202, 0, 10, 56);
@@ -106,7 +106,7 @@ public class GuiRingForge extends GuiContainer {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        tile.setRingName(null);
+        Augment.proxy.setForgeName(tile.getPos(), tile.getWorld().provider.getDimensionId(), null);
     }
 
     public void drawToolTipOverArea(int mouseX, int mouseY, int x, int y, int width, int height, List list, FontRenderer font) {

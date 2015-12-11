@@ -5,19 +5,23 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
 import net.lomeli.lomlib.client.BasicItemMesh;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.blocks.ModBlocks;
+import net.lomeli.augment.client.handler.BakeModelHandler;
 import net.lomeli.augment.core.Proxy;
 import net.lomeli.augment.items.ModItems;
 
 public class ClientProxy extends Proxy {
+
     @Override
     public void preInit() {
         super.preInit();
+        MinecraftForge.EVENT_BUS.register(new BakeModelHandler());
     }
 
     @Override
@@ -28,10 +32,7 @@ public class ClientProxy extends Proxy {
     }
 
     private void registerItemModels() {
-        registerModel(ModItems.ring, 0, Augment.MOD_ID + ":ring");
-        registerModel(ModItems.ring, 1, Augment.MOD_ID + ":ring_gem");
-        registerMetadataModel(ModItems.ring, Augment.MOD_ID + ":ring", Augment.MOD_ID + ":ring_gem");
-
+        registerModel(ModItems.ring, new BasicItemMesh(Augment.MOD_ID + ":ring"));
         registerModel(ModItems.dust, new BasicItemMesh(Augment.MOD_ID + ":dust"));
         registerModel(ModItems.ironHammer, new BasicItemMesh(Augment.MOD_ID + ":hammer_iron"));
         registerModel(ModItems.diamondHammer, new BasicItemMesh(Augment.MOD_ID + ":hammer_diamond"));

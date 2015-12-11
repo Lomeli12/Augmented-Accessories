@@ -8,6 +8,8 @@ desc.augmentedaccessories.metadata.1=Match Metadata
 desc.augmentedaccessories.nbt.0=Ignore NBT
 desc.augmentedaccessories.nbt.1=Match NBT
 
+gui.augmentedaccessories.fluidinfo=%s: %s/%s
+
 item.augmentedaccessories.ironHammer.name=Iron Forge Hammer
 item.augmentedaccessories.diamondHammer.name=Diamond Forge Hammer
 item.augmentedaccessories.dustiron.name=Iron Dust
