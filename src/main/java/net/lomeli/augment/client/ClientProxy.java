@@ -7,12 +7,19 @@ import net.minecraft.item.Item;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 
 import net.lomeli.lomlib.client.BasicItemMesh;
 
 import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.blocks.ModBlocks;
+import net.lomeli.augment.blocks.tiles.TileAltar;
+import net.lomeli.augment.client.gui.manual.ManualBuilder;
 import net.lomeli.augment.client.handler.BakeModelHandler;
+import net.lomeli.augment.client.handler.HUDHandler;
+import net.lomeli.augment.client.handler.TickHandlerClient;
+import net.lomeli.augment.client.render.tile.RenderAltar;
 import net.lomeli.augment.core.Proxy;
 import net.lomeli.augment.items.ModItems;
 
@@ -27,8 +34,11 @@ public class ClientProxy extends Proxy {
     @Override
     public void init() {
         super.init();
+        MinecraftForge.EVENT_BUS.register(new TickHandlerClient());
+        MinecraftForge.EVENT_BUS.register(new HUDHandler());
         registerItemModels();
         registerBlockModels();
+        ClientRegistry.bindTileEntitySpecialRenderer(TileAltar.class, new RenderAltar());
     }
 
     private void registerItemModels() {
@@ -41,11 +51,17 @@ public class ClientProxy extends Proxy {
 
     private void registerBlockModels() {
         registerModel(Item.getItemFromBlock(ModBlocks.ringForge), 0, Augment.MOD_ID + ":ring_forge");
+        registerModel(Item.getItemFromBlock(ModBlocks.altar), 0, Augment.MOD_ID + ":altar");
+        registerModel(Item.getItemFromBlock(ModBlocks.altar), 1, Augment.MOD_ID + ":master_altar");
+        registerMetadataModel(Item.getItemFromBlock(ModBlocks.altar), Augment.MOD_ID + ":altar", Augment.MOD_ID + ":master_altar");
     }
 
     @Override
     public void postInit() {
         super.postInit();
+        ManualBuilder.initializeManual();
+        ManualBuilder.addItemEntry((IItemPage) ModItems.ironHammer);
+        ManualBuilder.addItemEntry((IItemPage) ModItems.manual);
     }
 
     private void registerMetadataModel(Item item, String... files) {

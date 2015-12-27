@@ -12,21 +12,34 @@ gui.augmentedaccessories.fluidinfo=%s: %s/%s
 
 item.augmentedaccessories.ironHammer.name=Iron Forge Hammer
 item.augmentedaccessories.diamondHammer.name=Diamond Forge Hammer
-item.augmentedaccessories.dustiron.name=Iron Dust
-item.augmentedaccessories.dustgold.name=Gold Dust
-item.augmentedaccessories.dusttin.name=Tin Dust
-item.augmentedaccessories.dustcopper.name=Copper Dust
-item.augmentedaccessories.dustaluminium.name=Aluminium Dust
-item.augmentedaccessories.dustzinc.name=Zinc Dust
-item.augmentedaccessories.dustsilver.name=Silver Dust
-item.augmentedaccessories.dustlead.name=Lead Dust
-item.augmentedaccessories.dustnickel.name=Nickel Dust
+item.augmentedaccessories.dust.iron.name=Iron Dust
+item.augmentedaccessories.dust.gold.name=Gold Dust
+item.augmentedaccessories.dust.tin.name=Tin Dust
+item.augmentedaccessories.dust.copper.name=Copper Dust
+item.augmentedaccessories.dust.aluminium.name=Aluminium Dust
+item.augmentedaccessories.dust.zinc.name=Zinc Dust
+item.augmentedaccessories.dust.silver.name=Silver Dust
+item.augmentedaccessories.dust.lead.name=Lead Dust
+item.augmentedaccessories.dust.nickel.name=Nickel Dust
 item.augmentedaccessories.ring.name=Ring
 item.augmentedaccessories.void.0.name=Null Orb
 item.augmentedaccessories.void.1.name=Pocket Void
 item.augmentedaccessories.book.name=Mystical Accessories - Vol. 2
 
 tile.augmentedaccessories.ringForge.name=Ring Forge
-tile.augmentedaccessories.altar.item.name=Item Altar
-tile.augmentedaccessories.altar.infusion.name=Infusion Altar
+tile.augmentedaccessories.altar.name=Item Altar
+tile.augmentedaccessories.altar.basic.name=Item Altar
+tile.augmentedaccessories.altar.master.name=Infusion Altar
 tile.augmentedaccessories.vigorGlass.name=Vigorous Glass
+
+config.augmentedaccessories.vigor.starting=The max amount of vigor the player starts with.
+
+book.augmentedaccessories.mainpage.title=Main Page
+book.augmentedaccessories.getting_started.title=Getting Started
+book.augmentedaccessories.ring_infusion.title=Starting Ring Infusion
+book.augmentedaccessories.spells.title=Ring Spells
+
+book.augmentedaccessories.manual.desc.0=Throughout the world there are multiple schools of magic, each with their own methods of channeling different forms of power. This book will teach you how to channel said power through rings forged by your own hand.
+book.augmentedaccessories.iron_hammer.desc.0=A basic tool with multiple purposes. Aside from being used to form the shape of your ring in the forge, it can be used to smash ores into dust. This is extremely useful as rings require quite a bit of material to create.
+book.augmentedaccessories.iron_hammer.desc.1=If you ever lose your /&o/&lMystical Accessories/&r book, you can also smash a bookcase with the hammer to create a new book.
+book.augmentedaccessories.diamond_hammer.desc.0=Exactly the same as the Iron Forge Hammer, but with more durability.

@@ -27,7 +27,7 @@ import net.lomeli.augment.inventory.ContainerForge;
 import net.lomeli.augment.items.ItemHammer;
 
 public class GuiRingForge extends GuiContainer {
-    private final ResourceLocation guiTexture = ResourceUtil.getGuiResource(Augment.MOD_ID.toLowerCase(), "ringForge.png");
+    private final ResourceLocation guiTexture = ResourceUtil.getGuiResource(Augment.MOD_ID.toLowerCase(), "ringForge");
     private TileRingForge tile;
     private GuiTextField textField;
 

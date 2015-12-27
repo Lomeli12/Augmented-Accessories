@@ -1,7 +1,6 @@
 package net.lomeli.augment.client.model;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
 
@@ -17,25 +16,18 @@ import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IFlexibleBakedModel;
 import net.minecraftforge.client.model.ISmartItemModel;
 import net.minecraftforge.client.model.ItemLayerModel;
-import net.minecraftforge.client.model.TRSRTransformation;
-
-import net.lomeli.lomlib.util.ObfUtil;
 
 import net.lomeli.augment.items.ItemRing;
 
 public class ModelRing implements ISmartItemModel, IFlexibleBakedModel {
     private final IBakedModel parent;
     private VertexFormat format;
-    private ImmutableMap<ItemCameraTransforms.TransformType, TRSRTransformation> transforms;
 
     public ModelRing(IBakedModel parent) {
         this.parent = parent;
         this.format = DefaultVertexFormats.BLOCK;
-        this.transforms = ImmutableMap.<ItemCameraTransforms.TransformType, TRSRTransformation>of();
         if (parent instanceof IFlexibleBakedModel)
             format = ((IFlexibleBakedModel) parent).getFormat();
-        if (parent instanceof ItemLayerModel.BakedModel)
-            transforms = ObfUtil.getFieldValue(ItemLayerModel.BakedModel.class, parent, "transforms");
     }
 
     @Override
@@ -44,9 +36,11 @@ public class ModelRing implements ISmartItemModel, IFlexibleBakedModel {
             boolean flag = ItemRing.hasGem(stack);
             List<BakedQuad> parentQuads = getGeneralQuads();
             ImmutableList.Builder<BakedQuad> quads = ImmutableList.builder();
-            for (int i = 0; i < parentQuads.size() - (flag ? 0 : 22); i++)
+            int base = 22; //TODO: Dynamically get number of ring gem quads
+            for (int i = 0; i < parentQuads.size() - (flag ? 0 : base); i++)
                 quads.add(parentQuads.get(i));
-            IFlexibleBakedModel model = new ItemLayerModel.BakedModel(quads.build(), this.getParticleTexture(), this.getFormat(), transforms);
+
+            IFlexibleBakedModel model = new ItemLayerModel.BakedModel(quads.build(), this.getParticleTexture(), this.getFormat());
             new ItemLayerModel.BakedModel(quads.build(), this.getParticleTexture(), this.getFormat());
             return model;
         }

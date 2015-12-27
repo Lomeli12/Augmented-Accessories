@@ -11,4 +11,9 @@ public class ModNBT {
 
     // Manual
     public static String OBTAINED_MANUAL = "OBTAINED_MANUAL";
+
+    // Player Data
+    public static String VIGOR_DATA = "VIGOR_DATA";
+    public static String STORED_VIGOR = "VIGOR";
+    public static String MAX_VIGOR = "MAX_VIGOR";
 }

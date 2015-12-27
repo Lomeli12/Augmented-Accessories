@@ -1,7 +1,10 @@
 package net.lomeli.augment.items;
 
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 import net.minecraft.block.Block;
@@ -22,10 +25,11 @@ import net.lomeli.lomlib.util.ItemUtil;
 import net.lomeli.lomlib.util.entity.EntityUtil;
 
 import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.core.CreativeAugment;
 import net.lomeli.augment.lib.DustType;
 
-public class ItemHammer extends ItemTool {
+public class ItemHammer extends ItemTool implements IItemPage {
     private static final Set<Block> EFFECTIVE_ON = Sets.newHashSet(new Block[]{Blocks.activator_rail, Blocks.coal_ore, Blocks.cobblestone, Blocks.detector_rail, Blocks.diamond_block, Blocks.diamond_ore, Blocks.double_stone_slab, Blocks.golden_rail, Blocks.gold_block, Blocks.gold_ore, Blocks.ice, Blocks.iron_block, Blocks.iron_ore, Blocks.lapis_block, Blocks.lapis_ore, Blocks.lit_redstone_ore, Blocks.mossy_cobblestone, Blocks.netherrack, Blocks.packed_ice, Blocks.rail, Blocks.redstone_ore, Blocks.sandstone, Blocks.red_sandstone, Blocks.stone, Blocks.stone_slab});
 
     public ItemHammer(String name, ToolMaterial toolMaterial) {
@@ -78,5 +82,43 @@ public class ItemHammer extends ItemTool {
     @Override
     public CreativeTabs[] getCreativeTabs() {
         return new CreativeTabs[]{CreativeAugment.modTab, CreativeTabs.tabTools};
+    }
+
+    @Override
+    public boolean showRecipes(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public String pageID(ItemStack stack) {
+        return stack.getItem() == ModItems.diamondHammer ? Augment.MOD_ID + ":diamond_hammer" : stack.getItem() == ModItems.ironHammer ? Augment.MOD_ID + ":iron_hammer" : null;
+    }
+
+    @Override
+    public String[] descriptions(ItemStack stack) {
+        if (stack.getItem() == ModItems.ironHammer) {
+            return new String[] {
+                    "book.augmentedaccessories.iron_hammer.desc.0",
+                    "book.augmentedaccessories.iron_hammer.desc.1"
+            };
+        } else if (stack.getItem() == ModItems.diamondHammer) {
+            return new String[] {
+                    "book.augmentedaccessories.diamond_hammer.desc.0"
+            };
+        }
+        return new String[0];
+    }
+
+    @Override
+    public Collection<ItemStack> itemsToDoc() {
+        List<ItemStack> stackList = Lists.newArrayList();
+        stackList.add(new ItemStack(ModItems.ironHammer));
+        stackList.add(new ItemStack(ModItems.diamondHammer));
+        return stackList;
+    }
+
+    @Override
+    public String parentID(ItemStack stack) {
+        return Augment.MOD_ID + ":getting_started";
     }
 }

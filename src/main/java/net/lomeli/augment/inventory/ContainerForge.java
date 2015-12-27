@@ -85,8 +85,6 @@ public class ContainerForge extends ContainerBase {
     @Override
     public void onCraftMatrixChanged(IInventory inventory) {
         super.onCraftMatrixChanged(inventory);
-        //ItemStack out = MaterialRegistry.getRegistry().makeRing(inventory.getStackInSlot(TileRingForge.IN_0), inventory.getStackInSlot(TileRingForge.IN_1), inventory.getStackInSlot(TileRingForge.GEM), tile.getRingName());
-        //this.tile.setInventorySlotContents(TileRingForge.OUTPUT, out);
     }
 
     @Override
@@ -115,16 +113,16 @@ public class ContainerForge extends ContainerBase {
                     slot.onSlotChange(itemstack1, itemstack);
             } else {
                 if (MaterialRegistry.getRegistry().getMaterial(itemstack1, false) != null) {
-                    if (!this.mergeItemStack(itemstack1, TileRingForge.IN_0, TileRingForge.IN_1 + 1, false))
+                    if (!this.mergeItemStack(itemstack1, 1, 3, false))
                         return null;
                 } else if (MaterialRegistry.getRegistry().getMaterial(itemstack1, true) != null) {
-                    if (!this.mergeItemStack(itemstack1, TileRingForge.GEM, 6, false))
+                    if (!this.mergeItemStack(itemstack1, 3, 4, false))
                         return null;
                 } else if (itemstack1.getItem() instanceof ItemHammer) {
-                    if (!this.mergeItemStack(itemstack1, TileRingForge.HAMMER, 1, false))
+                    if (!this.mergeItemStack(itemstack1, 4, 5, false))
                         return null;
                 } else if (FluidContainerRegistry.isContainer(itemstack1) || itemstack1.getItem() instanceof IFluidContainerItem) {
-                    if (!this.mergeItemStack(itemstack1, TileRingForge.LAVA_SLOT, 3, false))
+                    if (!this.mergeItemStack(itemstack1, 5, 6, false))
                         return null;
                 }
             }

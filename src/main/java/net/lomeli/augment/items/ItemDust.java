@@ -29,6 +29,6 @@ public class ItemDust extends ItemBase {
 
     @Override
     public String getUnlocalizedName(ItemStack stack) {
-        return super.getUnlocalizedName(stack) + DustType.getDustFromMeta(stack.getItemDamage()).getName();
+        return super.getUnlocalizedName(stack) + "." + DustType.getDustFromMeta(stack.getItemDamage()).getName();
     }
 }

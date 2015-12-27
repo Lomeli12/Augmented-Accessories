@@ -9,6 +9,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import net.lomeli.lomlib.util.entity.EntityUtil;
 
+import net.lomeli.augment.core.vigor.VigorManager;
 import net.lomeli.augment.items.ModItems;
 import net.lomeli.augment.lib.ModNBT;
 
@@ -27,5 +28,15 @@ public class PlayerHandler {
                 event.player.getEntityData().setTag(EntityPlayer.PERSISTED_NBT_TAG, tag);
             }
         }
+    }
+
+    @SubscribeEvent
+    public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+        VigorManager.getInstance().registerPlayer(event.player);
+    }
+
+    @SubscribeEvent
+    public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
+        VigorManager.getInstance().removePlayer(event.player);
     }
 }

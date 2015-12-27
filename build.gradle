@@ -13,6 +13,13 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 
+repositories {
+    maven {
+        name = 'Lomeli Repo'
+        url = "http://lomeli12.net/maven/"
+    }
+}
+
 def loadProperties(String sourceFileName) {
     def config = new Properties()
     def propFile = new File(sourceFileName)
