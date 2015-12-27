@@ -97,12 +97,11 @@ public class ItemHammer extends ItemTool implements IItemPage {
     @Override
     public String[] descriptions(ItemStack stack) {
         if (stack.getItem() == ModItems.ironHammer) {
-            return new String[] {
-                    "book.augmentedaccessories.iron_hammer.desc.0",
-                    "book.augmentedaccessories.iron_hammer.desc.1"
+            return new String[]{
+                    "book.augmentedaccessories.iron_hammer.desc.0"
             };
         } else if (stack.getItem() == ModItems.diamondHammer) {
-            return new String[] {
+            return new String[]{
                     "book.augmentedaccessories.diamond_hammer.desc.0"
             };
         }

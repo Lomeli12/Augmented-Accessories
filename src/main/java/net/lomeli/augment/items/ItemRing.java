@@ -1,6 +1,10 @@
 package net.lomeli.augment.items;
 
+import com.google.common.collect.Lists;
+
+import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,13 +17,14 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.lomeli.lomlib.util.NBTUtil;
 
 import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.manual.IItemPage;
+import net.lomeli.augment.core.CreativeAugment;
 import net.lomeli.augment.lib.ModNBT;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 
-public class ItemRing extends ItemBase implements IBauble {
-
+public class ItemRing extends ItemBase implements IBauble, IItemPage {
     public ItemRing() {
         super("ring");
         this.setHasSubtypes(true);
@@ -131,5 +136,34 @@ public class ItemRing extends ItemBase implements IBauble {
         int boost = getRingBoost(stack);
         if (boost != 0)
             tooltip.add(boost < 0 ? "-" : "+" + boost);
+    }
+
+    @Override
+    public boolean showRecipes(ItemStack stack) {
+        return false;
+    }
+
+    @Override
+    public String pageID(ItemStack stack) {
+        return Augment.MOD_ID + ":ring";
+    }
+
+    @Override
+    public String parentID(ItemStack stack) {
+        return Augment.MOD_ID + ":getting_started";
+    }
+
+    @Override
+    public String[] descriptions(ItemStack stack) {
+        return new String[]{
+                "book.augmentedaccessories.ring.desc.0"
+        };
+    }
+
+    @Override
+    public Collection<ItemStack> itemsToDoc() {
+        List<ItemStack> stacks = Lists.newArrayList();
+        stacks.add(CreativeAugment.modTab.getIconItemStack());
+        return stacks;
     }
 }

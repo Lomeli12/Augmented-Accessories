@@ -4,7 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import net.lomeli.augment.api.Material;
+import net.lomeli.augment.api.material.Material;
 
 public interface IMaterialRegistry {
     void registerMaterial(ItemStack stack, int boost, int color, boolean gem);

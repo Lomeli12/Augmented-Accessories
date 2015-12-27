@@ -1,4 +1,4 @@
-package net.lomeli.augment.api;
+package net.lomeli.augment.api.vigor;
 
 import java.util.UUID;
 

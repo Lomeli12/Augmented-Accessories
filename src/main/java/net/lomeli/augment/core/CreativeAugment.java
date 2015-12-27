@@ -19,7 +19,7 @@ public class CreativeAugment extends CreativeTabs {
 
     public CreativeAugment() {
         super(Augment.MOD_ID);
-        rand = new Random();
+        rand = new Random(System.currentTimeMillis());
         l0 = rand.nextInt(0xFFFFFF);
         l1 = rand.nextInt(0xFFFFFF);
         l2 = rand.nextInt(0xFFFFFF);

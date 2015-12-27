@@ -12,7 +12,7 @@ import net.lomeli.lomlib.util.NBTUtil;
 import net.lomeli.lomlib.util.entity.EntityUtil;
 
 import net.lomeli.augment.Augment;
-import net.lomeli.augment.api.VigorData;
+import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.api.registry.IVigorRegistry;
 import net.lomeli.augment.lib.AugConfig;
 

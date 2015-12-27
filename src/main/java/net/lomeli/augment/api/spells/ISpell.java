@@ -1,4 +1,4 @@
-package net.lomeli.augment.api;
+package net.lomeli.augment.api.spells;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;

@@ -5,14 +5,18 @@ import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
+import net.lomeli.lomlib.util.NBTUtil;
+
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.manual.IItemPage;
+import net.lomeli.augment.lib.ModNBT;
 
 public class ItemManual extends ItemBase implements IItemPage {
     public ItemManual() {
@@ -27,8 +31,14 @@ public class ItemManual extends ItemBase implements IItemPage {
     }
 
     @Override
-    public boolean onItemUse(ItemStack stack, EntityPlayer playerIn, World worldIn, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-        return super.onItemUse(stack, playerIn, worldIn, pos, side, hitX, hitY, hitZ);
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+        IBlockState state = world.getBlockState(pos);
+        if (state != null && state.getBlock() instanceof IItemPage) {
+            NBTUtil.setString(stack, ModNBT.LAST_PAGE, ((IItemPage) state.getBlock()).pageID(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state))));
+            player.openGui(Augment.modInstance, 1, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+            return true;
+        }
+        return super.onItemUseFirst(stack, player, world, pos, side, hitX, hitY, hitZ);
     }
 
     @Override
@@ -48,7 +58,7 @@ public class ItemManual extends ItemBase implements IItemPage {
 
     @Override
     public String[] descriptions(ItemStack stack) {
-        return new String[] {
+        return new String[]{
                 "book.augmentedaccessories.manual.desc.0"
         };
     }

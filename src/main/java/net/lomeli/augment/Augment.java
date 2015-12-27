@@ -8,12 +8,14 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 
 import net.lomeli.lomlib.core.config.ModConfig;
+import net.lomeli.lomlib.core.network.PacketHandler;
 import net.lomeli.lomlib.core.version.VersionChecker;
 import net.lomeli.lomlib.util.LogHelper;
 
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.core.Proxy;
 import net.lomeli.augment.core.handler.MaterialRegistry;
+import net.lomeli.augment.core.network.PacketSavePage;
 import net.lomeli.augment.core.vigor.VigorManager;
 import net.lomeli.augment.lib.AugConfig;
 
@@ -34,6 +36,7 @@ public class Augment {
     public static LogHelper log = LogHelper.createLogger(MOD_NAME);
     public static VersionChecker versionChecker;
     public static ModConfig config;
+    public static PacketHandler packetHandler;
 
     @Mod.EventHandler
     public void serverStartingEvent(FMLServerStartingEvent event) {
@@ -45,6 +48,7 @@ public class Augment {
         log.logInfo("Pre-Init");
         config = new ModConfig(MOD_ID, event.getSuggestedConfigurationFile(), AugConfig.class);
         versionChecker = new VersionChecker(UPDATE_URL, MOD_ID, MOD_NAME, MAJOR, MINOR, REV);
+        packetHandler = new PacketHandler(MOD_ID, PacketSavePage.class);
         proxy.preInit();
         AugmentAPI.materialRegistry = MaterialRegistry.getRegistry();
         AugmentAPI.vigorRegistry = VigorManager.getInstance();

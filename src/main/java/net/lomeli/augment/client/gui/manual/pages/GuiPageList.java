@@ -16,6 +16,8 @@ import net.minecraftforge.fml.client.FMLClientHandler;
 
 import net.lomeli.lomlib.util.LangUtil;
 
+import net.lomeli.augment.api.AugmentAPI;
+import net.lomeli.augment.api.manual.IGuiPage;
 import net.lomeli.augment.client.gui.manual.GuiPage;
 import net.lomeli.augment.client.gui.manual.GuiPageButton;
 
@@ -23,27 +25,27 @@ public class GuiPageList extends GuiPage {
     private static final int listSize = 12;
     public GuiPageButton buttonNextPage;
     public GuiPageButton buttonPreviousPage;
-    private List<GuiPage> pageList;
+    private List<String> pageList;
     private int selected;
 
-    public GuiPageList(String id, String name, Collection<GuiPage> pages) {
-        super(id, name);
+    public GuiPageList(String id, String parentID, String name, Collection<String> pages) {
+        super(id, parentID, name);
         this.pageList = Lists.newArrayList();
         if (pages != null && pages.size() > 0)
             this.pageList.addAll(pages);
     }
 
-    public GuiPageList(String id, String name) {
-        this(id, name, null);
+    public GuiPageList(String id, String parentID, String name) {
+        this(id, parentID, name, null);
     }
 
-    public GuiPageList addPages(Collection<GuiPage> pages) {
+    public GuiPageList addPages(Collection<String> pages) {
         if (pages != null && pages.size() > 0)
             this.pageList.addAll(pages);
         return this;
     }
 
-    public GuiPageList addPage(GuiPage page) {
+    public GuiPageList addPage(String page) {
         if (page != null)
             this.pageList.add(page);
         return this;
@@ -58,7 +60,8 @@ public class GuiPageList extends GuiPage {
         this.buttonPreviousPage.visible = false;
         this.buttonNextPage.visible = pageList.size() > listSize;
         for (int i = 0; i < pageList.size(); i++) {
-            GuiPage page = pageList.get(i);
+            String id = pageList.get(i);
+            IGuiPage page = AugmentAPI.manualRegistry.getPageForID(id);
             if (page != null) {
                 GuiPageItem pageItem = new GuiPageItem(3 + i, left + 40, top + 15 + (11 * (i % listSize)), bookImageWidth / 2, page.getName());
                 if (i >= listSize) {
@@ -115,7 +118,7 @@ public class GuiPageList extends GuiPage {
                 break;
             default:
                 if (button.id - 3 < pageList.size())
-                    mc.displayGuiScreen(pageList.get(button.id - 3).openPage(this));
+                    mc.displayGuiScreen(AugmentAPI.manualRegistry.getPageForID(pageList.get(button.id - 3)).openPage(this.getID()));
                 return;
         }
     }

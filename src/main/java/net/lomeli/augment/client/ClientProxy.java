@@ -12,6 +12,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.lomeli.lomlib.client.BasicItemMesh;
 
 import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.blocks.ModBlocks;
 import net.lomeli.augment.blocks.tiles.TileAltar;
@@ -28,6 +29,8 @@ public class ClientProxy extends Proxy {
     @Override
     public void preInit() {
         super.preInit();
+        AugmentAPI.manualRegistry = ManualBuilder.getInstance();
+        ManualBuilder.getInstance().initializeManual();
         MinecraftForge.EVENT_BUS.register(new BakeModelHandler());
     }
 
@@ -59,9 +62,10 @@ public class ClientProxy extends Proxy {
     @Override
     public void postInit() {
         super.postInit();
-        ManualBuilder.initializeManual();
-        ManualBuilder.addItemEntry((IItemPage) ModItems.ironHammer);
-        ManualBuilder.addItemEntry((IItemPage) ModItems.manual);
+        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModItems.manual);
+        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModBlocks.ringForge);
+        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModItems.ironHammer);
+        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModItems.ring);
     }
 
     private void registerMetadataModel(Item item, String... files) {

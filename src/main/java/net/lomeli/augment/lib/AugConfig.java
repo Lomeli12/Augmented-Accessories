@@ -8,4 +8,6 @@ public class AugConfig {
     public static boolean checkForUpdates;
     @ConfigInt(defaultValue = 50, comment = "config.augmentedaccessories.vigor.starting")
     public static int startingAmount;
+    @ConfigBoolean(defaultValue = true)
+    public static boolean showBookToolTip;
 }

@@ -10,7 +10,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import net.lomeli.augment.api.Material;
+import net.lomeli.augment.api.material.Material;
 import net.lomeli.augment.api.registry.IMaterialRegistry;
 import net.lomeli.augment.items.ItemRing;
 import net.lomeli.augment.items.ModItems;

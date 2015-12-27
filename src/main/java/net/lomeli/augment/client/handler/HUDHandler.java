@@ -1,11 +1,14 @@
 package net.lomeli.augment.client.handler;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -16,9 +19,11 @@ import net.lomeli.lomlib.util.RenderUtils;
 import net.lomeli.lomlib.util.ResourceUtil;
 
 import net.lomeli.augment.Augment;
-import net.lomeli.augment.api.VigorData;
+import net.lomeli.augment.api.manual.IItemPage;
+import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.core.vigor.VigorManager;
 import net.lomeli.augment.items.ModItems;
+import net.lomeli.augment.lib.AugConfig;
 
 import baubles.api.BaublesApi;
 
@@ -31,21 +36,33 @@ public class HUDHandler {
     @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
         Minecraft mc = Minecraft.getMinecraft();
+        ScaledResolution scaledresolution = new ScaledResolution(mc);
         Profiler profiler = mc.mcProfiler;
         EntityPlayer player = mc.thePlayer;
         ItemStack hand = player.getCurrentEquippedItem();
-        if (event.type == RenderGameOverlayEvent.ElementType.HEALTH) {
+        MovingObjectPosition pos = mc.objectMouseOver;
+        if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
             profiler.startSection(Augment.MOD_ID + "-hud");
 
             if (VigorManager.getInstance().doesPlayerHaveVigor(player) && displayVigor(player)) {
                 profiler.startSection(Augment.MOD_ID + "-vigorBar");
-                //if (Augment.proxy.playerRegistered(mc.thePlayer))
                 renderVigorHud(VigorManager.getInstance().getPlayerData(player));
                 profiler.endSection();
             }
 
-            if (hand != null && hand.getItem() != null && hand.getItem() == ModItems.manual) {
+            if (AugConfig.showBookToolTip && hand != null && hand.getItem() == ModItems.manual) {
                 profiler.startSection(Augment.MOD_ID + "-bookToolTip");
+                if (pos != null) {
+                    IBlockState state = mc.theWorld.getBlockState(pos.getBlockPos());
+                    if (state != null && state.getBlock() instanceof IItemPage) {
+                        ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
+                        int sx = scaledresolution.getScaledWidth() / 2 - 17;
+                        int sy = scaledresolution.getScaledHeight() / 2 + 2;
+                        mc.getRenderItem().renderItemIntoGUI(new ItemStack(ModItems.manual), sx + 20, sy - 16);
+                        mc.fontRendererObj.drawString(stack.getDisplayName(), sx + 40, sy - 12, 0);
+                        mc.fontRendererObj.drawString(stack.getDisplayName(), sx + 39, sy - 13, 0xFFFFFF);
+                    }
+                }
                 profiler.endSection();
             }
 

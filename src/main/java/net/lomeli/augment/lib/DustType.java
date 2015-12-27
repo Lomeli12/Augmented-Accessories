@@ -48,6 +48,10 @@ public class DustType {
         return name;
     }
 
+    public String getOreDic() {
+        return oreDic;
+    }
+
     public boolean isOre(ItemStack stack, boolean strict) {
         List<ItemStack> oreList = OreDictionary.getOres("ore" + oreDic);
         if (!oreList.isEmpty()) {

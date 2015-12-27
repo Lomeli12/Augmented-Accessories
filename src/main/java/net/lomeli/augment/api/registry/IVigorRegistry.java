@@ -2,7 +2,7 @@ package net.lomeli.augment.api.registry;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import net.lomeli.augment.api.VigorData;
+import net.lomeli.augment.api.vigor.VigorData;
 
 public interface IVigorRegistry {
     VigorData registerPlayer(EntityPlayer player);

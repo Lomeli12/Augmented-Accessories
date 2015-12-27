@@ -3,6 +3,7 @@ package net.lomeli.augment.items;
 import net.minecraft.item.Item;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
 public class ModItems {
     public static Item ring, ironHammer, diamondHammer, dust, manual, ink;
@@ -18,5 +19,8 @@ public class ModItems {
         GameRegistry.registerItem(diamondHammer, "hammer_diamond");
         GameRegistry.registerItem(dust, "dust");
         GameRegistry.registerItem(manual, "manual");
+
+        OreDictionary.registerOre("forgeHammer", ironHammer);
+        OreDictionary.registerOre("forgeHammer", diamondHammer);
     }
 }

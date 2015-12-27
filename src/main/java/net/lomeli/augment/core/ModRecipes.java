@@ -5,6 +5,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.OreDictionary;
 
 import net.lomeli.lomlib.core.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.core.recipes.ShapelessFluidRecipe;
@@ -27,6 +28,7 @@ public class ModRecipes {
     private static void itemRecipes() {
         addShaped(new ItemStack(ModItems.ironHammer), true, " OS", " SO", "S  ", 'S', "stickWood", 'O', "ingotIron");
         addShaped(new ItemStack(ModItems.diamondHammer), true, " OS", " SO", "S  ", 'S', "stickWood", 'O', "gemDiamond");
+        addShapeless(new ItemStack(ModItems.manual), "forgeHammer", Items.book);
         dustRecipes();
     }
 
@@ -37,6 +39,7 @@ public class ModRecipes {
                 ItemStack stack = new ItemStack(ModItems.dust, 1, i);
                 addSmelting(stack, type.getIngot(), 1f);
             }
+            OreDictionary.registerOre("dust" + type.getOreDic(), new ItemStack(ModItems.dust, 1, i));
         }
     }
 
