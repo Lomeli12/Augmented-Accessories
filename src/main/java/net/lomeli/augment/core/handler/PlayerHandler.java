@@ -9,6 +9,9 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
 import net.lomeli.lomlib.util.entity.EntityUtil;
 
+import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.AugmentAPI;
+import net.lomeli.augment.core.network.PacketUpdateClientVigor;
 import net.lomeli.augment.core.vigor.VigorManager;
 import net.lomeli.augment.items.ModItems;
 import net.lomeli.augment.lib.ModNBT;
@@ -32,11 +35,13 @@ public class PlayerHandler {
 
     @SubscribeEvent
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        VigorManager.getInstance().registerPlayer(event.player);
+        AugmentAPI.vigorRegistry.registerPlayer(event.player);
+        Augment.packetHandler.sendTo(new PacketUpdateClientVigor(VigorManager.getInstance().getPlayerData(event.player)), event.player);
     }
 
     @SubscribeEvent
     public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
-        VigorManager.getInstance().removePlayer(event.player);
+        AugmentAPI.vigorRegistry.removePlayer(event.player);
+        Augment.packetHandler.sendTo(new PacketUpdateClientVigor(), event.player);
     }
 }

@@ -12,8 +12,8 @@ import net.lomeli.lomlib.util.NBTUtil;
 import net.lomeli.lomlib.util.entity.EntityUtil;
 
 import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.vigor.IVigorRegistry;
 import net.lomeli.augment.api.vigor.VigorData;
-import net.lomeli.augment.api.registry.IVigorRegistry;
 import net.lomeli.augment.lib.AugConfig;
 
 public class VigorManager implements IVigorRegistry {
@@ -33,7 +33,7 @@ public class VigorManager implements IVigorRegistry {
     public VigorData registerPlayer(EntityPlayer player) {
         if (player == null || EntityUtil.isFakePlayer(player) || playerData.containsKey(player.getPersistentID()))
             return null;
-        VigorData data = VigorData.readFromNBT(NBTUtil.getPersistedTag(player), player.getPersistentID());
+        VigorData data = VigorData.readFromNBT(NBTUtil.getPersistedTag(player));
         if (data == null) data = new VigorData(player, AugConfig.startingAmount);
         Augment.log.logInfo("Added %s to Vigor registry.", player.getDisplayName().getUnformattedText());
         playerData.put(player.getPersistentID(), data);

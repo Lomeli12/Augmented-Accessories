@@ -17,4 +17,6 @@ public class ModNBT {
     public static String VIGOR_DATA = "VIGOR_DATA";
     public static String STORED_VIGOR = "VIGOR";
     public static String MAX_VIGOR = "MAX_VIGOR";
+    public static String MOST_SIG = "UUID_MOST";
+    public static String LEAST_SIG = "UUID_LEAST";
 }

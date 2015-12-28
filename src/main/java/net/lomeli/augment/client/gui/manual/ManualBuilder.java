@@ -10,9 +10,11 @@ import net.minecraft.item.ItemStack;
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.manual.IGuiPage;
 import net.lomeli.augment.api.manual.IItemPage;
-import net.lomeli.augment.api.registry.IManualRegistry;
+import net.lomeli.augment.api.manual.IMultiBlockPage;
+import net.lomeli.augment.api.manual.IManualRegistry;
 import net.lomeli.augment.client.gui.manual.pages.GuiPageItem;
 import net.lomeli.augment.client.gui.manual.pages.GuiPageList;
+import net.lomeli.augment.client.gui.manual.pages.GuiPageMultiBlock;
 
 public class ManualBuilder implements IManualRegistry {
     private static ManualBuilder INSTANCE;
@@ -73,6 +75,7 @@ public class ManualBuilder implements IManualRegistry {
 
     @Override
     public void addPage(IGuiPage page, String parentID) {
+        if (page == null) return;
         if (pageRegistry.containsKey(page.getID()))
             throw new RuntimeException(String.format("[%s]: Page ID (%s) is already taken!", Augment.MOD_NAME, page.getID()));
         pageRegistry.put(page.getID(), page);
@@ -94,5 +97,24 @@ public class ManualBuilder implements IManualRegistry {
             parent = getMainPage();
         if (parent instanceof GuiPageList)
             ((GuiPageList) parent).addPage(page.getID());
+    }
+
+    @Override
+    public void addMultiblockPage(IMultiBlockPage multiBlockPage) {
+        if (multiBlockPage == null) return;
+        if (pageRegistry.containsKey(multiBlockPage.pageID()))
+            throw new RuntimeException(String.format("[%s]: Page ID (%s) is already taken!", Augment.MOD_NAME, multiBlockPage.pageID()));
+        GuiPageMultiBlock page = new GuiPageMultiBlock(multiBlockPage.pageID(), multiBlockPage.parentID(), multiBlockPage.getName(), multiBlockPage.getStructureStacks(), multiBlockPage.descriptions());
+        pageRegistry.put(multiBlockPage.pageID(), page);
+        IGuiPage parent = getPageForID(multiBlockPage.parentID());
+        if (parent == null)
+            parent = getMainPage();
+        if (parent instanceof GuiPageList)
+            ((GuiPageList) parent).addPage(page.getID());
+    }
+
+    @Override
+    public void addTextPage(String id, String parentID, String name, String... description) {
+
     }
 }

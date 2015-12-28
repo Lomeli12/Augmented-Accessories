@@ -60,14 +60,17 @@ public class VigorData {
 
     public void writeToNBT(NBTTagCompound tag) {
         NBTTagCompound data = new NBTTagCompound();
+        data.setLong("UUID_LEAST", getPlayerID().getLeastSignificantBits());
+        data.setLong("UUID_MOST", getPlayerID().getMostSignificantBits());
         data.setInteger("VIGOR", getEnergy());
         data.setInteger("MAX_VIGOR", getMaxEnergy());
         tag.setTag("VIGOR_DATA", data);
     }
 
-    public static VigorData readFromNBT(NBTTagCompound persistedTag, UUID uuid) {
+    public static VigorData readFromNBT(NBTTagCompound persistedTag) {
         if (!persistedTag.hasKey("VIGOR_DATA", 10)) return null;
         NBTTagCompound data = persistedTag.getCompoundTag("VIGOR_DATA");
+        UUID uuid = new UUID(data.getLong("UUID_MOST"), data.getLong("UUID_LEAST"));
         return new VigorData(uuid, data.getInteger("MAX_VIGOR")).setEnergy(data.getInteger("VIGOR"));
     }
 }

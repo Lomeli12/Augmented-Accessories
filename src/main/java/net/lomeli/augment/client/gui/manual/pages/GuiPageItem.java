@@ -11,6 +11,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -130,17 +131,19 @@ public class GuiPageItem extends GuiPage {
     @Override
     public void initGui() {
         super.initGui();
-        selected = 0;
         maxSelected = descs.length;
         this.buttonList.add(this.buttonNextPage = new GuiPageButton(1, left + 120, top + 156, true));
         this.buttonList.add(this.buttonPreviousPage = new GuiPageButton(2, left + 38, top + 156, false));
-        this.buttonPreviousPage.visible = false;
         if (recipe) {
             calculateRecipe();
             maxSelected += recipeList.size();
         }
         if (maxSelected < 2)
             this.buttonNextPage.visible = false;
+        if (selected == 0)
+            buttonPreviousPage.visible = false;
+        if (selected >= maxSelected - 1 || maxSelected <= 1)
+            buttonNextPage.visible = false;
     }
 
     @Override
@@ -148,7 +151,7 @@ public class GuiPageItem extends GuiPage {
         super.drawScreen(mouseX, mouseY, partialTicks);
         if (displayStack != null) {
             RenderHelper.enableGUIStandardItemLighting();
-            mc.getRenderItem().renderItemIntoGUI(displayStack, left + 35, top + 10);
+            this.itemRender.renderItemIntoGUI(displayStack, left + 35, top + 10);
             fontRendererObj.drawSplitString(displayStack.getDisplayName(), left + 56, top + 13, GuiPage.WORD_WRAP - 6, 0);
             fontRendererObj.drawSplitString(displayStack.getDisplayName(), left + 55, top + 12, GuiPage.WORD_WRAP - 6, 0x00FFFF);
             if (selected >= 0) {
@@ -196,24 +199,31 @@ public class GuiPageItem extends GuiPage {
                 int y = top + 50 + stack.y;
                 GlStateManager.pushMatrix();
                 RenderHelper.enableGUIStandardItemLighting();
-                mc.getRenderItem().renderItemIntoGUI(item, x, y);
+                this.itemRender.renderItemIntoGUI(item, x, y);
                 GlStateManager.popMatrix();
                 boolean flag = mouseX >= x && mouseY >= y && mouseX < x + 16 && mouseY < y + 16;
                 if (flag) {
                     tooltip.add(item.getDisplayName());
-                    if (link && item.getItem() instanceof IItemPage) {
-                        tooltip.clear();
-                        tooltip.add(EnumChatFormatting.GOLD + item.getDisplayName());
-                        String id = ((IItemPage) item.getItem()).pageID(item);
-                        if (!Strings.isNullOrEmpty(id) && AugmentAPI.manualRegistry.getPageForID(id) != null) {
-                            tooltip.add(LangUtil.translate("book.augmentedaccessories.tooltip.iteminfo"));
-                            possiblePage = AugmentAPI.manualRegistry.getPageForID(id);
-                        } else
-                            possiblePage = null;
+                    if (link) {
+                        if (item.getItem() instanceof IItemPage)
+                            addItemPageLink(item, (IItemPage) item.getItem());
+                        else if (item.getItem() instanceof ItemBlock && ((ItemBlock) item.getItem()).getBlock() instanceof IItemPage)
+                            addItemPageLink(item, (IItemPage) ((ItemBlock) item.getItem()).getBlock());
                     }
                 }
             }
         }
+    }
+
+    private void addItemPageLink(ItemStack stack, IItemPage page) {
+        tooltip.clear();
+        tooltip.add(EnumChatFormatting.GOLD + stack.getDisplayName());
+        String id = page.pageID(stack);
+        if (!Strings.isNullOrEmpty(id) && AugmentAPI.manualRegistry.getPageForID(id) != null) {
+            tooltip.add(LangUtil.translate("book.augmentedaccessories.tooltip.iteminfo"));
+            possiblePage = AugmentAPI.manualRegistry.getPageForID(id);
+        } else
+            possiblePage = null;
     }
 
     @Override

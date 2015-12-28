@@ -1,8 +1,10 @@
 package net.lomeli.augment.blocks;
 
 import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.List;
 
 import net.minecraft.block.Block;
@@ -29,9 +31,11 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import net.lomeli.lomlib.util.ItemUtil;
 
+import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.blocks.tiles.TileAltar;
 
-public class BlockAltar extends BlockBase implements ITileEntityProvider {
+public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemPage {
     public static final PropertyEnum VARIANT = PropertyEnum.create("altartype", EnumAltarType.class);
 
     public BlockAltar() {
@@ -122,6 +126,43 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider {
     @Override
     public int getMetaFromState(IBlockState state) {
         return ((EnumAltarType) state.getValue(VARIANT)).getMetadata();
+    }
+
+    @Override
+    public boolean showRecipes(ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    public String pageID(ItemStack stack) {
+        return Augment.MOD_ID + ":altar_" + EnumAltarType.byMetadata(stack.getItemDamage()).getName();
+    }
+
+    @Override
+    public String parentID(ItemStack stack) {
+        return Augment.MOD_ID + ":ring_infusion";
+    }
+
+    @Override
+    public String[] descriptions(ItemStack stack) {
+        switch(stack.getItemDamage()) {
+            case 1:
+                return new String[] {
+                        "book.augmentedaccessories.altar.master.desc.0"
+                };
+            default:
+                return new String[] {
+                        "book.augmentedaccessories.altar.basic.desc.0"
+                };
+        }
+    }
+
+    @Override
+    public Collection<ItemStack> itemsToDoc() {
+        List<ItemStack> stacks = Lists.newArrayList();
+        stacks.add(new ItemStack(ModBlocks.altar, 0, 0));
+        stacks.add(new ItemStack(ModBlocks.altar, 0, 1));
+        return stacks;
     }
 
     public enum EnumAltarType implements IStringSerializable {

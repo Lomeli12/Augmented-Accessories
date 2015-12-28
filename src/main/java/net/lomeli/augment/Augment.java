@@ -12,10 +12,9 @@ import net.lomeli.lomlib.core.network.PacketHandler;
 import net.lomeli.lomlib.core.version.VersionChecker;
 import net.lomeli.lomlib.util.LogHelper;
 
-import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.core.Proxy;
-import net.lomeli.augment.core.handler.MaterialRegistry;
 import net.lomeli.augment.core.network.PacketSavePage;
+import net.lomeli.augment.core.network.PacketUpdateClientVigor;
 import net.lomeli.augment.core.vigor.VigorManager;
 import net.lomeli.augment.lib.AugConfig;
 
@@ -48,10 +47,8 @@ public class Augment {
         log.logInfo("Pre-Init");
         config = new ModConfig(MOD_ID, event.getSuggestedConfigurationFile(), AugConfig.class);
         versionChecker = new VersionChecker(UPDATE_URL, MOD_ID, MOD_NAME, MAJOR, MINOR, REV);
-        packetHandler = new PacketHandler(MOD_ID, PacketSavePage.class);
+        packetHandler = new PacketHandler(MOD_ID, PacketSavePage.class, PacketUpdateClientVigor.class);
         proxy.preInit();
-        AugmentAPI.materialRegistry = MaterialRegistry.getRegistry();
-        AugmentAPI.vigorRegistry = VigorManager.getInstance();
     }
 
     @Mod.EventHandler

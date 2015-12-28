@@ -8,7 +8,7 @@ public class GuiPageButton extends GuiButton {
     private final boolean altTexture;
 
     public GuiPageButton(int id, int x, int y, boolean useAltTexture) {
-        super(id, x, y, 40, 13, "");
+        super(id, x, y, 23, 13, "");
         this.altTexture = useAltTexture;
     }
 

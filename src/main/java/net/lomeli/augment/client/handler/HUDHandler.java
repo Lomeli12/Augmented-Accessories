@@ -21,7 +21,6 @@ import net.lomeli.lomlib.util.ResourceUtil;
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.api.vigor.VigorData;
-import net.lomeli.augment.core.vigor.VigorManager;
 import net.lomeli.augment.items.ModItems;
 import net.lomeli.augment.lib.AugConfig;
 
@@ -44,15 +43,15 @@ public class HUDHandler {
         if (event.type == RenderGameOverlayEvent.ElementType.ALL) {
             profiler.startSection(Augment.MOD_ID + "-hud");
 
-            if (VigorManager.getInstance().doesPlayerHaveVigor(player) && displayVigor(player)) {
+            if (Augment.proxy.getLocalData() != null && displayVigor(player)) {
                 profiler.startSection(Augment.MOD_ID + "-vigorBar");
-                renderVigorHud(VigorManager.getInstance().getPlayerData(player));
+                renderVigorHud(Augment.proxy.getLocalData());
                 profiler.endSection();
             }
 
             if (AugConfig.showBookToolTip && hand != null && hand.getItem() == ModItems.manual) {
                 profiler.startSection(Augment.MOD_ID + "-bookToolTip");
-                if (pos != null) {
+                if (pos != null && pos.getBlockPos() != null && mc.theWorld != null && !mc.theWorld.isAirBlock(pos.getBlockPos())) {
                     IBlockState state = mc.theWorld.getBlockState(pos.getBlockPos());
                     if (state != null && state.getBlock() instanceof IItemPage) {
                         ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));

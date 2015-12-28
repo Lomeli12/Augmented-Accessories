@@ -32,11 +32,13 @@ public class ItemManual extends ItemBase implements IItemPage {
 
     @Override
     public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
-        IBlockState state = world.getBlockState(pos);
-        if (state != null && state.getBlock() instanceof IItemPage) {
-            NBTUtil.setString(stack, ModNBT.LAST_PAGE, ((IItemPage) state.getBlock()).pageID(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state))));
-            player.openGui(Augment.modInstance, 1, world, (int) player.posX, (int) player.posY, (int) player.posZ);
-            return true;
+        if (player.isSneaking()) {
+            IBlockState state = world.getBlockState(pos);
+            if (state != null && state.getBlock() instanceof IItemPage) {
+                NBTUtil.setString(stack, ModNBT.LAST_PAGE, ((IItemPage) state.getBlock()).pageID(new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state))));
+                player.openGui(Augment.modInstance, 1, world, (int) player.posX, (int) player.posY, (int) player.posZ);
+                return true;
+            }
         }
         return super.onItemUseFirst(stack, player, world, pos, side, hitX, hitY, hitZ);
     }

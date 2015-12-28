@@ -65,11 +65,11 @@ public abstract class GuiPage extends GuiScreen implements IGuiPage {
 
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
-        switch (button.id) {
-            case 0:
-                if (!Strings.isNullOrEmpty(parentID))
-                    mc.displayGuiScreen((GuiScreen) AugmentAPI.manualRegistry.getPageForID(parentID));
-                break;
+        if (button != null && this.returnMain != null &&  button.id == returnMain.id) {
+            if (!Strings.isNullOrEmpty(parentID)) {
+                mc.displayGuiScreen((GuiScreen) AugmentAPI.manualRegistry.getPageForID(parentID));
+                return;
+            }
         }
     }
 

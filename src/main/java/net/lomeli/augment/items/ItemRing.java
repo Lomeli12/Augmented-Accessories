@@ -4,12 +4,14 @@ import com.google.common.collect.Lists;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Random;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.world.World;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -17,8 +19,12 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.lomeli.lomlib.util.NBTUtil;
 
 import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.AugmentAPI;
+import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.manual.IItemPage;
+import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.core.CreativeAugment;
+import net.lomeli.augment.core.network.PacketUpdateClientVigor;
 import net.lomeli.augment.lib.ModNBT;
 
 import baubles.api.BaubleType;
@@ -32,23 +38,23 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
 
     public static boolean hasGem(ItemStack stack) {
         if (stack != null) {
-            NBTTagCompound mainTag = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
-            return mainTag.hasKey(ModNBT.RING_DATA, 10) && mainTag.getCompoundTag(ModNBT.RING_DATA).hasKey(ModNBT.GEM_COLOR, 3);
+            NBTTagCompound mainTag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
+            return mainTag.hasKey(ModNBT.GEM_COLOR, 3);
         }
         return false;
     }
 
     public int getRingColor(ItemStack stack, int layer) {
         if (stack != null && stack.hasTagCompound()) {
-            NBTTagCompound tagCompound = stack.getTagCompound();
-            if (tagCompound.hasKey(ModNBT.RING_DATA, 10)) {
+            NBTTagCompound tagCompound = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
+            if (tagCompound != null) {
                 switch (layer) {
                     case 1:
-                        return tagCompound.getCompoundTag(ModNBT.RING_DATA).getInteger(ModNBT.LAYER_TWO);
+                        return tagCompound.getInteger(ModNBT.LAYER_TWO);
                     case 2:
-                        return tagCompound.getCompoundTag(ModNBT.RING_DATA).getInteger(ModNBT.GEM_COLOR);
+                        return tagCompound.getInteger(ModNBT.GEM_COLOR);
                     default:
-                        return tagCompound.getCompoundTag(ModNBT.RING_DATA).getInteger(ModNBT.LAYER_ONE);
+                        return tagCompound.getInteger(ModNBT.LAYER_ONE);
                 }
             }
         }
@@ -57,8 +63,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
 
     public void setRingColor(ItemStack stack, int layer, int color) {
         if (stack != null) {
-            NBTTagCompound mainTag = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
-            NBTTagCompound ringTag = mainTag.hasKey(ModNBT.RING_DATA, 10) ? mainTag.getCompoundTag(ModNBT.RING_DATA) : new NBTTagCompound();
+            NBTTagCompound ringTag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
             switch (layer) {
                 case 1:
                     ringTag.setInteger(ModNBT.LAYER_TWO, color);
@@ -70,28 +75,55 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
                     ringTag.setInteger(ModNBT.LAYER_ONE, color);
                     break;
             }
-            mainTag.setTag(ModNBT.RING_DATA, ringTag);
-            stack.setTagCompound(mainTag);
+            NBTUtil.setCompound(stack, ModNBT.RING_DATA, ringTag);
         }
     }
 
     public void setRingBoost(ItemStack stack, int boost) {
         if (stack != null) {
-            NBTTagCompound tagCompound = stack.hasTagCompound() ? stack.getTagCompound() : new NBTTagCompound();
-            NBTTagCompound ringData = tagCompound.getCompoundTag(ModNBT.RING_DATA);
+            NBTTagCompound ringData = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
             ringData.setInteger(ModNBT.RING_BOOST, boost);
-            tagCompound.setTag(ModNBT.RING_DATA, ringData);
-            stack.setTagCompound(tagCompound);
+            NBTUtil.setCompound(stack, ModNBT.RING_DATA, ringData);
         }
     }
 
     public int getRingBoost(ItemStack stack) {
         if (stack != null && stack.hasTagCompound()) {
-            NBTTagCompound tagCompound = stack.getTagCompound();
-            NBTTagCompound ringTag = tagCompound.getCompoundTag(ModNBT.RING_DATA);
+            NBTTagCompound ringTag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
             return ringTag.getInteger(ModNBT.RING_BOOST);
         }
         return 0;
+    }
+
+    @Override
+    public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
+        if (!player.isSneaking()) {
+            IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(stack);
+            if (augment != null && !augment.isPassive(stack)) {
+                VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
+                if (data != null) {
+                    augment.onUse(stack, player, null, data);
+                    Augment.packetHandler.sendTo(new PacketUpdateClientVigor(data), player);
+                }
+            }
+        }
+        return super.onItemRightClick(stack, world, player);
+    }
+
+    @Override
+    public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+        if (!player.isSneaking()) {
+            IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(stack);
+            if (augment != null && !augment.isPassive(stack)) {
+                VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
+                if (data != null) {
+                    augment.onUse(stack, player, pos, data);
+                    Augment.packetHandler.sendTo(new PacketUpdateClientVigor(data), player);
+                    return true;
+                }
+            }
+        }
+        return super.onItemUseFirst(stack, player, world, pos, side, hitX, hitY, hitZ);
     }
 
     @Override
@@ -106,17 +138,30 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
 
     @Override
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
-
+        IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(itemstack);
+        if (augment != null && augment.isPassive(itemstack) && player instanceof EntityPlayer) {
+            VigorData data = AugmentAPI.vigorRegistry.getPlayerData((EntityPlayer) player);
+            if (data != null) {
+                augment.onWornTick(itemstack, player, data);
+                Augment.packetHandler.sendTo(new PacketUpdateClientVigor(data), (EntityPlayer) player);
+            }
+        }
     }
 
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
         player.playSound(Augment.MOD_ID + ":equipBauble", 0.5f, 1f);
+        IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(itemstack);
+        if (augment != null && player instanceof EntityPlayer)
+            augment.onEquipped(itemstack, player);
     }
 
     @Override
     public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
         player.playSound(Augment.MOD_ID + ":equipBauble", 0.5f, 1.5f);
+        IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(itemstack);
+        if (augment != null && player instanceof EntityPlayer)
+            augment.onUnEquipped(itemstack, player);
     }
 
     @Override

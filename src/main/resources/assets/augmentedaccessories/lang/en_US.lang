@@ -40,9 +40,14 @@ book.augmentedaccessories.ring_infusion.title=Starting Ring Infusion
 book.augmentedaccessories.spells.title=Ring Spells
 book.augmentedaccessories.tooltip.iteminfo=/&7/&o<Click for more info>/&r
 
+book.augmentedaccessories.infusion_altar_setup.title=Infusion Altar Setup
+book.augmentedaccessories.infusion_altar_setup.desc.0=
+
 book.augmentedaccessories.manual.desc.0=Throughout the world there are multiple schools of magic, each with their own methods of channeling different forms of power. This book will teach you how to channel said power through rings forged by your own hand.
 book.augmentedaccessories.iron_hammer.desc.0=A basic tool with multiple purposes. Aside from being used to form the shape of your ring in the forge, it can be used to smash ores into dust. This is extremely useful as rings require quite a bit of material to create.<br>If you ever lose your /&1Mystical Accessories/&0 book, you can also smash a bookcase with the hammer to create a new book.
 book.augmentedaccessories.diamond_hammer.desc.0=Exactly the same as the Iron Forge Hammer, but with more durability.
 book.augmentedaccessories.ring_forge.desc.0=The /&1Ring Forge/&0 is where you will can make the ring of your own design. Each ring requires /&1at least two types of material/&0, and /&1ten/&0 pieces each of said materials.<br>Rings can also have a /&1gem/&0 added to it. Remember to pick your materials carefully, as the type materials you chose will /&1affect what spells you can infuse into it./&r
 book.augmentedaccessories.ring_forge.desc.1=The /&1Ring Forge/&0 does require /&4some lava/&0 to make the materials more malleable, and a /&1hammer/&0 to shape the ring itself.
 book.augmentedaccessories.ring.desc.0=/&1Rings/&0 are a type of accessory that can be made from different materials. By themselves, they are simply shiny accessories, but with some materials and some experience, you can augment them with fantastical powers. They can be made in a /&1Ring Forge/&0.
+book.augmentedaccessories.altar.basic.desc.0=
+book.augmentedaccessories.altar.master.desc.0=

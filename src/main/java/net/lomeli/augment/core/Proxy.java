@@ -10,15 +10,23 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.AugmentAPI;
+import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.blocks.ModBlocks;
 import net.lomeli.augment.blocks.tiles.TileRingForge;
 import net.lomeli.augment.client.handler.GuiHandler;
+import net.lomeli.augment.core.augment.AugmentRegistry;
+import net.lomeli.augment.core.handler.MaterialRegistry;
 import net.lomeli.augment.core.handler.PlayerHandler;
+import net.lomeli.augment.core.vigor.VigorManager;
 import net.lomeli.augment.items.ModItems;
 import net.lomeli.augment.lib.AugConfig;
 
 public class Proxy {
     public void preInit() {
+        AugmentAPI.materialRegistry = MaterialRegistry.getRegistry();
+        AugmentAPI.vigorRegistry = VigorManager.getInstance();
+        AugmentAPI.augmentRegistry = AugmentRegistry.getInstance();
         Augment.config.loadConfig();
         if (AugConfig.checkForUpdates)
             new Thread(Augment.versionChecker).start();
@@ -44,5 +52,13 @@ public class Proxy {
             if (tile instanceof TileRingForge)
                 ((TileRingForge) tile).setRingName(name);
         }
+    }
+
+    public void setLocalData(VigorData data) {
+
+    }
+
+    public VigorData getLocalData() {
+        return null;
     }
 }

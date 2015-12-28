@@ -1,7 +1,4 @@
-package net.lomeli.augment.api.registry;
-
-import net.lomeli.augment.api.manual.IGuiPage;
-import net.lomeli.augment.api.manual.IItemPage;
+package net.lomeli.augment.api.manual;
 
 public interface IManualRegistry {
     /**
@@ -39,13 +36,29 @@ public interface IManualRegistry {
      * Add your own category to the manual
      *
      * @param id
-     * @param unlocalized
-     * @param parentID    - Optional, will default to main page if null
+     * @param name
+     * @param parentID - Optional, will default to main page if null
      */
-    void addCategory(String id, String unlocalized, String parentID);
+    void addCategory(String id, String name, String parentID);
 
     /**
-     * Register one more items into the manual.
+     * Adds page with plain text
+     * @param id
+     * @param parentID
+     * @param name
+     * @param description
+     */
+    void addTextPage(String id, String parentID, String name, String... description);
+
+    /**
+     * Add page to display how to build a MultiBlock structure
+     *
+     * @param multiBlockPage
+     */
+    void addMultiblockPage(IMultiBlockPage multiBlockPage);
+
+    /**
+     * Add one more items into the manual.
      *
      * @param itemPage
      */

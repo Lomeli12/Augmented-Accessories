@@ -1,6 +1,7 @@
-package net.lomeli.augment.lib;
+package net.lomeli.augment.core.augment;
 
-import java.util.ArrayList;
+import com.google.common.collect.Lists;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,13 +14,15 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import net.lomeli.lomlib.util.FluidUtil;
 
-public class SpellRecipe {
-    private final String spellID;
-    public ArrayList inputs = new ArrayList();
+public class AugmentRecipe {
+    private final String augmentID;
+    private final int level;
+    public List inputs = Lists.newArrayList();
 
     // Copied from ShapelessFluidRecipe
-    public SpellRecipe(String spellID, Object... recipe) {
-        this.spellID = spellID;
+    public AugmentRecipe(String augmentID, int level, Object... recipe) {
+        this.augmentID = augmentID;
+        this.level = level;
         for (Object in : recipe) {
             if (in instanceof ItemStack) {
                 if (FluidUtil.isFilledContainer((ItemStack) in))
@@ -46,15 +49,14 @@ public class SpellRecipe {
                 for (Object tmp : recipe) {
                     ret += tmp + ", ";
                 }
-                ret += spellID;
+                ret += augmentID;
                 throw new RuntimeException(ret);
             }
         }
     }
 
     public boolean matches(List<ItemStack> items) {
-        ArrayList<Object> required = new ArrayList<>(inputs);
-
+        List<Object> required = Lists.newArrayList(inputs);
         for (int x = 0; x < items.size(); x++) {
             ItemStack slot = items.get(x);
             if (slot != null) {
@@ -84,5 +86,13 @@ public class SpellRecipe {
         }
 
         return required.isEmpty();
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public String getAugmentID() {
+        return augmentID;
     }
 }
