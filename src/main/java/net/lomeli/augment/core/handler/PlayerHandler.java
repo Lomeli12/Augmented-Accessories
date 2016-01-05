@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
-import net.lomeli.lomlib.util.entity.EntityUtil;
+import net.lomeli.lomlib.util.EntityUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.AugmentAPI;

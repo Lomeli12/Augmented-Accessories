@@ -22,6 +22,7 @@ import net.lomeli.augment.blocks.tiles.TileAltar;
 import net.lomeli.augment.client.gui.manual.ManualBuilder;
 import net.lomeli.augment.client.handler.BakeModelHandler;
 import net.lomeli.augment.client.handler.HUDHandler;
+import net.lomeli.augment.client.handler.TextureHandler;
 import net.lomeli.augment.client.handler.TickHandlerClient;
 import net.lomeli.augment.client.render.tile.RenderAltar;
 import net.lomeli.augment.core.Proxy;
@@ -49,7 +50,8 @@ public class ClientProxy extends Proxy {
     }
 
     private void registerItemModels() {
-        registerModel(ModItems.ring, new BasicItemMesh(Augment.MOD_ID + ":ring"));
+        registerModel(ModItems.ring, 0, Augment.MOD_ID + ":ring");
+        registerMetadataModel(ModItems.ring, new ResourceLocation(Augment.MOD_ID + ":ring"), new ResourceLocation(Augment.MOD_ID + ":ring_gem"));
         registerModel(ModItems.dust, new BasicItemMesh(Augment.MOD_ID + ":dust"));
         registerModel(ModItems.ironHammer, new BasicItemMesh(Augment.MOD_ID + ":hammer_iron"));
         registerModel(ModItems.diamondHammer, new BasicItemMesh(Augment.MOD_ID + ":hammer_diamond"));
@@ -66,6 +68,8 @@ public class ClientProxy extends Proxy {
     @Override
     public void postInit() {
         super.postInit();
+        MinecraftForge.EVENT_BUS.register(new TextureHandler());
+
         addPages();
     }
 

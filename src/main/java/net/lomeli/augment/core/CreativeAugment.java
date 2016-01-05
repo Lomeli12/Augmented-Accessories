@@ -27,7 +27,7 @@ public class CreativeAugment extends CreativeTabs {
 
     @Override
     public ItemStack getIconItemStack() {
-        ItemStack stack = new ItemStack(getTabIconItem(), 1, 1);
+        ItemStack stack = new ItemStack(getTabIconItem(), 1, 0);
         NBTTagCompound tag = new NBTTagCompound();
         tag.setInteger(ModNBT.LAYER_ONE, l0);
         tag.setInteger(ModNBT.LAYER_TWO, l1);

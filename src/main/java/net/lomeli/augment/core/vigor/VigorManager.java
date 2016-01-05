@@ -9,7 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 import net.lomeli.lomlib.util.NBTUtil;
-import net.lomeli.lomlib.util.entity.EntityUtil;
+import net.lomeli.lomlib.util.EntityUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.vigor.IVigorRegistry;

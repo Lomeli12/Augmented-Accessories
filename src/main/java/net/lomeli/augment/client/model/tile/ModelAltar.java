@@ -1,4 +1,4 @@
-package net.lomeli.augment.client.model;
+package net.lomeli.augment.client.model.tile;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;

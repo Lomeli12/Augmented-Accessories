@@ -15,7 +15,7 @@ import net.lomeli.lomlib.util.ResourceUtil;
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.blocks.tiles.TileAltar;
 import net.lomeli.augment.client.handler.TickHandlerClient;
-import net.lomeli.augment.client.model.ModelAltar;
+import net.lomeli.augment.client.model.tile.ModelAltar;
 
 public class RenderAltar extends TileEntitySpecialRenderer<TileAltar> {
     public static final ResourceLocation ALTAR_BASE = ResourceUtil.getModelTexture(Augment.MOD_ID, "altar");

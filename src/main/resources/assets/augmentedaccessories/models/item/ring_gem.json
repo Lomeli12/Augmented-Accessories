@@ -2,7 +2,8 @@
   "parent": "builtin/generated",
   "textures": {
     "layer0": "augmentedaccessories:items/ringInner",
-    "layer1": "augmentedaccessories:items/ringEdge"
+    "layer1": "augmentedaccessories:items/ringEdge",
+    "layer2": "augmentedaccessories:items/ringGem"
   },
   "display": {
     "thirdperson": {

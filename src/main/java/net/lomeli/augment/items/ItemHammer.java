@@ -22,7 +22,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.world.World;
 
 import net.lomeli.lomlib.util.ItemUtil;
-import net.lomeli.lomlib.util.entity.EntityUtil;
+import net.lomeli.lomlib.util.EntityUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.manual.IItemPage;

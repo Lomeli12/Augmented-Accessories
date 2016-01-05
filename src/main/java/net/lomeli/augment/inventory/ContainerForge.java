@@ -55,7 +55,7 @@ public class ContainerForge extends ContainerBase {
     @Override
     public void onCraftGuiOpened(ICrafting listener) {
         super.onCraftGuiOpened(listener);
-        listener.func_175173_a(this, this.tile);
+        listener.sendAllWindowProperties(this, this.tile);
     }
 
     @Override
