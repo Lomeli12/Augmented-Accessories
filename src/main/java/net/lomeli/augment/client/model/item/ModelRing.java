@@ -13,10 +13,10 @@ import net.minecraftforge.client.model.ISmartItemModel;
 
 import net.lomeli.augment.items.ItemRing;
 
-public class RingLayerModel implements ISmartItemModel {
-    private final IBakedModel baseModel, gemLess;
+public class ModelRing implements ISmartItemModel {
+    private IBakedModel baseModel, gemLess;
 
-    public RingLayerModel(IBakedModel baseModel, IBakedModel gemLessModel) {
+    public ModelRing(IBakedModel baseModel, IBakedModel gemLessModel) {
         this.baseModel = baseModel;
         this.gemLess = gemLessModel;
     }

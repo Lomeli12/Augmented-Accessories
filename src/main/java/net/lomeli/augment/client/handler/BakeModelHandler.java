@@ -7,7 +7,7 @@ import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import net.lomeli.augment.Augment;
-import net.lomeli.augment.client.model.item.RingLayerModel;
+import net.lomeli.augment.client.model.item.ModelRing;
 
 public class BakeModelHandler {
     @SubscribeEvent
@@ -19,7 +19,7 @@ public class BakeModelHandler {
             ModelResourceLocation gemModelResource = new ModelResourceLocation(Augment.MOD_ID + ":ring_gem", "inventory");
             Object gemModel = event.modelRegistry.getObject(gemModelResource);
             if (gemModel instanceof IBakedModel)
-                event.modelRegistry.putObject(ringResource, new RingLayerModel((IBakedModel) gemModel, (IBakedModel) baseModel));
+                event.modelRegistry.putObject(ringResource, new ModelRing((IBakedModel) gemModel, (IBakedModel) baseModel));
         }
     }
 }
