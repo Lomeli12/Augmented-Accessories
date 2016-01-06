@@ -14,6 +14,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import net.lomeli.lomlib.util.LangUtil;
 import net.lomeli.lomlib.util.MathHelper;
 import net.lomeli.lomlib.util.RenderUtils;
 import net.lomeli.lomlib.util.ResourceUtil;
@@ -31,11 +32,17 @@ public class HUDHandler {
 
     private float intensitiy;
     private boolean fadeOut;
+    private Minecraft mc;
+    private ScaledResolution scaledResolution;
+
+    public HUDHandler() {
+        this.mc = Minecraft.getMinecraft();
+        this.scaledResolution = new ScaledResolution(mc);
+    }
 
     @SubscribeEvent
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
-        Minecraft mc = Minecraft.getMinecraft();
-        ScaledResolution scaledresolution = new ScaledResolution(mc);
+        scaledResolution = new ScaledResolution(mc);
         Profiler profiler = mc.mcProfiler;
         EntityPlayer player = mc.thePlayer;
         ItemStack hand = player.getCurrentEquippedItem();
@@ -55,17 +62,29 @@ public class HUDHandler {
                     IBlockState state = mc.theWorld.getBlockState(pos.getBlockPos());
                     if (state != null && state.getBlock() instanceof IItemPage) {
                         ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
-                        int sx = scaledresolution.getScaledWidth() / 2 - 17;
-                        int sy = scaledresolution.getScaledHeight() / 2 + 2;
-                        mc.getRenderItem().renderItemIntoGUI(new ItemStack(ModItems.manual), sx + 20, sy - 16);
-                        mc.fontRendererObj.drawString(stack.getDisplayName(), sx + 40, sy - 12, 0);
-                        mc.fontRendererObj.drawString(stack.getDisplayName(), sx + 39, sy - 13, 0xFFFFFF);
+                        renderBookOverlay(stack, (IItemPage) state.getBlock());
                     }
                 }
                 profiler.endSection();
             }
 
             profiler.endSection();
+        }
+    }
+
+    private void renderBookOverlay(ItemStack stack, IItemPage page) {
+        int sx = scaledResolution.getScaledWidth() / 2 - 17;
+        int sy = scaledResolution.getScaledHeight() / 2 + 2;
+        mc.getRenderItem().renderItemIntoGUI(new ItemStack(ModItems.manual), sx + 20, sy - 16);
+        if (mc.thePlayer.isSneaking()) {
+            mc.fontRendererObj.drawStringWithShadow(stack.getDisplayName(), sx + 39, sy - 13, 0x00BFFF);
+            mc.fontRendererObj.drawStringWithShadow(LangUtil.translate(page.worldDescription(stack)), sx + 39, sy - 4, 0xBABABA);
+        } else {
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(0.5, 0.5, 0.5);
+            GlStateManager.translate((sx * 2) + 45, (sy * 2) + 2, 0);
+            mc.fontRendererObj.drawStringWithShadow(LangUtil.translate("gui.augmentedaccessories.hud.shift"), 0, 0, 0xFFFFFF);
+            GlStateManager.popMatrix();
         }
     }
 

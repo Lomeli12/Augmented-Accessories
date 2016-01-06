@@ -9,8 +9,8 @@ public class ModItems {
     public static Item ring, ironHammer, diamondHammer, dust, manual, ink;
     public static void initItems() {
         ring = new ItemRing();
-        ironHammer = new ItemHammer("ironHammer", Item.ToolMaterial.IRON);
-        diamondHammer = new ItemHammer("diamondHammer", Item.ToolMaterial.EMERALD);
+        ironHammer = new ItemHammer("iron_hammer", Item.ToolMaterial.IRON);
+        diamondHammer = new ItemHammer("diamond_hammer", Item.ToolMaterial.EMERALD);
         dust = new ItemDust();
         manual = new ItemManual();
 

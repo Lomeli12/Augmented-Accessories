@@ -46,9 +46,9 @@ public class ItemHammer extends ItemTool implements IItemPage {
     public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase player) {
         super.onBlockDestroyed(stack, world, block, pos, player);
         if (!world.isRemote && player instanceof EntityPlayer) {
-            if (block == Blocks.bookshelf && !EntityUtil.isFakePlayer((EntityPlayer) player)) {
+            if (block == Blocks.bookshelf && !EntityUtil.isFakePlayer((EntityPlayer) player))
                 ItemUtil.dropItemStackIntoWorld(new ItemStack(ModItems.manual), world, pos.getX(), pos.getY(), pos.getZ(), true);
-            } else {
+            else {
                 int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack);
                 dropDust(world, (EntityPlayer) player, pos, fortune);
             }
@@ -119,5 +119,10 @@ public class ItemHammer extends ItemTool implements IItemPage {
     @Override
     public String parentID(ItemStack stack) {
         return Augment.MOD_ID + ":getting_started";
+    }
+
+    @Override
+    public String worldDescription(ItemStack stack) {
+        return "";
     }
 }

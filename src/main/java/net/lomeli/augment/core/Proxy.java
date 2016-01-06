@@ -16,6 +16,7 @@ import net.lomeli.augment.blocks.ModBlocks;
 import net.lomeli.augment.blocks.tiles.TileRingForge;
 import net.lomeli.augment.client.handler.GuiHandler;
 import net.lomeli.augment.core.augment.AugmentRegistry;
+import net.lomeli.augment.core.augment.ModAugment;
 import net.lomeli.augment.core.handler.MaterialRegistry;
 import net.lomeli.augment.core.handler.PlayerHandler;
 import net.lomeli.augment.core.vigor.VigorManager;
@@ -42,6 +43,7 @@ public class Proxy {
 
     public void postInit() {
         ModRecipes.initRecipes();
+        ModAugment.initAugment();
     }
 
     public void setForgeName(BlockPos pos, int dim, String name) {

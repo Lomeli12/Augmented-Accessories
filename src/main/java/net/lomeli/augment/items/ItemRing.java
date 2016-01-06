@@ -181,6 +181,9 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         int boost = getRingBoost(stack);
         if (boost != 0)
             tooltip.add(boost < 0 ? "-" : "+" + boost);
+        NBTTagCompound tag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
+        if (tag.hasKey(ModNBT.SPELL_ID))
+            tooltip.add(tag.getString(ModNBT.SPELL_ID));
     }
 
     @Override
@@ -210,5 +213,10 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         List<ItemStack> stacks = Lists.newArrayList();
         stacks.add(CreativeAugment.modTab.getIconItemStack());
         return stacks;
+    }
+
+    @Override
+    public String worldDescription(ItemStack stack) {
+        return "";
     }
 }

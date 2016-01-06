@@ -22,7 +22,7 @@ import net.lomeli.augment.blocks.tiles.TileRingForge;
 public class BlockForge extends BlockBase implements ITileEntityProvider, IItemPage {
 
     public BlockForge() {
-        super("ringForge", Material.iron);
+        super("ring_forge", Material.iron);
         this.setHardness(4f);
         this.setResistance(20);
     }
@@ -70,5 +70,10 @@ public class BlockForge extends BlockBase implements ITileEntityProvider, IItemP
         List<ItemStack> stacks = Lists.newArrayList();
         stacks.add(new ItemStack(ModBlocks.ringForge));
         return stacks;
+    }
+
+    @Override
+    public String worldDescription(ItemStack stack) {
+        return "tile.augmentedaccessories.ring_forge.book";
     }
 }

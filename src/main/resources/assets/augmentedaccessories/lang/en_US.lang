@@ -9,9 +9,10 @@ desc.augmentedaccessories.nbt.0=Ignore NBT
 desc.augmentedaccessories.nbt.1=Match NBT
 
 gui.augmentedaccessories.fluidinfo=%s: %s/%s
+gui.augmentedaccessories.hud.shift=Shift
 
-item.augmentedaccessories.ironHammer.name=Iron Forge Hammer
-item.augmentedaccessories.diamondHammer.name=Diamond Forge Hammer
+item.augmentedaccessories.iron_hammer.name=Iron Forge Hammer
+item.augmentedaccessories.diamond_hammer.name=Diamond Forge Hammer
 item.augmentedaccessories.dust.iron.name=Iron Dust
 item.augmentedaccessories.dust.gold.name=Gold Dust
 item.augmentedaccessories.dust.tin.name=Tin Dust
@@ -26,11 +27,12 @@ item.augmentedaccessories.void.0.name=Null Orb
 item.augmentedaccessories.void.1.name=Pocket Void
 item.augmentedaccessories.book.name=Mystical Accessories - Vol. 2
 
-tile.augmentedaccessories.ringForge.name=Ring Forge
+tile.augmentedaccessories.ring_forge.name=Ring Forge
+tile.augmentedaccessories.ring_forge.book=Origin of all rings.
 tile.augmentedaccessories.altar.name=Item Altar
 tile.augmentedaccessories.altar.basic.name=Item Altar
 tile.augmentedaccessories.altar.master.name=Infusion Altar
-tile.augmentedaccessories.vigorGlass.name=Vigorous Glass
+tile.augmentedaccessories.vigor_glass.name=Vigorous Glass
 
 config.augmentedaccessories.vigor.starting=The max amount of vigor the player starts with.
 

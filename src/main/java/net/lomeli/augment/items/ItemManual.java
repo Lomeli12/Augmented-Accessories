@@ -71,4 +71,9 @@ public class ItemManual extends ItemBase implements IItemPage {
         stacks.add(new ItemStack(ModItems.manual));
         return stacks;
     }
+
+    @Override
+    public String worldDescription(ItemStack stack) {
+        return "";
+    }
 }

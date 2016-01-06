@@ -34,6 +34,7 @@ import net.lomeli.lomlib.util.ItemUtil;
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.blocks.tiles.TileAltar;
+import net.lomeli.augment.items.ModItems;
 
 public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemPage {
     public static final PropertyEnum VARIANT = PropertyEnum.create("altartype", EnumAltarType.class);
@@ -63,9 +64,13 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
                 altar.setInventorySlotContents(0, newStack);
                 player.setCurrentItemOrArmor(0, playerHand);
             } else if (altarStack != null && (playerHand == null || !OreDictionary.itemMatches(altarStack, playerHand, false))) {
-                if (!world.isRemote)
-                    ItemUtil.dropItemStackIntoWorld(altarStack, world, pos.getX(), pos.getY() + 1, pos.getZ(), false);
-                altar.removeStackFromSlot(0);
+                if (altar.isMaster() && (playerHand != null && playerHand.getItem() == ModItems.manual) && altarStack.getItem() == ModItems.ring) {
+                    altar.activate();
+                } else {
+                    if (!world.isRemote)
+                        ItemUtil.dropItemStackIntoWorld(altarStack, world, pos.getX(), pos.getY() + 1, pos.getZ(), false);
+                    altar.removeStackFromSlot(0);
+                }
             }
             return true;
         }
@@ -163,6 +168,11 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
         stacks.add(new ItemStack(ModBlocks.altar, 0, 0));
         stacks.add(new ItemStack(ModBlocks.altar, 0, 1));
         return stacks;
+    }
+
+    @Override
+    public String worldDescription(ItemStack stack) {
+        return "";
     }
 
     public enum EnumAltarType implements IStringSerializable {

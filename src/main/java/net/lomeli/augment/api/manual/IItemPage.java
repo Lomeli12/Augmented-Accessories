@@ -37,6 +37,13 @@ public interface IItemPage {
     String[] descriptions(ItemStack stack);
 
     /**
+     * Used by blocks. A one line descriptions for the block.
+     * @param stack
+     * @return
+     */
+    String worldDescription(ItemStack stack);
+
+    /**
      * Get stacks to document
      * @return
      */
