@@ -38,7 +38,7 @@ archivesBaseName = "$baseName"
 version = "$releaseVersion"
 
 minecraft {
-    version = "$mcVersion-$forgeVersion"
+    version = "$mcVersion-$mcfVersion"
     runDir = "run"
     mappings = "$mcpMapping"
 }

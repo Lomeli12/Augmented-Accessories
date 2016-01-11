@@ -1,9 +1,9 @@
 package net.lomeli.augment.client.gui;
 
+import com.google.common.collect.Lists;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -78,7 +78,7 @@ public class GuiRingForge extends GuiContainer {
         this.fontRendererObj.drawString(LangUtil.translate("container.inventory"), 8, this.ySize - 96 + 2, 4210752);
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
-        List<String> list = new ArrayList<>();
+        List<String> list = Lists.newArrayList();
         list.add(LangUtil.translate("gui.augmentedaccessories.fluidinfo", FluidRegistry.LAVA.getLocalizedName(null), tile.getTank().getFluidAmount(), tile.getTank().getCapacity()));
         this.drawToolTipOverArea(mouseX, mouseY, k + 177, l + 6, 16, 56, list, mc.fontRendererObj);
     }
