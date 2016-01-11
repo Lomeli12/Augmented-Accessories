@@ -6,16 +6,18 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
-import net.lomeli.lomlib.util.NBTUtil;
 import net.lomeli.lomlib.util.EntityUtil;
+import net.lomeli.lomlib.util.NBTUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.vigor.IVigorRegistry;
 import net.lomeli.augment.api.vigor.VigorData;
-import net.lomeli.augment.core.network.PacketUpdateClientVigor;
+import net.lomeli.augment.core.network.MessageUpdateClientVigor;
+import net.lomeli.augment.core.network.PacketHandler;
 import net.lomeli.augment.lib.AugConfig;
 
 public class VigorManager implements IVigorRegistry {
@@ -56,11 +58,12 @@ public class VigorManager implements IVigorRegistry {
 
     @Override
     public void updateData(VigorData data) {
-        if (data == null || !playerData.containsKey(data.getPlayerID())) return;
+        if (data == null || !data.isChanged()) return;
+        data.reset();
         playerData.put(data.getPlayerID(), data);
-        EntityPlayer player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUUID(data.getPlayerID());
+        EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUUID(data.getPlayerID());
         if (player != null)
-            Augment.packetHandler.sendTo(new PacketUpdateClientVigor(data), player);
+            PacketHandler.sendTo(new MessageUpdateClientVigor(data), player);
     }
 
     @Override
@@ -74,6 +77,12 @@ public class VigorManager implements IVigorRegistry {
         }
         Augment.log.logInfo("Removed %s from Vigor registry.", player.getDisplayName().getUnformattedText());
         playerData.remove(player.getPersistentID());
+    }
+
+    @Override
+    public void addData(VigorData data) {
+        if (data == null || playerData.containsKey(data.getPlayerID())) return;
+        playerData.put(data.getPlayerID(), data);
     }
 
     public void startNewSession() {

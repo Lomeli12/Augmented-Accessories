@@ -35,4 +35,10 @@ public interface IVigorRegistry {
      * @param player
      */
     void removePlayer(EntityPlayer player);
+
+    /**
+     * Manually add data to track.
+     * @param data
+     */
+    void addData(VigorData data);
 }

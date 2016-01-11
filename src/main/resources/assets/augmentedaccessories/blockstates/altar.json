@@ -1,6 +1,12 @@
 {
+  "forge_marker": 1,
+  "defaults": {
+    "transform": "forge:default-block"
+  },
   "variants": {
-    "altartype=basic": { "model": "augmentedaccessories:altar" },
-    "altartype=master": { "model": "augmentedaccessories:master_altar" }
+    "altartype": {
+      "basic": { "model": "augmentedaccessories:altar" },
+      "master": { "model": "augmentedaccessories:master_altar" }
+    }
   }
 }

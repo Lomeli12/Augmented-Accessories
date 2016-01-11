@@ -15,9 +15,9 @@ import net.minecraftforge.fluids.IFluidContainerItem;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.blocks.ModBlocks;
 import net.lomeli.augment.blocks.tiles.TileRingForge;
-import net.lomeli.augment.core.handler.MaterialRegistry;
 import net.lomeli.augment.inventory.slot.SlotHammer;
 import net.lomeli.augment.inventory.slot.SlotLava;
 import net.lomeli.augment.inventory.slot.SlotMaterial;
@@ -112,10 +112,10 @@ public class ContainerForge extends ContainerBase {
                 if (index == 0)
                     slot.onSlotChange(itemstack1, itemstack);
             } else {
-                if (MaterialRegistry.getRegistry().getMaterial(itemstack1, false) != null) {
+                if (AugmentAPI.materialRegistry.getMaterial(itemstack1, false) != null) {
                     if (!this.mergeItemStack(itemstack1, 1, 3, false))
                         return null;
-                } else if (MaterialRegistry.getRegistry().getMaterial(itemstack1, true) != null) {
+                } else if (AugmentAPI.materialRegistry.getMaterial(itemstack1, true) != null) {
                     if (!this.mergeItemStack(itemstack1, 3, 4, false))
                         return null;
                 } else if (itemstack1.getItem() instanceof ItemHammer) {

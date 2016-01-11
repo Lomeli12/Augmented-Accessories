@@ -2,6 +2,7 @@ package net.lomeli.augment.client.gui.manual.pages;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -76,9 +77,10 @@ public class GuiPageList extends GuiPage {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);
+        GL11.glColor3f(1f, 1f, 1f);
         this.drawTexturedModalRect(left, top, 0, 0, this.bookImageWidth, this.bookImageHeight);
+        GlStateManager.color(1.0F, 1.0F, 1.0F);
         for (int i = 0; i < this.buttonList.size(); ++i) {
             GuiButton button = this.buttonList.get(i);
             int id = i - 2;

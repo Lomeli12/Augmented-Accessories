@@ -26,15 +26,25 @@ item.augmentedaccessories.ring.name=Ring
 item.augmentedaccessories.void.0.name=Null Orb
 item.augmentedaccessories.void.1.name=Pocket Void
 item.augmentedaccessories.book.name=Mystical Accessories - Vol. 2
+item.augmentedaccessories.potion.0.name=
+item.augmentedaccessories.potion.1.name=
 
 tile.augmentedaccessories.ring_forge.name=Ring Forge
 tile.augmentedaccessories.ring_forge.book=Origin of all rings.
 tile.augmentedaccessories.altar.name=Item Altar
 tile.augmentedaccessories.altar.basic.name=Item Altar
+tile.augmentedaccessories.altar.basic.book=Store and display an item.
 tile.augmentedaccessories.altar.master.name=Infusion Altar
+tile.augmentedaccessories.altar.master.book=Mystical Altar to power rings.
 tile.augmentedaccessories.vigor_glass.name=Vigorous Glass
 
+potion.augmentedaccessories.regen_vigor=Vigor Regen
+
 config.augmentedaccessories.vigor.starting=The max amount of vigor the player starts with.
+config.augmentedaccessories.vigor.regen.tick=Ticks between vigor regen bursts.
+config.augmentedaccessories.vigor.regen.min_hunger=Minimum amount of hunger required to regen Vigor.
+config.augmentedaccessories.vigor.regen.rate=Amount of vigor regained during regen.
+config.augmentedaccessories.vigor.hud.position=Set corner in which the vigor bar is overlayed. 0 = Top Left; 1 = Top Right; 2 = Bottom Right; 3 = Bottom Left; 4 = Don't render.
 
 book.augmentedaccessories.mainpage.title=Main Page
 book.augmentedaccessories.getting_started.title=Getting Started

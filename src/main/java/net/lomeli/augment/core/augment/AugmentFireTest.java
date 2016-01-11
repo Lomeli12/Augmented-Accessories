@@ -16,9 +16,10 @@ public class AugmentFireTest implements IAugment {
 
     @Override
     public void onWornTick(ItemStack stack, EntityLivingBase entity, VigorData data) {
-        if (entity.isBurning() && data.loseEnergy(5, true) > 5) {
+        if (entity.isBurning() && data.loseEnergy(1, true) >= 1) {
             entity.extinguish();
-            data.loseEnergy(5, false);
+            //if (entity.worldObj.getWorldTime() % 20L == 0)
+            //    data.loseEnergy(2, false);
         }
     }
 
@@ -40,5 +41,10 @@ public class AugmentFireTest implements IAugment {
     @Override
     public String getID() {
         return "test_augment";
+    }
+
+    @Override
+    public String getUnlocalizedName() {
+        return "Test Fire Augment";
     }
 }

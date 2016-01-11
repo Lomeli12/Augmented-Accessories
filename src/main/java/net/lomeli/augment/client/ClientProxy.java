@@ -6,6 +6,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 
+import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -42,6 +43,7 @@ public class ClientProxy extends Proxy {
     @Override
     public void init() {
         super.init();
+        MinecraftForge.EVENT_BUS.register(Augment.config);
         MinecraftForge.EVENT_BUS.register(new TickHandlerClient());
         MinecraftForge.EVENT_BUS.register(new HUDHandler());
         registerItemModels();
@@ -63,6 +65,10 @@ public class ClientProxy extends Proxy {
         registerModel(Item.getItemFromBlock(ModBlocks.altar), 0, Augment.MOD_ID + ":altar");
         registerModel(Item.getItemFromBlock(ModBlocks.altar), 1, Augment.MOD_ID + ":master_altar");
         registerMetadataModel(Item.getItemFromBlock(ModBlocks.altar), new ResourceLocation(Augment.MOD_ID, "altar"), new ResourceLocation(Augment.MOD_ID, "master_altar"));
+        ModelLoader.registerItemVariants(Item.getItemFromBlock(ModBlocks.altar), new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=basic"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.altar), 0, new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=basic"));
+        ModelLoader.registerItemVariants(Item.getItemFromBlock(ModBlocks.altar), new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=master"));
+        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.altar), 1, new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=master"));
     }
 
     @Override
@@ -74,12 +80,13 @@ public class ClientProxy extends Proxy {
     }
 
     private void addPages() {
-        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModItems.manual);
-        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModBlocks.ringForge);
-        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModItems.ironHammer);
-        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModItems.ring);
-        AugmentAPI.manualRegistry.addItemEntry((IItemPage) ModBlocks.altar);
+        AugmentAPI.manualRegistry.addItemPage((IItemPage) ModItems.manual);
+        AugmentAPI.manualRegistry.addItemPage((IItemPage) ModBlocks.ringForge);
+        AugmentAPI.manualRegistry.addItemPage((IItemPage) ModItems.ironHammer);
+        AugmentAPI.manualRegistry.addItemPage((IItemPage) ModItems.ring);
+        AugmentAPI.manualRegistry.addItemPage((IItemPage) ModBlocks.altar);
         AugmentAPI.manualRegistry.addMultiblockPage(new AltarMultiBlockPage());
+        AugmentAPI.manualRegistry.addAugmentPage("TestPage", Augment.MOD_ID + ":spells", "test_augment", true);
     }
 
     private void registerMetadataModel(Item item, ResourceLocation... files) {

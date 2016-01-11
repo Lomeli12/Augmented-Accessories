@@ -2,6 +2,7 @@ package net.lomeli.augment.client.gui.manual;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.List;
@@ -17,7 +18,8 @@ import net.lomeli.lomlib.util.LangUtil;
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.api.manual.IGuiPage;
-import net.lomeli.augment.core.network.PacketSavePage;
+import net.lomeli.augment.core.network.MessageSavePage;
+import net.lomeli.augment.core.network.PacketHandler;
 
 public abstract class GuiPage extends GuiScreen implements IGuiPage {
     public static final ResourceLocation BOOK_TEXTURE = new ResourceLocation("augmentedaccessories", "textures/gui/book.png");
@@ -52,15 +54,16 @@ public abstract class GuiPage extends GuiScreen implements IGuiPage {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
         this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);
+        GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(left, top, 0, 0, this.bookImageWidth, this.bookImageHeight);
+        GL11.glColor3f(1.0F, 1.0F, 1.0F);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
     @Override
     public void onGuiClosed() {
-        Augment.packetHandler.sendToServer(new PacketSavePage(this.getID()));
+        PacketHandler.sendToServer(new MessageSavePage(this.getID()));
     }
 
     @Override

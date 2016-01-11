@@ -8,10 +8,13 @@ import java.util.Map;
 import net.minecraft.item.ItemStack;
 
 import net.lomeli.augment.Augment;
+import net.lomeli.augment.api.AugmentAPI;
+import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.manual.IGuiPage;
 import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.api.manual.IMultiBlockPage;
 import net.lomeli.augment.api.manual.IManualRegistry;
+import net.lomeli.augment.client.gui.manual.pages.GuiPageAugment;
 import net.lomeli.augment.client.gui.manual.pages.GuiPageItem;
 import net.lomeli.augment.client.gui.manual.pages.GuiPageList;
 import net.lomeli.augment.client.gui.manual.pages.GuiPageMultiBlock;
@@ -55,19 +58,16 @@ public class ManualBuilder implements IManualRegistry {
     }
 
     @Override
-    public void addItemEntry(IItemPage itemPage) {
+    public void addItemPage(IItemPage itemPage) {
         if (itemPage != null && itemPage.itemsToDoc() != null && itemPage.itemsToDoc().size() > 0) {
             for (ItemStack stack : itemPage.itemsToDoc()) {
                 if (stack != null) {
                     String pageID = itemPage.pageID(stack);
+                    if (pageRegistry.containsKey(pageID))
+                        throw new RuntimeException(String.format("[%s]: Page ID (%s) is already taken!", Augment.MOD_NAME, pageID));
                     String parentID = itemPage.parentID(stack);
                     GuiPageItem page = new GuiPageItem(pageID, parentID, stack, itemPage.showRecipes(stack), itemPage.descriptions(stack));
-                    if (!Strings.isNullOrEmpty(pageID) && !pageRegistry.containsKey(pageID)) {
-                        IGuiPage parent = getPageForID(parentID);
-                        if (parent != null && parent instanceof GuiPageList)
-                            ((GuiPageList) parent).addPage(pageID);
-                        pageRegistry.put(pageID, page);
-                    }
+                    registerPageParent(page, itemPage.parentID(stack));
                 }
             }
         }
@@ -78,12 +78,7 @@ public class ManualBuilder implements IManualRegistry {
         if (page == null) return;
         if (pageRegistry.containsKey(page.getID()))
             throw new RuntimeException(String.format("[%s]: Page ID (%s) is already taken!", Augment.MOD_NAME, page.getID()));
-        pageRegistry.put(page.getID(), page);
-        IGuiPage parent = getPageForID(parentID);
-        if (parent == null)
-            parent = getMainPage();
-        if (parent instanceof GuiPageList)
-            ((GuiPageList) parent).addPage(page.getID());
+        registerPageParent(page, parentID);
     }
 
     @Override
@@ -91,12 +86,7 @@ public class ManualBuilder implements IManualRegistry {
         if (pageRegistry.containsKey(id))
             throw new RuntimeException(String.format("[%s]: Page ID (%s) is already taken!", Augment.MOD_NAME, id));
         GuiPageList page = new GuiPageList(id, parentID, unlocalized);
-        pageRegistry.put(id, page);
-        IGuiPage parent = getPageForID(parentID);
-        if (parent == null)
-            parent = getMainPage();
-        if (parent instanceof GuiPageList)
-            ((GuiPageList) parent).addPage(page.getID());
+        registerPageParent(page, parentID);
     }
 
     @Override
@@ -105,16 +95,32 @@ public class ManualBuilder implements IManualRegistry {
         if (pageRegistry.containsKey(multiBlockPage.pageID()))
             throw new RuntimeException(String.format("[%s]: Page ID (%s) is already taken!", Augment.MOD_NAME, multiBlockPage.pageID()));
         GuiPageMultiBlock page = new GuiPageMultiBlock(multiBlockPage.pageID(), multiBlockPage.parentID(), multiBlockPage.getName(), multiBlockPage.getStructureStacks(), multiBlockPage.descriptions());
-        pageRegistry.put(multiBlockPage.pageID(), page);
-        IGuiPage parent = getPageForID(multiBlockPage.parentID());
-        if (parent == null)
-            parent = getMainPage();
-        if (parent instanceof GuiPageList)
-            ((GuiPageList) parent).addPage(page.getID());
+        registerPageParent(page, multiBlockPage.parentID());
     }
 
     @Override
     public void addTextPage(String id, String parentID, String name, String... description) {
+        if (pageRegistry.containsKey(id))
+            throw new RuntimeException(String.format("[%s]: Page ID (%s) is already taken!", Augment.MOD_NAME, id));
+    }
 
+    @Override
+    public void addAugmentPage(String id, String parentID, String augmentID, boolean showRecipe, String... description) {
+        if (pageRegistry.containsKey(id))
+            throw new RuntimeException(String.format("[%s]: Page ID (%s) is already taken!", Augment.MOD_NAME, id));
+        if (!AugmentAPI.augmentRegistry.augmentRegistered(augmentID))
+            throw new RuntimeException(String.format("[%s]: Augment ID (%s) not found!", Augment.MOD_NAME, augmentID));
+        IAugment aug = AugmentAPI.augmentRegistry.getAugmentID(augmentID);
+        GuiPageAugment page = new GuiPageAugment(id, parentID, aug, showRecipe, description);
+        registerPageParent(page, parentID);
+    }
+
+    private void registerPageParent(IGuiPage page, String parentID) {
+        pageRegistry.put(page.getID(), page);
+        IGuiPage parent = getPageForID(parentID);
+        if (parent == null)
+            parent = getMainPage();
+        if (parent instanceof GuiPageList)
+            ((GuiPageList) parent).addPage(page.getID());
     }
 }

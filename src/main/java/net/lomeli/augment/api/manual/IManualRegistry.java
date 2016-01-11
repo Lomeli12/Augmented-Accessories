@@ -62,5 +62,15 @@ public interface IManualRegistry {
      *
      * @param itemPage
      */
-    void addItemEntry(IItemPage itemPage);
+    void addItemPage(IItemPage itemPage);
+
+    /**
+     * Add page for Augment
+     * @param id
+     * @param parentID
+     * @param augmentID
+     * @param showRecipe
+     * @param description
+     */
+    void addAugmentPage(String id, String parentID, String augmentID, boolean showRecipe, String...description);
 }

@@ -5,10 +5,12 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
@@ -32,6 +34,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
     private List<BlockPos> posList;
     private List<ItemStack> ingredList, dropList;
     private String augmentID;
+    private long CONSUME_DELAY = 40L;
 
     public TileAltar(boolean master) {
         this.master = master;
@@ -54,50 +57,34 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
     public void update() {
         if (isMaster()) {
             if (activated) {
-                if (!Strings.isNullOrEmpty(augmentID) && AugmentAPI.augmentRegistry.augmentRegistered(augmentID)) {
+                if (AugmentAPI.augmentRegistry.augmentRegistered(augmentID)) {
                     ItemStack mainStack = getStackInSlot(0);
-                    if (mainStack == null || mainStack.getItem() != ModItems.ring) {
-                        if (!dropList.isEmpty()) {
-                            for (ItemStack stack : dropList)
-                                ItemUtil.dropItemStackIntoWorld(stack, worldObj, this.pos.getX(), this.pos.getY() + 0.5, this.pos.getZ(), false);
-                        }
-                        posList.clear();
-                        activated = false;
-                        augmentID = null;
-                    }
-                    if (worldObj.getWorldTime() % 40L == 0) {
-                        BlockPos pos = posList.get(0);
+                    if (mainStack == null || mainStack.getItem() != ModItems.ring)
+                        dropAndReset();
+                    if (!posList.isEmpty() && worldObj.getWorldTime() % CONSUME_DELAY == 0) {
+                        int index = posList.size() > 1 ? worldObj.rand.nextInt(posList.size()) : 0;
+                        BlockPos pos = posList.get(index);
                         TileEntity tile = worldObj.getTileEntity(pos);
                         if (tile instanceof TileAltar) {
                             ItemStack stack = ((TileAltar) tile).getStackInSlot(0);
                             if (stack != null && ingredList.contains(stack)) {
                                 dropList.add(stack.copy());
+                                ingredList.remove(stack);
                                 ((TileAltar) tile).removeStackFromSlot(0);
                             }
                         }
-                        posList.remove(0);
+                        posList.remove(index);
                     }
-                    if (posList.isEmpty()) {
-                        if (dropList.size() == ingredList.size()) {
+                    if (posList.isEmpty() && worldObj.getWorldTime() % (CONSUME_DELAY + 10L) == 0) {
+                        if (ingredList.size() == 0) {
                             AugmentAPI.augmentRegistry.addAugmentToStack(this.getStackInSlot(0), augmentID);
-                            dropList.clear();
-                            ingredList.clear();
-                            posList.clear();
-                            activated = false;
-                            augmentID = null;
-                        } else {
-                            for (ItemStack stack : dropList) {
-                                ItemUtil.dropItemStackIntoWorld(stack, worldObj, this.pos.getX(), this.pos.getY() + 0.5, this.pos.getZ(), false);
-                            }
-                            posList.clear();
-                            activated = false;
-                            augmentID = null;
-                        }
+                            worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, getPos().getX(), getPos().getY(), getPos().getZ()));
+                            resetAltar();
+                        } else
+                            dropAndReset();
                     }
-                } else {
-                    activated = false;
-                    augmentID = null;
-                }
+                } else
+                    resetAltar();
             } else {
                 if (!posList.isEmpty())
                     posList.clear();
@@ -107,12 +94,30 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         }
     }
 
+    private void dropAndReset() {
+        if (!dropList.isEmpty()) {
+            for (ItemStack stack : dropList) {
+                if (!worldObj.isRemote)
+                    ItemUtil.dropItemStackIntoWorld(stack, worldObj, this.pos.getX(), this.pos.getY() + 0.5, this.pos.getZ(), false);
+            }
+        }
+        resetAltar();
+    }
+
+    private void resetAltar() {
+        dropList.clear();
+        ingredList.clear();
+        posList.clear();
+        activated = false;
+        augmentID = null;
+    }
+
     private void updateLocalList() {
         for (int xDif = -2; xDif < 3; xDif += 2) {
             for (int zDif = -2; zDif < 3; zDif += 2) {
                 TileEntity tile = worldObj.getTileEntity(this.getPos().add(xDif, 0, zDif));
                 if (tile instanceof TileAltar) {
-                    if (!((TileAltar) tile).isMaster())
+                    if (!((TileAltar) tile).isMaster() && ((TileAltar) tile).getStackInSlot(0) != null)
                         posList.add(tile.getPos());
                 }
             }
@@ -131,7 +136,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
                 }
             }
             augmentID = AugmentAPI.augmentRegistry.getAugmentFromInputs(Lists.newArrayList(ingredList));
-            if (!Strings.isNullOrEmpty(augmentID) && AugmentAPI.augmentRegistry.augmentRegistered(augmentID)) {
+            if (AugmentAPI.augmentRegistry.augmentRegistered(augmentID)) {
                 this.activated = true;
                 return true;
             }
@@ -262,6 +267,15 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         super.readFromNBT(compound);
         this.master = compound.getBoolean("MasterAltar");
         this.activated = compound.getBoolean("Activated");
+        NBTTagList nbttaglist = compound.getTagList("Items", 10);
+        this.inventory = new ItemStack[this.getSizeInventory()];
+
+        for (int i = 0; i < nbttaglist.tagCount(); ++i) {
+            NBTTagCompound nbttagcompound = nbttaglist.getCompoundTagAt(i);
+            int j = nbttagcompound.getByte("Slot");
+            if (j >= 0 && j < this.inventory.length)
+                this.inventory[j] = ItemStack.loadItemStackFromNBT(nbttagcompound);
+        }
     }
 
     @Override
@@ -269,6 +283,16 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         super.writeToNBT(compound);
         compound.setBoolean("MasterAltar", master);
         compound.setBoolean("Activated", activated);
+        NBTTagList nbttaglist = new NBTTagList();
+        for (int i = 0; i < this.inventory.length; ++i) {
+            if (this.inventory[i] != null) {
+                NBTTagCompound nbttagcompound = new NBTTagCompound();
+                nbttagcompound.setByte("Slot", (byte) i);
+                this.inventory[i].writeToNBT(nbttagcompound);
+                nbttaglist.appendTag(nbttagcompound);
+            }
+        }
+        compound.setTag("Items", nbttaglist);
     }
 
     @Override

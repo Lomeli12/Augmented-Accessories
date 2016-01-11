@@ -27,7 +27,7 @@ import net.lomeli.augment.inventory.ContainerForge;
 import net.lomeli.augment.items.ItemHammer;
 
 public class GuiRingForge extends GuiContainer {
-    private final ResourceLocation guiTexture = ResourceUtil.getGuiResource(Augment.MOD_ID.toLowerCase(), "ringForge");
+    private final ResourceLocation guiTexture = ResourceUtil.getGuiResource(Augment.MOD_ID, "ringForge");
     private TileRingForge tile;
     private GuiTextField textField;
 
@@ -87,7 +87,7 @@ public class GuiRingForge extends GuiContainer {
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
-        GlStateManager.resetColor();
+        GlStateManager.color(1f, 1f, 1f);
         RenderUtils.bindTexture(guiTexture);
         this.drawTexturedModalRect(k, l, 0, 0, this.xSize, this.ySize);
         ItemStack hammer = tile.getStackInSlot(TileRingForge.HAMMER);

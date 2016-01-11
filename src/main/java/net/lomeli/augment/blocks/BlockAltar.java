@@ -29,6 +29,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
+import net.lomeli.lomlib.util.EntityUtil;
 import net.lomeli.lomlib.util.ItemUtil;
 
 import net.lomeli.augment.Augment;
@@ -150,13 +151,13 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
 
     @Override
     public String[] descriptions(ItemStack stack) {
-        switch(stack.getItemDamage()) {
+        switch (stack.getItemDamage()) {
             case 1:
-                return new String[] {
+                return new String[]{
                         "book.augmentedaccessories.altar.master.desc.0"
                 };
             default:
-                return new String[] {
+                return new String[]{
                         "book.augmentedaccessories.altar.basic.desc.0"
                 };
         }
@@ -172,7 +173,7 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
 
     @Override
     public String worldDescription(ItemStack stack) {
-        return "";
+        return stack.getItemDamage() == 1 ? "tile.augmentedaccessories.altar.master.book" : "tile.augmentedaccessories.altar.basic.book";
     }
 
     public enum EnumAltarType implements IStringSerializable {

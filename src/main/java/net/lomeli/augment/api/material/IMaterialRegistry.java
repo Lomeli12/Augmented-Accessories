@@ -8,38 +8,38 @@ public interface IMaterialRegistry {
     /**
      * Register new material
      * @param stack
-     * @param boost
+     * @param level
      * @param color
      * @param gem
      */
-    void registerMaterial(ItemStack stack, int boost, int color, boolean gem);
+    void registerMaterial(ItemStack stack, int level, int color, boolean gem);
 
     /**
      * Register new material
      * @param block
-     * @param boost
+     * @param level
      * @param color
      * @param gem
      */
-    void registerMaterial(Block block, int boost, int color, boolean gem);
+    void registerMaterial(Block block, int level, int color, boolean gem);
 
     /**
      * Register new material
      * @param item
-     * @param boost
+     * @param level
      * @param color
      * @param gem
      */
-    void registerMaterial(Item item, int boost, int color, boolean gem);
+    void registerMaterial(Item item, int level, int color, boolean gem);
 
     /**
      * Register new material
      * @param oreDic
-     * @param boost
+     * @param level
      * @param color
      * @param gem
      */
-    void registerMaterial(String oreDic, int boost, int color, boolean gem);
+    void registerMaterial(String oreDic, int level, int color, boolean gem);
 
     /**
      * Get material from stack, if stack is registered

@@ -8,6 +8,7 @@ import net.minecraft.nbt.NBTTagCompound;
 public class VigorData {
     private final UUID playerID;
     private int energy, maxEnergy;
+    private boolean changed;
 
     public VigorData(UUID playerID, int maxEnergy) {
         this.playerID = playerID;
@@ -30,6 +31,10 @@ public class VigorData {
         return playerID;
     }
 
+    public boolean isChanged() {
+        return changed;
+    }
+
     public VigorData setEnergy(int energy) {
         this.energy = energy > maxEnergy ? maxEnergy : energy < 0 ? 0 : energy;
         return this;
@@ -42,20 +47,29 @@ public class VigorData {
             this.energy = maxEnergy;
         else if (this.energy < 0)
             this.energy = 0;
+        this.changed = true;
     }
 
     public int gainEnergy(int receive, boolean simulate) {
         int energyReceived = Math.min(maxEnergy - energy, receive);
-        if (!simulate)
+        if (!simulate) {
             energy += energyReceived;
+            changed = true;
+        }
         return energyReceived;
     }
 
     public int loseEnergy(int lost, boolean simulate) {
         int energyExtracted = Math.min(energy, lost);
-        if (!simulate)
+        if (!simulate) {
             energy -= energyExtracted;
+            changed = true;
+        }
         return energyExtracted;
+    }
+
+    public void reset() {
+        changed = false;
     }
 
     public void writeToNBT(NBTTagCompound tag) {

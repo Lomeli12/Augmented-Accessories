@@ -4,7 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
-import net.lomeli.augment.core.handler.MaterialRegistry;
+import net.lomeli.augment.api.AugmentAPI;
 
 public class SlotMaterial extends Slot {
     private boolean gem;
@@ -15,6 +15,6 @@ public class SlotMaterial extends Slot {
 
     @Override
     public boolean isItemValid(ItemStack stack) {
-        return MaterialRegistry.getRegistry().getMaterial(stack, gem) != null;
+        return AugmentAPI.materialRegistry.getMaterial(stack, gem) != null;
     }
 }

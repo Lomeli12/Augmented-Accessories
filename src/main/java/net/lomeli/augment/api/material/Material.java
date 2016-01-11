@@ -10,25 +10,25 @@ import net.minecraftforge.oredict.OreDictionary;
 
 public class Material {
     private Object target;
-    private int boost, color;
+    private int level, color;
 
-    public Material(ItemStack stack, int boost, int color) {
+    public Material(ItemStack stack, int level, int color) {
         this.target = stack;
-        this.boost = boost;
+        this.level = level;
         this.color = color;
     }
 
-    public Material(Item item, int boost, int color) {
-        this(new ItemStack(item), boost, color);
+    public Material(Item item, int level, int color) {
+        this(new ItemStack(item), level, color);
     }
 
-    public Material(Block block, int boost, int color) {
-        this(new ItemStack(block), boost, color);
+    public Material(Block block, int level, int color) {
+        this(new ItemStack(block), level, color);
     }
 
-    public Material(String oreDic, int boost, int color) {
+    public Material(String oreDic, int level, int color) {
         this.target = OreDictionary.getOres(oreDic);
-        this.boost = boost;
+        this.level = level;
         this.color = color;
     }
 
@@ -36,8 +36,8 @@ public class Material {
         return target;
     }
 
-    public int getBoost() {
-        return boost;
+    public int getLevel() {
+        return level;
     }
 
     public int getColor() {

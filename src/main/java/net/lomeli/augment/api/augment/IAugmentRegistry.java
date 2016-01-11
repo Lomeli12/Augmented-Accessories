@@ -2,6 +2,7 @@ package net.lomeli.augment.api.augment;
 
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
 public interface IAugmentRegistry {
@@ -53,4 +54,15 @@ public interface IAugmentRegistry {
      * @return
      */
     IAugment getAugmentFromStack(ItemStack stack);
+
+    /**
+     * Check if any of the baubles the player has on
+     * has an augment.
+     * @param player
+     * @param augmentID
+     * @return
+     */
+    boolean playerHasAugment(EntityPlayer player, String augmentID);
+
+    List getAugmentRecipe(String augmentID);
 }

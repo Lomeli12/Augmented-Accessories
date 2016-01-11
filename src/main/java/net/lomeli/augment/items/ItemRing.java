@@ -5,8 +5,11 @@ import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.BlockPos;
@@ -16,6 +19,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import net.lomeli.lomlib.util.LangUtil;
 import net.lomeli.lomlib.util.NBTUtil;
 
 import net.lomeli.augment.Augment;
@@ -24,7 +28,8 @@ import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.core.CreativeAugment;
-import net.lomeli.augment.core.network.PacketUpdateClientVigor;
+import net.lomeli.augment.core.network.MessageUpdateClientVigor;
+import net.lomeli.augment.core.network.PacketHandler;
 import net.lomeli.augment.lib.ModNBT;
 
 import baubles.api.BaubleType;
@@ -103,7 +108,8 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
                 if (data != null) {
                     augment.onUse(stack, player, null, data);
-                    Augment.packetHandler.sendTo(new PacketUpdateClientVigor(data), player);
+                    if (player instanceof EntityPlayerMP)
+                        PacketHandler.sendTo(new MessageUpdateClientVigor(data), (EntityPlayerMP) player);
                 }
             }
         }
@@ -118,7 +124,8 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
                 if (data != null) {
                     augment.onUse(stack, player, pos, data);
-                    Augment.packetHandler.sendTo(new PacketUpdateClientVigor(data), player);
+                    if (player instanceof EntityPlayerMP)
+                        PacketHandler.sendTo(new MessageUpdateClientVigor(data), (EntityPlayerMP) player);
                     return true;
                 }
             }
@@ -143,7 +150,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
             VigorData data = AugmentAPI.vigorRegistry.getPlayerData((EntityPlayer) player);
             if (data != null) {
                 augment.onWornTick(itemstack, player, data);
-                Augment.packetHandler.sendTo(new PacketUpdateClientVigor(data), (EntityPlayer) player);
+                AugmentAPI.vigorRegistry.updateData(data);
             }
         }
     }
@@ -181,9 +188,17 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         int boost = getRingBoost(stack);
         if (boost != 0)
             tooltip.add(boost < 0 ? "-" : "+" + boost);
-        NBTTagCompound tag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
-        if (tag.hasKey(ModNBT.SPELL_ID))
-            tooltip.add(tag.getString(ModNBT.SPELL_ID));
+        IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(stack);
+        if (augment != null)
+            tooltip.add(LangUtil.translate(augment.getUnlocalizedName()));
+    }
+
+    @Override
+    public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        ItemStack stack = new ItemStack(itemIn);
+        setRingColor(stack, 0, 0xBABABA);
+        setRingColor(stack, 1, 0xBABABA);
+        subItems.add(stack);
     }
 
     @Override

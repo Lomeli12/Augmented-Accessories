@@ -11,6 +11,13 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TickHandlerClient {
     public static float ticksInGame;
+    public static float partialTicks = 0;
+
+    @SubscribeEvent
+    public void renderTick(TickEvent.RenderTickEvent event) {
+        if (event.phase == TickEvent.Phase.START)
+            partialTicks = event.renderTickTime;
+    }
 
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
@@ -19,8 +26,10 @@ public class TickHandlerClient {
                 ticksInGame++;
             else {
                 GuiScreen gui = Minecraft.getMinecraft().currentScreen;
-                if (gui == null || !gui.doesGuiPauseGame())
+                if (gui == null || !gui.doesGuiPauseGame()) {
                     ticksInGame++;
+                    partialTicks = 0;
+                }
             }
         }
     }

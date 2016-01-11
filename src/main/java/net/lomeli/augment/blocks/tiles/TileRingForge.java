@@ -21,7 +21,7 @@ import net.minecraftforge.fluids.*;
 import net.lomeli.lomlib.util.FluidUtil;
 import net.lomeli.lomlib.util.LangUtil;
 
-import net.lomeli.augment.core.handler.MaterialRegistry;
+import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.items.ItemHammer;
 import net.lomeli.augment.lib.INameable;
 
@@ -51,7 +51,7 @@ public class TileRingForge extends TileEntity implements INameable, IInventory, 
             }
             ItemStack hammer = getStackInSlot(HAMMER);
             if (tank.getFluidAmount() >= 500 && hammer != null && hammer.getItem() instanceof ItemHammer) {
-                ItemStack out = MaterialRegistry.getRegistry().makeRing(getStackInSlot(IN_0), getStackInSlot(IN_1), getStackInSlot(GEM), ringName);
+                ItemStack out = AugmentAPI.materialRegistry.makeRing(getStackInSlot(IN_0), getStackInSlot(IN_1), getStackInSlot(GEM), ringName);
                 this.setInventorySlotContents(OUTPUT, out);
             }
         }

@@ -40,7 +40,7 @@ version = "$releaseVersion"
 minecraft {
     version = "$mcVersion-$forgeVersion"
     runDir = "run"
-    mappings = "snapshot_20151130"
+    mappings = "$mcpMapping"
 }
 
 dependencies {
