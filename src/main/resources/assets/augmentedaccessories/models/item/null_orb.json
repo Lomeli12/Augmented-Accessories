@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "augmentedaccessories:items/nullOrb"
+    "layer0": "augmentedaccessories:items/null_orb"
   },
   "display": {
     "thirdperson": {

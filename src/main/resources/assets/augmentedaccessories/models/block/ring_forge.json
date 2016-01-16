@@ -1,12 +1,12 @@
 {
   "parent": "block/cube",
   "textures": {
-    "particle": "augmentedaccessories:blocks/ringForge_bottom",
-    "down": "augmentedaccessories:blocks/ringForge_bottom",
-    "up": "augmentedaccessories:blocks/ringForge_top",
-    "north": "augmentedaccessories:blocks/ringForge_sides",
-    "south": "augmentedaccessories:blocks/ringForge_sides",
-    "east": "augmentedaccessories:blocks/ringForge_sides",
-    "west": "augmentedaccessories:blocks/ringForge_sides"
+    "particle": "augmentedaccessories:blocks/ring_forge_bottom",
+    "down": "augmentedaccessories:blocks/ring_forge_bottom",
+    "up": "augmentedaccessories:blocks/ring_forge_top",
+    "north": "augmentedaccessories:blocks/ring_forge_sides",
+    "south": "augmentedaccessories:blocks/ring_forge_sides",
+    "east": "augmentedaccessories:blocks/ring_forge_sides",
+    "west": "augmentedaccessories:blocks/ring_forge_sides"
   }
 }

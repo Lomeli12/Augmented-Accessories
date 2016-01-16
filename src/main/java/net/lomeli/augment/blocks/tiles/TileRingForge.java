@@ -1,6 +1,9 @@
 package net.lomeli.augment.blocks.tiles;
 
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
+
+import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -11,82 +14,156 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.*;
 
-import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.IFluidHandler;
 
+import net.lomeli.lomlib.util.BlockUtil;
 import net.lomeli.lomlib.util.FluidUtil;
 import net.lomeli.lomlib.util.LangUtil;
 
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.items.ItemHammer;
-import net.lomeli.augment.lib.INameable;
 
-public class TileRingForge extends TileEntity implements INameable, IInventory, IFluidHandler, ITickable {
-    protected FluidTank tank = new FluidTank(16000);
+public class TileRingForge extends TileEntity implements INameable, IInventory, ITickable {
     public static final int HAMMER = 0, OUTPUT = 1, LAVA_SLOT = 2, IN_0 = 3, IN_1 = 4, GEM = 5;
     private ItemStack[] inventory;
     private String ringName, tileName;
+    private List<BlockPos> posList;
+    private int fluidCapacity, fluidAmount;
 
     public TileRingForge() {
-        super();
         inventory = new ItemStack[6];
         tileName = null;
+        posList = Lists.newArrayList();
     }
 
     @Override
     public void update() {
+        updateList();
+        fluidCapacity = getCapacity();
+        fluidAmount = getAmount();
+
         if (!worldObj.isRemote) {
             // Fill tank
             ItemStack stack = getStackInSlot(LAVA_SLOT);
             if (stack != null && FluidUtil.isFilledContainer(stack)) {
                 FluidStack fluidStack = FluidUtil.getContainerStack(stack);
-                if (FluidUtil.isFluidLava(fluidStack) && tank.getFluidAmount() + fluidStack.amount <= tank.getCapacity()) {
-                    fill(null, fluidStack, true);
-                    this.setInventorySlotContents(LAVA_SLOT, FluidUtil.getEmptyContainer(stack));
+                if (FluidUtil.isFluidLava(fluidStack) && getFluidAmount() + fluidStack.amount <= getCapacity()) {
+                    if (canFill(fluidStack.copy())) {
+                        fill(fluidStack);
+                        this.setInventorySlotContents(LAVA_SLOT, FluidUtil.getEmptyContainer(stack));
+                    }
                 }
             }
             ItemStack hammer = getStackInSlot(HAMMER);
-            if (tank.getFluidAmount() >= 500 && hammer != null && hammer.getItem() instanceof ItemHammer) {
+            if (getFluidAmount() >= 500 && hammer != null && hammer.getItem() instanceof ItemHammer) {
                 ItemStack out = AugmentAPI.materialRegistry.makeRing(getStackInSlot(IN_0), getStackInSlot(IN_1), getStackInSlot(GEM), ringName);
                 this.setInventorySlotContents(OUTPUT, out);
+            } else
+                this.setInventorySlotContents(OUTPUT, null);
+        }
+    }
+
+    public void drain(int drainAmount) {
+        for (BlockPos pos : posList) {
+            TileEntity tile = worldObj.getTileEntity(pos);
+            if (tile instanceof IFluidHandler) {
+                FluidStack fluid = ((IFluidHandler) tile).drain(BlockUtil.getFaceFromDif(this.pos, pos).getOpposite(), drainAmount, false);
+                if (fluid == null || fluid.amount <= 0) continue;
+                ((IFluidHandler) tile).drain(BlockUtil.getFaceFromDif(this.pos, pos).getOpposite(), fluid.amount, true);
+                drainAmount -= fluid.amount;
+                if (drainAmount <= 0)
+                    return;
             }
         }
     }
 
-    @Override
-    public int fill(EnumFacing from, FluidStack resource, boolean doFill) {
-        if (resource != null && FluidUtil.isFluidLava(resource))
-            return tank.fill(resource, doFill);
-        return 0;
+    public void fill(FluidStack stack) {
+        for (BlockPos pos : posList) {
+            TileEntity tile = worldObj.getTileEntity(pos);
+            if (tile instanceof IFluidHandler) {
+                int amount = ((IFluidHandler) tile).fill(BlockUtil.getFaceFromDif(this.pos, pos).getOpposite(), stack, false);
+                if (amount <= 0) continue;
+                ((IFluidHandler) tile).fill(BlockUtil.getFaceFromDif(this.pos, pos).getOpposite(), stack, true);
+                stack.amount -= amount;
+                if (stack.amount <= 0)
+                    return;
+            }
+        }
     }
 
-    @Override
-    public FluidStack drain(EnumFacing from, FluidStack resource, boolean doDrain) {
-        return null;
+    public boolean canFill(FluidStack stack) {
+        for (BlockPos pos : posList) {
+            TileEntity tile = worldObj.getTileEntity(pos);
+            if (tile instanceof IFluidHandler) {
+                int amount = ((IFluidHandler) tile).fill(BlockUtil.getFaceFromDif(this.pos, pos).getOpposite(), stack, false);
+                if (amount <= 0) continue;
+                stack.amount -= amount;
+                if (stack.amount <= 0)
+                    break;
+            }
+        }
+        return stack.amount <= 0;
     }
 
-    @Override
-    public FluidStack drain(EnumFacing from, int maxDrain, boolean doDrain) {
-        return tank.drain(maxDrain, doDrain);
+    public int getFluidCapacity() {
+        return fluidCapacity;
     }
 
-    @Override
-    public boolean canFill(EnumFacing from, Fluid fluid) {
-        return FluidUtil.isFluidLava(fluid);
+    public void setFluidCapacity(int var) {
+        this.fluidCapacity = var;
     }
 
-    @Override
-    public boolean canDrain(EnumFacing from, Fluid fluid) {
-        return false;
+    public int getCapacity() {
+        int cap = 0;
+        for (BlockPos pos : posList) {
+            TileEntity tile = worldObj.getTileEntity(pos);
+            if (tile instanceof IFluidHandler)
+                cap += ((IFluidHandler) tile).getTankInfo(EnumFacing.NORTH)[0].capacity;
+        }
+        return cap;
     }
 
-    @Override
-    public FluidTankInfo[] getTankInfo(EnumFacing from) {
-        return new FluidTankInfo[]{tank.getInfo()};
+    public int getFluidAmount() {
+        return fluidAmount;
+    }
+
+    public void setFluidAmount(int var) {
+        this.fluidAmount = var;
+    }
+
+    public int getAmount() {
+        int amount = 0;
+        for (BlockPos pos : posList) {
+            TileEntity tile = worldObj.getTileEntity(pos);
+            if (tile instanceof IFluidHandler) {
+                FluidStack stack = ((IFluidHandler) tile).getTankInfo(BlockUtil.getFaceFromDif(this.pos, pos).getOpposite())[0].fluid;
+                if (stack != null)
+                    amount += stack.amount;
+            }
+        }
+        return amount;
+    }
+
+    public void updateList() {
+        posList.clear();
+        for (int dif = -1; dif < 2; dif++) {
+            if (dif == 0) continue;
+            TileEntity tile = worldObj.getTileEntity(pos.add(dif, 0, 0));
+            if (tile instanceof IFluidHandler) {
+                FluidStack stack = ((IFluidHandler) tile).getTankInfo(BlockUtil.getFaceFromDif(pos, tile.getPos()).getOpposite())[0].fluid;
+                if (FluidUtil.isFluidLava(stack) && ((IFluidHandler) tile).canDrain(BlockUtil.getFaceFromDif(pos, tile.getPos()).getOpposite(), stack.getFluid()))
+                    posList.add(tile.getPos());
+            }
+            tile = worldObj.getTileEntity(pos.add(0, 0, dif));
+            if (tile instanceof IFluidHandler) {
+                FluidStack stack = ((IFluidHandler) tile).getTankInfo(BlockUtil.getFaceFromDif(pos, tile.getPos()).getOpposite())[0].fluid;
+                if (FluidUtil.isFluidLava(stack) && ((IFluidHandler) tile).canDrain(BlockUtil.getFaceFromDif(pos, tile.getPos()).getOpposite(), stack.getFluid()))
+                    posList.add(tile.getPos());
+            }
+        }
     }
 
     @Override
@@ -192,7 +269,6 @@ public class TileRingForge extends TileEntity implements INameable, IInventory, 
     @Override
     public void readFromNBT(NBTTagCompound compound) {
         super.readFromNBT(compound);
-        this.tank.readFromNBT(compound);
         NBTTagList nbttaglist = compound.getTagList("Items", 10);
         this.inventory = new ItemStack[this.getSizeInventory()];
 
@@ -210,7 +286,6 @@ public class TileRingForge extends TileEntity implements INameable, IInventory, 
     @Override
     public void writeToNBT(NBTTagCompound compound) {
         super.writeToNBT(compound);
-        this.tank.writeToNBT(compound);
 
         NBTTagList nbttaglist = new NBTTagList();
 
@@ -262,10 +337,6 @@ public class TileRingForge extends TileEntity implements INameable, IInventory, 
 
     public String getRingName() {
         return this.ringName;
-    }
-
-    public FluidTank getTank() {
-        return this.tank;
     }
 
     @Override

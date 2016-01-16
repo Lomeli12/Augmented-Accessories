@@ -8,7 +8,7 @@ import net.minecraft.item.ItemStack;
 
 import net.lomeli.lomlib.util.ItemUtil;
 
-import net.lomeli.augment.lib.IPhantomSlot;
+import net.lomeli.augment.inventory.slot.IPhantomSlot;
 
 public class ContainerBase extends Container {
     @Override

@@ -43,6 +43,6 @@ public class SlotRingOutput extends Slot {
             if (this.tile.getStackInSlot(TileRingForge.HAMMER).getItemDamage() >= hammer.getMaxDamage())
                 this.tile.removeStackFromSlot(TileRingForge.HAMMER);
         }
-        this.tile.drain(null, 500, true);
+        this.tile.drain(500);
     }
 }

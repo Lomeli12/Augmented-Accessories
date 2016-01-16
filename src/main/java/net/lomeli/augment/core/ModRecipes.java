@@ -11,8 +11,8 @@ import net.lomeli.lomlib.core.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.core.recipes.ShapelessFluidRecipe;
 
 import net.lomeli.augment.blocks.ModBlocks;
+import net.lomeli.augment.items.DustType;
 import net.lomeli.augment.items.ModItems;
-import net.lomeli.augment.lib.DustType;
 
 public class ModRecipes {
 
@@ -23,6 +23,9 @@ public class ModRecipes {
 
     private static void blockRecipes() {
         addShaped(new ItemStack(ModBlocks.ringForge), "OOO", "IAI", "IBI", 'O', Blocks.obsidian, 'A', Blocks.anvil, 'B', Items.bucket, 'I', "ingotIron");
+        addShaped(new ItemStack(ModBlocks.altar, 1, 0), "III", " S ", "SSS", 'I', "ingotIron", 'S', "stone");
+        addShaped(new ItemStack(ModBlocks.altar, 1, 1), "QGQ", " E ", "QGQ", 'G', "ingotGold", 'Q', "blockQuartz", 'E', Items.ender_pearl);
+        addShaped(new ItemStack(ModBlocks.tank), "I I", "IBI", "III", 'I', "ingotIron", 'B', Items.bucket);
     }
 
     private static void itemRecipes() {

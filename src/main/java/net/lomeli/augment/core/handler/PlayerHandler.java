@@ -16,7 +16,6 @@ import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.core.network.MessageUpdateClientVigor;
-import net.lomeli.augment.core.network.PacketHandler;
 import net.lomeli.augment.items.ModItems;
 import net.lomeli.augment.lib.ModNBT;
 
@@ -24,13 +23,13 @@ public class PlayerHandler {
 
     @SubscribeEvent
     public void playerTakeDamage(LivingAttackEvent event) {
-        if (!event.entityLiving.worldObj.isRemote && event.entityLiving instanceof EntityPlayer) {
+        if (event.entityLiving instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) event.entityLiving;
             if (!EntityUtil.isFakePlayer(player)) {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
                 if (event.source.isFireDamage() && AugmentAPI.augmentRegistry.playerHasAugment(player, "test_augment") && data.loseEnergy(1, true) >= 1) {
                     event.setCanceled(true);
-                    if (player.worldObj.getWorldTime() % 20L == 0)
+                    if (player.worldObj.getWorldTime() % 10L == 0)
                         data.loseEnergy(1, false);
                 }
 
@@ -41,11 +40,6 @@ public class PlayerHandler {
 
     @SubscribeEvent
     public void craftItemEvent(PlayerEvent.ItemCraftedEvent event) {
-        VigorData data = AugmentAPI.vigorRegistry.getPlayerData(event.player);
-        if (data != null) {
-            data.gainEnergy(100, false);
-            AugmentAPI.vigorRegistry.updateData(data);
-        }
         if (event.crafting.getItem() == ModItems.ironHammer || event.crafting.getItem() == ModItems.diamondHammer) {
             if (EntityUtil.isFakePlayer(event.player))
                 return;
@@ -63,13 +57,13 @@ public class PlayerHandler {
     public void playerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         VigorData data = AugmentAPI.vigorRegistry.registerPlayer(event.player);
         if (event.player instanceof EntityPlayerMP)
-            PacketHandler.sendTo(new MessageUpdateClientVigor(data), (EntityPlayerMP) event.player);
+            Augment.packetHandler.sendTo(new MessageUpdateClientVigor(data), (EntityPlayerMP) event.player);
     }
 
     @SubscribeEvent
     public void playerLoggedOut(PlayerEvent.PlayerLoggedOutEvent event) {
         AugmentAPI.vigorRegistry.removePlayer(event.player);
         if (event.player instanceof EntityPlayerMP)
-            PacketHandler.sendTo(new MessageUpdateClientVigor(), (EntityPlayerMP) event.player);
+            Augment.packetHandler.sendTo(new MessageUpdateClientVigor(), (EntityPlayerMP) event.player);
     }
 }

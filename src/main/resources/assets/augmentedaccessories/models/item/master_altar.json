@@ -2,7 +2,7 @@
   "parent": "augmentedaccessories:block/master_altar",
   "display": {
     "thirdperson": {
-      "rotation": [ 10, -45, 170 ],
+      "rotation": [ 10, -45, 0 ],
       "translation": [ 0, 1.5, -2.75 ]
     }
   }

@@ -1,7 +1,7 @@
 {
   "parent": "builtin/generated",
   "textures": {
-    "layer0": "augmentedaccessories:items/pocketVoid"
+    "layer0": "augmentedaccessories:items/pocket_void"
   },
   "display": {
     "thirdperson": {

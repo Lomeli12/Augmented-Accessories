@@ -17,7 +17,6 @@ import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.vigor.IVigorRegistry;
 import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.core.network.MessageUpdateClientVigor;
-import net.lomeli.augment.core.network.PacketHandler;
 import net.lomeli.augment.lib.AugConfig;
 
 public class VigorManager implements IVigorRegistry {
@@ -63,7 +62,7 @@ public class VigorManager implements IVigorRegistry {
         playerData.put(data.getPlayerID(), data);
         EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUUID(data.getPlayerID());
         if (player != null)
-            PacketHandler.sendTo(new MessageUpdateClientVigor(data), player);
+            Augment.packetHandler.sendTo(new MessageUpdateClientVigor(data), player);
     }
 
     @Override

@@ -1,24 +1,19 @@
 package net.lomeli.augment.client.gui.manual.pages;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
 
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.oredict.OreDictionary;
@@ -27,14 +22,10 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 import net.lomeli.lomlib.core.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.core.recipes.ShapelessFluidRecipe;
-import net.lomeli.lomlib.util.LangUtil;
 
-import net.lomeli.augment.api.AugmentAPI;
-import net.lomeli.augment.api.manual.IGuiPage;
-import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.client.gui.manual.GuiPage;
 import net.lomeli.augment.client.gui.manual.GuiPageButton;
-import net.lomeli.augment.lib.PositionedItemStack;
+import net.lomeli.augment.client.gui.PositionedStack;
 
 public class GuiPageItem extends GuiPage {
     private ItemStack displayStack;
@@ -42,10 +33,8 @@ public class GuiPageItem extends GuiPage {
     private int selected, maxSelected;
     public GuiPageButton buttonNextPage;
     public GuiPageButton buttonPreviousPage;
-    public IGuiPage possiblePage;
     private boolean recipe;
-    private List<PositionedItemStack[]> recipeList;
-    private List<String> tooltip;
+    private List<PositionedStack[]> recipeList;
 
     public GuiPageItem(String id, String parentID, ItemStack stack, boolean recipe, String... descs) {
         super(id, parentID, (stack != null && stack.getItem() != null) ? stack.getDisplayName() : "");
@@ -53,7 +42,6 @@ public class GuiPageItem extends GuiPage {
         this.displayStack = stack;
         this.descs = descs != null ? descs : new String[0];
         this.recipeList = Lists.newArrayList();
-        this.tooltip = Lists.newArrayList();
     }
 
     private void calculateRecipe() {
@@ -110,7 +98,7 @@ public class GuiPageItem extends GuiPage {
                     ingredients[i] = ingreds[i];
             }
             if (ingredients != null && ingredients.length > 0) {
-                PositionedItemStack[] pStacks = new PositionedItemStack[ingredients.length + 1];
+                PositionedStack[] pStacks = new PositionedStack[ingredients.length + 1];
                 for (int x = 0; x < w; x++) {
                     for (int y = 0; y < h; y++) {
                         int slot = x + y * w;
@@ -118,11 +106,11 @@ public class GuiPageItem extends GuiPage {
                         int yOffset = 18 * y;
                         if (slot >= 0 && slot < ingredients.length) {
                             Object obj = ingredients[slot];
-                            pStacks[slot] = new PositionedItemStack(obj, xOffset, yOffset);
+                            pStacks[slot] = new PositionedStack(obj, xOffset, yOffset);
                         }
                     }
                 }
-                pStacks[pStacks.length - 1] = new PositionedItemStack(recipe.getRecipeOutput(), 87, 18);
+                pStacks[pStacks.length - 1] = new PositionedStack(recipe.getRecipeOutput(), 87, 18);
                 this.recipeList.add(pStacks);
             }
         }
@@ -147,8 +135,7 @@ public class GuiPageItem extends GuiPage {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+    protected void drawPage(int mouseX, int mouseY, float partialTicks) {
         if (displayStack != null) {
             RenderHelper.enableGUIStandardItemLighting();
             this.itemRender.renderItemIntoGUI(displayStack, left + 35, top + 10);
@@ -164,7 +151,7 @@ public class GuiPageItem extends GuiPage {
                 } else if (recipe && recipeList.size() > 0) {
                     int sel = selected - descs.length;
                     if (sel >= 0 && sel < recipeList.size()) {
-                        PositionedItemStack[] positionedStacks = recipeList.get(sel);
+                        PositionedStack[] positionedStacks = recipeList.get(sel);
                         if (positionedStacks != null && positionedStacks.length > 0) {
                             GlStateManager.pushMatrix();
                             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
@@ -176,14 +163,10 @@ public class GuiPageItem extends GuiPage {
                             }
                             drawTexturedModalRect(left + 121, top + 67, 62, 196, 18, 18);
                             GlStateManager.popMatrix();
-                            tooltip.clear();
-                            possiblePage = null;
                             for (int i = 0; i < positionedStacks.length; i++) {
-                                PositionedItemStack stack = positionedStacks[i];
+                                PositionedStack stack = positionedStacks[i];
                                 renderPositionedStack(stack, mouseX, mouseY, i != positionedStacks.length - 1);
                             }
-                            if (tooltip != null && tooltip.size() > 0)
-                                this.drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
                         }
                     }
                 }
@@ -191,39 +174,15 @@ public class GuiPageItem extends GuiPage {
         }
     }
 
-    private void renderPositionedStack(PositionedItemStack stack, int mouseX, int mouseY, boolean link) {
+    private void renderPositionedStack(PositionedStack stack, int mouseX, int mouseY, boolean link) {
         if (stack != null && mc != null) {
             ItemStack item = stack.getStack();
             if (item != null) {
                 int x = left + 35 + stack.x;
                 int y = top + 50 + stack.y;
-                GlStateManager.pushMatrix();
-                RenderHelper.enableGUIStandardItemLighting();
-                this.itemRender.renderItemIntoGUI(item, x, y);
-                GlStateManager.popMatrix();
-                boolean flag = mouseX >= x && mouseY >= y && mouseX < x + 16 && mouseY < y + 16;
-                if (flag) {
-                    tooltip.add(item.getDisplayName());
-                    if (link) {
-                        if (item.getItem() instanceof IItemPage)
-                            addItemPageLink(item, (IItemPage) item.getItem());
-                        else if (item.getItem() instanceof ItemBlock && ((ItemBlock) item.getItem()).getBlock() instanceof IItemPage)
-                            addItemPageLink(item, (IItemPage) ((ItemBlock) item.getItem()).getBlock());
-                    }
-                }
+                drawItem(item, x, y, mouseX, mouseY, link);
             }
         }
-    }
-
-    private void addItemPageLink(ItemStack stack, IItemPage page) {
-        tooltip.clear();
-        tooltip.add(EnumChatFormatting.GOLD + stack.getDisplayName());
-        String id = page.pageID(stack);
-        if (!Strings.isNullOrEmpty(id) && AugmentAPI.manualRegistry.getPageForID(id) != null) {
-            tooltip.add(LangUtil.translate("book.augmentedaccessories.tooltip.iteminfo"));
-            possiblePage = AugmentAPI.manualRegistry.getPageForID(id);
-        } else
-            possiblePage = null;
     }
 
     @Override
@@ -248,16 +207,6 @@ public class GuiPageItem extends GuiPage {
                 if (selected < maxSelected && maxSelected > 1 && !this.buttonNextPage.visible)
                     this.buttonNextPage.visible = true;
                 break;
-        }
-    }
-
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (possiblePage != null) {
-            mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
-            mc.displayGuiScreen(possiblePage.openPage(this.getID()));
-            possiblePage = null;
         }
     }
 }

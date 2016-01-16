@@ -1,4 +1,4 @@
-package net.lomeli.augment.lib;
+package net.lomeli.augment.items;
 
 import com.google.common.collect.Lists;
 

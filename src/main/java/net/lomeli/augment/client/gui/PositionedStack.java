@@ -1,4 +1,4 @@
-package net.lomeli.augment.lib;
+package net.lomeli.augment.client.gui;
 
 import com.google.common.collect.Lists;
 
@@ -8,12 +8,12 @@ import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.oredict.OreDictionary;
 
-public class PositionedItemStack {
+public class PositionedStack {
     public Object stack;
     public int x;
     public int y;
 
-    public PositionedItemStack(Object stack, int x, int y) {
+    public PositionedStack(Object stack, int x, int y) {
         this.stack = stack;
         this.x = x;
         this.y = y;

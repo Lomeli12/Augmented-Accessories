@@ -8,7 +8,6 @@ import java.util.List;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -28,8 +27,6 @@ import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.core.CreativeAugment;
-import net.lomeli.augment.core.network.MessageUpdateClientVigor;
-import net.lomeli.augment.core.network.PacketHandler;
 import net.lomeli.augment.lib.ModNBT;
 
 import baubles.api.BaubleType;
@@ -108,8 +105,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
                 if (data != null) {
                     augment.onUse(stack, player, null, data);
-                    if (player instanceof EntityPlayerMP)
-                        PacketHandler.sendTo(new MessageUpdateClientVigor(data), (EntityPlayerMP) player);
+                    AugmentAPI.vigorRegistry.updateData(data);
                 }
             }
         }
@@ -124,8 +120,9 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
                 if (data != null) {
                     augment.onUse(stack, player, pos, data);
-                    if (player instanceof EntityPlayerMP)
-                        PacketHandler.sendTo(new MessageUpdateClientVigor(data), (EntityPlayerMP) player);
+                    AugmentAPI.vigorRegistry.updateData(data);
+                    //if (player instanceof EntityPlayerMP)
+                    //    Augment.packetHandler.sendTo(new MessageUpdateClientVigor(data), (EntityPlayerMP) player);
                     return true;
                 }
             }
@@ -133,6 +130,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         return super.onItemUseFirst(stack, player, world, pos, side, hitX, hitY, hitZ);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
         return getRingColor(stack, renderPass);
@@ -193,6 +191,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
             tooltip.add(LangUtil.translate(augment.getUnlocalizedName()));
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
         ItemStack stack = new ItemStack(itemIn);
@@ -213,7 +212,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
 
     @Override
     public String parentID(ItemStack stack) {
-        return Augment.MOD_ID + ":getting_started";
+        return Augment.MOD_ID + ":creating_ring";
     }
 
     @Override

@@ -66,5 +66,26 @@ processResources {
 }
 
 jar {
-	appendix = "universal_$mcVersion"
+	appendix = "$mcVersion"
+    classifier = "universal"
 }
+
+sourceJar {
+    appendix = "$mcVersion"
+    classifier = "src"
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    appendix = "$mcVersion"
+    classifier = "dev"
+}
+
+tasks.withType(Zip) { task ->
+    task.doLast {
+        ant.checksum algorithm: 'MD5', file: it.archivePath
+        ant.checksum algorithm: 'SHA1', file: it.archivePath
+    }
+}
+
+build.dependsOn deobfJar

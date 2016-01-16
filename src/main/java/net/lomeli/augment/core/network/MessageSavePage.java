@@ -1,21 +1,21 @@
 package net.lomeli.augment.core.network;
 
-import io.netty.buffer.ByteBuf;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 
-import net.minecraftforge.fml.common.network.ByteBufUtils;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
 
+import net.lomeli.lomlib.core.network.Message;
+import net.lomeli.lomlib.core.network.MessageSide;
 import net.lomeli.lomlib.util.NBTUtil;
 
 import net.lomeli.augment.lib.ModNBT;
 
-public class MessageSavePage implements IMessage, IMessageHandler<MessageSavePage, IMessage> {
-    private String id;
+@MessageSide(clientSide = false)
+public class MessageSavePage extends Message<MessageSavePage> {
+    public String id;
 
     public MessageSavePage() {
         this("");
@@ -26,23 +26,11 @@ public class MessageSavePage implements IMessage, IMessageHandler<MessageSavePag
     }
 
     @Override
-    public void fromBytes(ByteBuf buf) {
-        id = ByteBufUtils.readUTF8String(buf);
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, id);
-    }
-
-    @Override
-    public IMessage onMessage(MessageSavePage message, MessageContext ctx) {
-        if (message != null) {
-            EntityPlayer player = ctx.getServerHandler().playerEntity;
-            ItemStack stack = player.getCurrentEquippedItem();
-            if (stack != null)
-                NBTUtil.setString(stack, ModNBT.LAST_PAGE, message.id);
-        }
-        return null;
+    public IMessage handleMessage(MessageContext ctx) {
+        EntityPlayer player = ctx.getServerHandler().playerEntity;
+        ItemStack stack = player.getCurrentEquippedItem();
+        if (stack != null)
+            NBTUtil.setString(stack, ModNBT.LAST_PAGE, id);
+        return this;
     }
 }

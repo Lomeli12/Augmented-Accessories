@@ -53,7 +53,7 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
         if (!player.isSneaking() && tile != null && tile instanceof TileAltar) {
             TileAltar altar = (TileAltar) tile;
             ItemStack altarStack = altar.getStackInSlot(0);
-            ItemStack playerHand = player.getCurrentEquippedItem();
+            ItemStack playerHand = player.getHeldItem();
             if (altarStack == null && playerHand != null) {
                 ItemStack newStack = playerHand.copy();
                 newStack.stackSize = 1;

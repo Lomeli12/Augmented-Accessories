@@ -1,4 +1,4 @@
-package net.lomeli.augment.lib;
+package net.lomeli.augment.blocks.tiles;
 
 import net.minecraft.world.IWorldNameable;
 

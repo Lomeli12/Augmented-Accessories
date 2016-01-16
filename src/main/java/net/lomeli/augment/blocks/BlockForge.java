@@ -5,11 +5,15 @@ import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
@@ -30,11 +34,64 @@ public class BlockForge extends BlockBase implements ITileEntityProvider, IItemP
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
-        if (!player.isSneaking() && tile != null && tile instanceof TileRingForge) {
-            player.openGui(Augment.modInstance, -1, world, pos.getX(), pos.getY(), pos.getZ());
+        if (tile instanceof TileRingForge) {
+            if (!player.isSneaking())
+                player.openGui(Augment.modInstance, -1, world, pos.getX(), pos.getY(), pos.getZ());
+            else
+                System.out.println(((TileRingForge) tile).getFluidAmount() + "/" + ((TileRingForge) tile).getFluidCapacity());
             return true;
         }
         return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    public void breakBlock(World world, BlockPos pos, IBlockState state) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof IInventory) {
+            for (int i = 0; i < ((IInventory) tile).getSizeInventory(); ++i) {
+                if (i == TileRingForge.OUTPUT)
+                    continue;
+                ItemStack itemstack = ((IInventory) tile).getStackInSlot(i);
+
+                if (itemstack != null) {
+                    float f = RANDOM.nextFloat() * 0.8F + 0.1F;
+                    float f1 = RANDOM.nextFloat() * 0.8F + 0.1F;
+                    float f2 = RANDOM.nextFloat() * 0.8F + 0.1F;
+
+                    while (itemstack.stackSize > 0) {
+                        int k = RANDOM.nextInt(21) + 10;
+
+                        if (k > itemstack.stackSize) {
+                            k = itemstack.stackSize;
+                        }
+
+                        itemstack.stackSize -= k;
+                        EntityItem entityitem = new EntityItem(world, pos.getX() + (double) f, pos.getY() + (double) f1, pos.getZ() + (double) f2, new ItemStack(itemstack.getItem(), k, itemstack.getMetadata()));
+
+                        if (itemstack.hasTagCompound())
+                            entityitem.getEntityItem().setTagCompound((NBTTagCompound) itemstack.getTagCompound().copy());
+
+                        float f3 = 0.05F;
+                        entityitem.motionX = RANDOM.nextGaussian() * (double) f3;
+                        entityitem.motionY = RANDOM.nextGaussian() * (double) f3 + 0.20000000298023224D;
+                        entityitem.motionZ = RANDOM.nextGaussian() * (double) f3;
+                        world.spawnEntityInWorld(entityitem);
+                    }
+                }
+            }
+            world.updateComparatorOutputLevel(pos, this);
+        }
+        if (hasTileEntity(state))
+            world.removeTileEntity(pos);
+    }
+
+    @Override
+    public void onNeighborBlockChange(World world, BlockPos pos, IBlockState state, Block neighborBlock) {
+        TileEntity tile = world.getTileEntity(pos);
+        if (tile instanceof TileRingForge) {
+            ((TileRingForge) tile).updateList();
+        }
+        super.onNeighborBlockChange(world, pos, state, neighborBlock);
     }
 
     @Override
@@ -54,12 +111,12 @@ public class BlockForge extends BlockBase implements ITileEntityProvider, IItemP
 
     @Override
     public String parentID(ItemStack stack) {
-        return Augment.MOD_ID + ":getting_started";
+        return Augment.MOD_ID + ":creating_ring";
     }
 
     @Override
     public String[] descriptions(ItemStack stack) {
-        return new String[] {
+        return new String[]{
                 "book.augmentedaccessories.ring_forge.desc.0",
                 "book.augmentedaccessories.ring_forge.desc.1"
         };

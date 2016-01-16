@@ -19,8 +19,4 @@ public class ModPotion {
     public static void initPotion() {
         vigorRegen = new PotionRegenVigor(new ResourceLocation("regen_vigor"), 0x00FFFF).setPotionName("potion.augmentedaccessories.regen_vigor");
     }
-
-    public static void setPotionType(Potion potion) {
-
-    }
 }

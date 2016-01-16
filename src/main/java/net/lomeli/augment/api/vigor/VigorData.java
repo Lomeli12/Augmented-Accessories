@@ -35,8 +35,17 @@ public class VigorData {
         return changed;
     }
 
+    public void setChanged(boolean changed) {
+        this.changed = changed;
+    }
+
     public VigorData setEnergy(int energy) {
         this.energy = energy > maxEnergy ? maxEnergy : energy < 0 ? 0 : energy;
+        return this;
+    }
+
+    public VigorData setMaxEnergy(int max) {
+        this.maxEnergy = max;
         return this;
     }
 
@@ -78,13 +87,16 @@ public class VigorData {
         data.setLong("UUID_MOST", getPlayerID().getMostSignificantBits());
         data.setInteger("VIGOR", getEnergy());
         data.setInteger("MAX_VIGOR", getMaxEnergy());
+        data.setBoolean("CHANGED", isChanged());
         tag.setTag("VIGOR_DATA", data);
     }
 
     public static VigorData readFromNBT(NBTTagCompound persistedTag) {
-        if (!persistedTag.hasKey("VIGOR_DATA", 10)) return null;
+        if (persistedTag == null || !persistedTag.hasKey("VIGOR_DATA", 10)) return null;
         NBTTagCompound data = persistedTag.getCompoundTag("VIGOR_DATA");
         UUID uuid = new UUID(data.getLong("UUID_MOST"), data.getLong("UUID_LEAST"));
-        return new VigorData(uuid, data.getInteger("MAX_VIGOR")).setEnergy(data.getInteger("VIGOR"));
+        VigorData vigor = new VigorData(uuid, data.getInteger("MAX_VIGOR")).setEnergy(data.getInteger("VIGOR"));
+        vigor.setChanged(data.getBoolean("CHANGED"));
+        return vigor;
     }
 }

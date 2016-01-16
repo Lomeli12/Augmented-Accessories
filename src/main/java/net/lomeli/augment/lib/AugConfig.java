@@ -18,6 +18,8 @@ public class AugConfig {
     public static int regenRate;
     @ConfigInt(defaultValue = 0, minValue = 0, maxValue = 4, comment = "config.augmentedaccessories.vigor.hud.position")
     public static int vigorBarPosition;
-    @ConfigBoolean(defaultValue = true, comment = "")
+    @ConfigBoolean(defaultValue = true, comment = "config.augmentedaccessories.book.rotate_items")
     public static boolean bookRotateItems;
+    @ConfigInt(defaultValue = 50, minValue = 10, maxValue = 200, comment = "config.augmentedaccessories.vigor.potion.rate")
+    public static int robustPotionRate;
 }

@@ -19,6 +19,7 @@ import net.lomeli.lomlib.util.LangUtil;
 
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.api.manual.IGuiPage;
+import net.lomeli.augment.client.gui.IButtonToolTip;
 import net.lomeli.augment.client.gui.manual.GuiPage;
 import net.lomeli.augment.client.gui.manual.GuiPageButton;
 
@@ -76,13 +77,16 @@ public class GuiPageList extends GuiPage {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    protected void preDrawPage(int mouseX, int mouseY, float partialTicks) {
         this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);
         GL11.glColor3f(1f, 1f, 1f);
         this.drawTexturedModalRect(left, top, 0, 0, this.bookImageWidth, this.bookImageHeight);
         GlStateManager.color(1.0F, 1.0F, 1.0F);
+        resetToolTip();
         for (int i = 0; i < this.buttonList.size(); ++i) {
             GuiButton button = this.buttonList.get(i);
+            if (button instanceof IButtonToolTip && button.isMouseOver())
+                addToolTip(((IButtonToolTip) button).getToolTip());
             int id = i - 2;
             if (button instanceof GuiPageItem)
                 ((GuiPageItem) button).draw(this.mc, mouseX, mouseY, id >= selected * listSize && id < listSize + (selected * listSize));

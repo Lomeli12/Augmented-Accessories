@@ -30,7 +30,7 @@ import net.lomeli.augment.lib.AugConfig;
 import baubles.api.BaublesApi;
 
 public class HUDHandler {
-    private static final ResourceLocation hudTexture = ResourceUtil.getGuiResource(Augment.MOD_ID, "vigorHud.png");
+    private static final ResourceLocation hudTexture = ResourceUtil.getGuiResource(Augment.MOD_ID, "vigor_hud.png");
 
     private float intensitiy;
     private boolean fadeOut;

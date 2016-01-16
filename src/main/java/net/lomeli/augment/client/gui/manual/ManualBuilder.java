@@ -39,10 +39,10 @@ public class ManualBuilder implements IManualRegistry {
     }
 
     public void initializeManual() {
-        GuiPageList mainPage = new GuiPageList(Augment.MOD_ID + ":main_page", "", "book.augmentedaccessories.mainpage.title");
-        GuiPageList getStarted = new GuiPageList(Augment.MOD_ID + ":getting_started", mainPage.getID(), "book.augmentedaccessories.getting_started.title");
+        GuiPageList mainPage = new GuiPageList(Augment.MOD_ID + ":main_page", "", "book.augmentedaccessories.main_page.title");
+        GuiPageList getStarted = new GuiPageList(Augment.MOD_ID + ":creating_ring", mainPage.getID(), "book.augmentedaccessories.creating_ring.title");
         GuiPageList ringInfusion = new GuiPageList(Augment.MOD_ID + ":ring_infusion", mainPage.getID(), "book.augmentedaccessories.ring_infusion.title");
-        GuiPageList spells = new GuiPageList(Augment.MOD_ID + ":spells", mainPage.getID(), "book.augmentedaccessories.spells.title");
+        GuiPageList spells = new GuiPageList(Augment.MOD_ID + ":augments", mainPage.getID(), "book.augmentedaccessories.augments.title");
         mainPage.addPage(getStarted.getID());
         mainPage.addPage(ringInfusion.getID());
         mainPage.addPage(spells.getID());

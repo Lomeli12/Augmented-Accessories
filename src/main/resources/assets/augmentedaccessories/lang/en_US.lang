@@ -8,8 +8,11 @@ desc.augmentedaccessories.metadata.1=Match Metadata
 desc.augmentedaccessories.nbt.0=Ignore NBT
 desc.augmentedaccessories.nbt.1=Match NBT
 
-gui.augmentedaccessories.fluidinfo=%s: %s/%s
+gui.augmentedaccessories.fluidinfo=%1$s: %2$s/%3$s
 gui.augmentedaccessories.hud.shift=Shift
+gui.augmentedaccessories.button.back=Back
+gui.augmentedaccessories.button.prev=Previous Page
+gui.augmentedaccessories.button.next=Next Page
 
 item.augmentedaccessories.iron_hammer.name=Iron Forge Hammer
 item.augmentedaccessories.diamond_hammer.name=Diamond Forge Hammer
@@ -26,7 +29,7 @@ item.augmentedaccessories.ring.name=Ring
 item.augmentedaccessories.void.0.name=Null Orb
 item.augmentedaccessories.void.1.name=Pocket Void
 item.augmentedaccessories.book.name=Mystical Accessories - Vol. 2
-item.augmentedaccessories.potion.0.name=
+item.augmentedaccessories.potion.0.name=Robust Potion
 item.augmentedaccessories.potion.1.name=
 
 tile.augmentedaccessories.ring_forge.name=Ring Forge
@@ -37,6 +40,9 @@ tile.augmentedaccessories.altar.basic.book=Store and display an item.
 tile.augmentedaccessories.altar.master.name=Infusion Altar
 tile.augmentedaccessories.altar.master.book=Mystical Altar to power rings.
 tile.augmentedaccessories.vigor_glass.name=Vigorous Glass
+tile.augmentedaccessories.tank.name=Iron Tank
+tile.augmentedaccessories.tank.empty=Empty
+tile.augmentedaccessories.tank.book=A Ring Forge's best pal.
 
 potion.augmentedaccessories.regen_vigor=Vigor Regen
 
@@ -45,11 +51,13 @@ config.augmentedaccessories.vigor.regen.tick=Ticks between vigor regen bursts.
 config.augmentedaccessories.vigor.regen.min_hunger=Minimum amount of hunger required to regen Vigor.
 config.augmentedaccessories.vigor.regen.rate=Amount of vigor regained during regen.
 config.augmentedaccessories.vigor.hud.position=Set corner in which the vigor bar is overlayed. 0 = Top Left; 1 = Top Right; 2 = Bottom Right; 3 = Bottom Left; 4 = Don't render.
+config.augmentedaccessories.vigor.potion.rate=The amount that your max vigor increases by when drinking a robust potion
+config.augmentedaccessories.book.rotate_items=Have rotating augment recipes in book.
 
-book.augmentedaccessories.mainpage.title=Main Page
-book.augmentedaccessories.getting_started.title=Getting Started
+book.augmentedaccessories.main_page.title=Main Page
+book.augmentedaccessories.creating_ring.title=Creating a Ring
 book.augmentedaccessories.ring_infusion.title=Starting Ring Infusion
-book.augmentedaccessories.spells.title=Ring Spells
+book.augmentedaccessories.augments.title=Ring Augments
 book.augmentedaccessories.tooltip.iteminfo=/&7/&o<Click for more info>/&r
 
 book.augmentedaccessories.infusion_altar_setup.title=Infusion Altar Setup
@@ -60,6 +68,10 @@ book.augmentedaccessories.iron_hammer.desc.0=A basic tool with multiple purposes
 book.augmentedaccessories.diamond_hammer.desc.0=Exactly the same as the Iron Forge Hammer, but with more durability.
 book.augmentedaccessories.ring_forge.desc.0=The /&1Ring Forge/&0 is where you will can make the ring of your own design. Each ring requires /&1at least two types of material/&0, and /&1ten/&0 pieces each of said materials.<br>Rings can also have a /&1gem/&0 added to it. Remember to pick your materials carefully, as the type materials you chose will /&1affect what spells you can infuse into it./&r
 book.augmentedaccessories.ring_forge.desc.1=The /&1Ring Forge/&0 does require /&4some lava/&0 to make the materials more malleable, and a /&1hammer/&0 to shape the ring itself.
+book.augmentedaccessories.ring_forge_setup.name=Ring Forge Setup
+book.augmentedaccessories.ring_forge_setup.desc.0=In order to properly use a /&1Ring Forge/&0, one must provide a source of /&4lava/&0. While any source will do, an /&1Iron Tank/&0 severs as a quick and simple solution.<br>All one must do is place at least one /&1Iron Tank/&0 adjacent to a /&1Ring Forge/&0, though it can support up to four.
+book.augmentedaccessories.ring_forge_setup.desc.1=Do keep in mind that/&4/&l empty tanks or non-lava tanks will be ignored/&r/&0 by the forge.
 book.augmentedaccessories.ring.desc.0=/&1Rings/&0 are a type of accessory that can be made from different materials. By themselves, they are simply shiny accessories, but with some materials and some experience, you can augment them with fantastical powers. They can be made in a /&1Ring Forge/&0.
 book.augmentedaccessories.altar.basic.desc.0=
 book.augmentedaccessories.altar.master.desc.0=
+book.augmentedaccessories.tank.desc.0=A /&1Tank/&0 is a very simple method of storing /&4fluids/&0. Tanks are also the main method to /&4provide lava to adjacent Ring Forges/&0, making them very important for ring creation /&4if you have no other method to store lava/&0.

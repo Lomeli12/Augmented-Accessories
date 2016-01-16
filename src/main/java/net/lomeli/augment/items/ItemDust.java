@@ -6,7 +6,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
-import net.lomeli.augment.lib.DustType;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemDust extends ItemBase {
     public ItemDust() {
@@ -15,6 +16,7 @@ public class ItemDust extends ItemBase {
         this.setHasSubtypes(true);
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
         for (int i = 0; i < DustType.dustTypes.size(); i++) {
@@ -22,6 +24,7 @@ public class ItemDust extends ItemBase {
         }
     }
 
+    @SideOnly(Side.CLIENT)
     @Override
     public int getColorFromItemStack(ItemStack stack, int renderPass) {
         return DustType.getDustFromMeta(stack.getItemDamage()).getColor();

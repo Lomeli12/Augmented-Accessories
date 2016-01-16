@@ -16,6 +16,8 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.client.FMLClientHandler;
 
 import net.lomeli.lomlib.util.LangUtil;
 import net.lomeli.lomlib.util.RenderUtils;
@@ -23,11 +25,12 @@ import net.lomeli.lomlib.util.ResourceUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.blocks.tiles.TileRingForge;
+import net.lomeli.augment.core.network.MessageRingName;
 import net.lomeli.augment.inventory.ContainerForge;
 import net.lomeli.augment.items.ItemHammer;
 
 public class GuiRingForge extends GuiContainer {
-    private final ResourceLocation guiTexture = ResourceUtil.getGuiResource(Augment.MOD_ID, "ringForge");
+    private final ResourceLocation guiTexture = ResourceUtil.getGuiResource(Augment.MOD_ID, "ring_forge");
     private TileRingForge tile;
     private GuiTextField textField;
 
@@ -58,9 +61,12 @@ public class GuiRingForge extends GuiContainer {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
-        if (this.textField.textboxKeyTyped(typedChar, keyCode))
+        if (this.textField.textboxKeyTyped(typedChar, keyCode)) {
+            if (!FMLClientHandler.instance().getClient().isSingleplayer())
+                Augment.packetHandler.sendToServer(new MessageRingName(this.textField.getText()));
+            ((ContainerForge) this.inventorySlots).setRingName(this.textField.getText());
             Augment.proxy.setForgeName(tile.getPos(), tile.getWorld().provider.getDimensionId(), this.textField.getText());
-        else
+        } else
             super.keyTyped(typedChar, keyCode);
     }
 
@@ -79,7 +85,7 @@ public class GuiRingForge extends GuiContainer {
         int k = (this.width - this.xSize) / 2;
         int l = (this.height - this.ySize) / 2;
         List<String> list = Lists.newArrayList();
-        list.add(LangUtil.translate("gui.augmentedaccessories.fluidinfo", FluidRegistry.LAVA.getLocalizedName(null), tile.getTank().getFluidAmount(), tile.getTank().getCapacity()));
+        list.add(LangUtil.translate("gui.augmentedaccessories.fluidinfo", FluidRegistry.LAVA.getLocalizedName(null), tile.getFluidAmount(), tile.getFluidCapacity()));
         this.drawToolTipOverArea(mouseX, mouseY, k + 177, l + 6, 16, 56, list, mc.fontRendererObj);
     }
 
@@ -97,7 +103,9 @@ public class GuiRingForge extends GuiContainer {
         if (this.textField.isFocused())
             this.drawTexturedModalRect(k + 85, l + 65, 0, 166, 84, 16);
 
-        RenderUtils.drawFluid(this.mc, tile.getTank().getFluid(), k + 177, l + 62, zLevel, 16, 56, tile.getTank().getCapacity());
+        FluidStack stack = new FluidStack(FluidRegistry.LAVA, tile.getFluidAmount());
+        if (stack != null && stack.getFluid() != null)
+            RenderUtils.drawFluid(this.mc, stack, k + 177, l + 62, zLevel, 16, 56, tile.getFluidCapacity());
 
         RenderUtils.bindTexture(guiTexture);
         this.drawTexturedModalRect(k + 183, l + 6, 202, 0, 10, 56);
@@ -106,7 +114,12 @@ public class GuiRingForge extends GuiContainer {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
+        ((ContainerForge) this.inventorySlots).setRingName("");
         Augment.proxy.setForgeName(tile.getPos(), tile.getWorld().provider.getDimensionId(), null);
+    }
+
+    public GuiTextField getTextField() {
+        return textField;
     }
 
     public void drawToolTipOverArea(int mouseX, int mouseY, int x, int y, int width, int height, List list, FontRenderer font) {

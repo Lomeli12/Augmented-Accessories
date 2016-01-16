@@ -1,11 +1,11 @@
 {
   "__comment": "Model generated using MrCrayfish's Model Creator (http://mrcrayfish.com/modelcreator/)",
   "textures": {
-    "bottom": "augmentedaccessories:blocks/master/altarBottom",
-    "supportB": "augmentedaccessories:blocks/master/altarSupportBase",
-    "support": "augmentedaccessories:blocks/master/altarMainSupport",
-    "supportT": "augmentedaccessories:blocks/master/altarTopSupport",
-    "top": "augmentedaccessories:blocks/master/altarTop",
+    "bottom": "augmentedaccessories:blocks/master/altar_bottom",
+    "supportB": "augmentedaccessories:blocks/master/altar_support_base",
+    "support": "augmentedaccessories:blocks/master/altar_main_support",
+    "supportT": "augmentedaccessories:blocks/master/altar_top_support",
+    "top": "augmentedaccessories:blocks/master/altar_top",
     "particle": "augmentedaccessories:blocks/altar"
   },
   "elements": [

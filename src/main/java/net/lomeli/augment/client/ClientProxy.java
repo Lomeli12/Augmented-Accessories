@@ -19,13 +19,16 @@ import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.blocks.ModBlocks;
 import net.lomeli.augment.blocks.manual.AltarMultiBlockPage;
+import net.lomeli.augment.blocks.manual.RingForgeMultiBlockPage;
 import net.lomeli.augment.blocks.tiles.TileAltar;
+import net.lomeli.augment.blocks.tiles.TileTank;
 import net.lomeli.augment.client.gui.manual.ManualBuilder;
 import net.lomeli.augment.client.handler.BakeModelHandler;
 import net.lomeli.augment.client.handler.HUDHandler;
 import net.lomeli.augment.client.handler.TextureHandler;
 import net.lomeli.augment.client.handler.TickHandlerClient;
 import net.lomeli.augment.client.render.tile.RenderAltar;
+import net.lomeli.augment.client.render.tile.RenderTank;
 import net.lomeli.augment.core.Proxy;
 import net.lomeli.augment.items.ModItems;
 
@@ -48,7 +51,12 @@ public class ClientProxy extends Proxy {
         MinecraftForge.EVENT_BUS.register(new HUDHandler());
         registerItemModels();
         registerBlockModels();
+        registerTileRenderers();
+    }
+
+    private void registerTileRenderers() {
         ClientRegistry.bindTileEntitySpecialRenderer(TileAltar.class, new RenderAltar());
+        ClientRegistry.bindTileEntitySpecialRenderer(TileTank.class, new RenderTank());
     }
 
     private void registerItemModels() {
@@ -64,6 +72,7 @@ public class ClientProxy extends Proxy {
         registerModel(Item.getItemFromBlock(ModBlocks.ringForge), 0, Augment.MOD_ID + ":ring_forge");
         registerModel(Item.getItemFromBlock(ModBlocks.altar), 0, Augment.MOD_ID + ":altar");
         registerModel(Item.getItemFromBlock(ModBlocks.altar), 1, Augment.MOD_ID + ":master_altar");
+        registerModel(Item.getItemFromBlock(ModBlocks.tank), new BasicItemMesh(Augment.MOD_ID + ":tank"));
         registerMetadataModel(Item.getItemFromBlock(ModBlocks.altar), new ResourceLocation(Augment.MOD_ID, "altar"), new ResourceLocation(Augment.MOD_ID, "master_altar"));
         ModelLoader.registerItemVariants(Item.getItemFromBlock(ModBlocks.altar), new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=basic"));
         ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.altar), 0, new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=basic"));
@@ -82,11 +91,13 @@ public class ClientProxy extends Proxy {
     private void addPages() {
         AugmentAPI.manualRegistry.addItemPage((IItemPage) ModItems.manual);
         AugmentAPI.manualRegistry.addItemPage((IItemPage) ModBlocks.ringForge);
+        AugmentAPI.manualRegistry.addItemPage((IItemPage) ModBlocks.tank);
+        AugmentAPI.manualRegistry.addMultiblockPage(new RingForgeMultiBlockPage());
         AugmentAPI.manualRegistry.addItemPage((IItemPage) ModItems.ironHammer);
         AugmentAPI.manualRegistry.addItemPage((IItemPage) ModItems.ring);
         AugmentAPI.manualRegistry.addItemPage((IItemPage) ModBlocks.altar);
         AugmentAPI.manualRegistry.addMultiblockPage(new AltarMultiBlockPage());
-        AugmentAPI.manualRegistry.addAugmentPage("TestPage", Augment.MOD_ID + ":spells", "test_augment", true);
+        AugmentAPI.manualRegistry.addAugmentPage("TestPage", Augment.MOD_ID + ":augments", "test_augment", true);
     }
 
     private void registerMetadataModel(Item item, ResourceLocation... files) {

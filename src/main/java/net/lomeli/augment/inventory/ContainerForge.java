@@ -1,5 +1,8 @@
 package net.lomeli.augment.inventory;
 
+import com.google.common.base.Strings;
+
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.ICrafting;
@@ -9,15 +12,15 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fluids.FluidContainerRegistry;
-import net.minecraftforge.fluids.FluidRegistry;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.blocks.ModBlocks;
 import net.lomeli.augment.blocks.tiles.TileRingForge;
+import net.lomeli.augment.client.gui.GuiRingForge;
 import net.lomeli.augment.inventory.slot.SlotHammer;
 import net.lomeli.augment.inventory.slot.SlotLava;
 import net.lomeli.augment.inventory.slot.SlotMaterial;
@@ -27,7 +30,7 @@ import net.lomeli.augment.items.ItemHammer;
 public class ContainerForge extends ContainerBase {
     private TileRingForge tile;
     private World world;
-    private int fluidAmount;
+    private int fluidAmount, fluidCapacity;
 
     public ContainerForge(TileRingForge tile, InventoryPlayer player, World world) {
         this.tile = tile;
@@ -52,6 +55,24 @@ public class ContainerForge extends ContainerBase {
         this.onCraftMatrixChanged(tile);
     }
 
+    public void setRingName(String text) {
+        tile.setRingName(text);
+        if (world.isRemote) {
+            GuiScreen screen = FMLClientHandler.instance().getClient().currentScreen;
+            if (screen instanceof GuiRingForge) {
+                ((GuiRingForge) screen).getTextField().setText(text);
+            }
+        }
+
+        if (inventorySlots.get(0).getHasStack()) {
+            if (!Strings.isNullOrEmpty(text)) {
+                inventorySlots.get(0).inventory.getStackInSlot(0).setStackDisplayName(text);
+            } else {
+                inventorySlots.get(0).inventory.getStackInSlot(0).clearCustomName();
+            }
+        }
+    }
+
     @Override
     public void onCraftGuiOpened(ICrafting listener) {
         super.onCraftGuiOpened(listener);
@@ -63,22 +84,25 @@ public class ContainerForge extends ContainerBase {
         super.detectAndSendChanges();
         for (int i = 0; i < this.crafters.size(); ++i) {
             ICrafting crafting = this.crafters.get(i);
-            if (this.fluidAmount != this.tile.getTank().getFluidAmount())
-                crafting.sendProgressBarUpdate(this, 0, this.tile.getTank().getFluidAmount());
+            if (this.fluidAmount != this.tile.getFluidAmount())
+                crafting.sendProgressBarUpdate(this, 0, this.tile.getFluidAmount());
+            if (this.fluidCapacity != this.tile.getCapacity())
+                crafting.sendProgressBarUpdate(this, 1, this.tile.getFluidCapacity());
         }
-        this.fluidAmount = this.tile.getTank().getFluidAmount();
+        this.fluidAmount = this.tile.getFluidAmount();
+        this.fluidCapacity = this.tile.getFluidCapacity();
     }
 
     @Override
     @SideOnly(Side.CLIENT)
     public void updateProgressBar(int type, int value) {
-        if (type == 0) {
-            FluidStack stack = this.tile.getTankInfo(null)[0].fluid;
-            if (stack == null)
-                stack = new FluidStack(FluidRegistry.LAVA, value);
-            else
-                stack.amount = value;
-            this.tile.getTank().setFluid(stack);
+        switch (type) {
+            case 0:
+                this.tile.setFluidAmount(value);
+                break;
+            case 1:
+                this.tile.setFluidCapacity(value);
+                break;
         }
     }
 

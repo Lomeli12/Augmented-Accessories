@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.core.CreativeAugment;
-import net.lomeli.augment.lib.INameable;
+import net.lomeli.augment.blocks.tiles.INameable;
 
 public class BlockBase extends Block {
 
@@ -33,7 +33,7 @@ public class BlockBase extends Block {
         worldIn.setBlockState(pos, state, 2);
         if (stack.hasDisplayName()) {
             TileEntity tileentity = worldIn.getTileEntity(pos);
-            if (tileentity != null && tileentity instanceof INameable)
+            if (tileentity instanceof INameable)
                 ((INameable) tileentity).setCustomInventoryName(stack.getDisplayName());
         }
     }
@@ -41,7 +41,7 @@ public class BlockBase extends Block {
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         TileEntity tile = world.getTileEntity(pos);
-        if (tile != null && tile instanceof IInventory) {
+        if (tile instanceof IInventory) {
             InventoryHelper.dropInventoryItems(world, pos, (IInventory) tile);
             world.updateComparatorOutputLevel(pos, this);
         }

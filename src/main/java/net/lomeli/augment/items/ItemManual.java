@@ -55,7 +55,7 @@ public class ItemManual extends ItemBase implements IItemPage {
 
     @Override
     public String parentID(ItemStack stack) {
-        return Augment.MOD_ID + ":getting_started";
+        return Augment.MOD_ID + ":creating_ring";
     }
 
     @Override

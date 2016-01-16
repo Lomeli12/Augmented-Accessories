@@ -1,27 +1,15 @@
 package net.lomeli.augment.client.gui.manual.pages;
 
-import com.google.common.base.Strings;
-import com.google.common.collect.Lists;
-
 import java.io.IOException;
-import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.ResourceLocation;
 
 import net.lomeli.lomlib.util.LangUtil;
 import net.lomeli.lomlib.util.RenderUtils;
 
-import net.lomeli.augment.api.AugmentAPI;
-import net.lomeli.augment.api.manual.IGuiPage;
-import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.client.gui.manual.GuiPage;
 import net.lomeli.augment.client.gui.manual.GuiPageButton;
 
@@ -30,8 +18,6 @@ public class GuiPageMultiBlock extends GuiPage {
     private GuiButton addHeight, subHeight;
     public GuiPageButton buttonNextPage, buttonPreviousPage;
     private int height, selectedHeight, selectedPage, maxPage;
-    public IGuiPage possiblePage;
-    private List<String> tooltip;
     private String[] descriptions;
 
     public GuiPageMultiBlock(String id, String parent, String name, ItemStack[][][] blockStacks, String... descriptions) {
@@ -43,7 +29,6 @@ public class GuiPageMultiBlock extends GuiPage {
     @Override
     public void initGui() {
         super.initGui();
-        this.tooltip = Lists.newArrayList();
         this.buttonList.add(addHeight = new GuiChangeLayer(1, left + 160, top + 50, false));
         this.buttonList.add(subHeight = new GuiChangeLayer(2, left + 160, top + 100, true));
         this.buttonList.add(buttonNextPage = new GuiPageButton(3, left + 120, top + 156, true));
@@ -105,8 +90,7 @@ public class GuiPageMultiBlock extends GuiPage {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+    protected void drawPage(int mouseX, int mouseY, float partialTicks) {
         String title = LangUtil.translate(getName());
         fontRendererObj.drawSplitString(title, left + 36, top + 13, GuiPage.WORD_WRAP - 6, 0);
         fontRendererObj.drawSplitString(title, left + 35, top + 12, GuiPage.WORD_WRAP - 6, 0x00FFFF);
@@ -122,62 +106,27 @@ public class GuiPageMultiBlock extends GuiPage {
             } else {
                 if (blockStacks != null && selectedHeight >= 0 && selectedHeight < height) {
                     GlStateManager.pushMatrix();
-                    RenderHelper.enableGUIStandardItemLighting();
-                    tooltip.clear();
-                    possiblePage = null;
                     for (int x = 0; x < blockStacks[selectedHeight].length; x++) {
                         for (int z = 0; z < blockStacks[selectedHeight][x].length; z++) {
                             ItemStack stack = blockStacks[selectedHeight][x][z];
-                            drawItem(stack, left + 50 + (z * 16), top + 50 + (x * 16), mouseX, mouseY);
+                            int xOffset = 50;//(int) (50 + (5 * Math.ceil((5d / (double) blockStacks[selectedHeight].length)) / 2));
+                            int yOffset = 50;//(int) (50 + (5 * Math.ceil((5d / (double) blockStacks[selectedHeight][x].length)) / 2));
+                            drawItemPos(stack, left + xOffset + (z * 18), top + yOffset + (x * 18), mouseX, mouseY);
                         }
                     }
-
                     GlStateManager.popMatrix();
-                    if (tooltip != null && tooltip.size() > 0)
-                        this.drawHoveringText(tooltip, mouseX, mouseY, fontRendererObj);
                 }
             }
         }
     }
 
-    @Override
-    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (possiblePage != null) {
-            mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
-            mc.displayGuiScreen(possiblePage.openPage(this.getID()));
-            possiblePage = null;
-        }
-    }
-
-    private void drawItem(ItemStack stack, int x, int y, int mouseX, int mouseY) {
+    private void drawItemPos(ItemStack stack, int x, int y, int mouseX, int mouseY) {
         GlStateManager.pushMatrix();
         GlStateManager.color(1, 1, 1);
         RenderUtils.bindTexture(GuiPage.BOOK_TEXTURE);
         drawTexturedModalRect(x - 1, y - 1, 62, 196, 18, 18);
         GlStateManager.popMatrix();
-        if (stack != null && stack.getItem() != null) {
-            itemRender.renderItemIntoGUI(stack, x, y);
-            boolean flag = mouseX >= x && mouseY >= y && mouseX < x + 16 && mouseY < y + 16;
-            if (flag) {
-                tooltip.add(stack.getDisplayName());
-                if (stack.getItem() instanceof IItemPage)
-                    addItemPageLink(stack, (IItemPage) stack.getItem());
-                else if (stack.getItem() instanceof ItemBlock && ((ItemBlock) stack.getItem()).getBlock() instanceof IItemPage)
-                    addItemPageLink(stack, (IItemPage) ((ItemBlock) stack.getItem()).getBlock());
-            }
-        }
-    }
-
-    private void addItemPageLink(ItemStack stack, IItemPage page) {
-        tooltip.clear();
-        tooltip.add(EnumChatFormatting.GOLD + stack.getDisplayName());
-        String id = page.pageID(stack);
-        if (!Strings.isNullOrEmpty(id) && AugmentAPI.manualRegistry.getPageForID(id) != null) {
-            tooltip.add(LangUtil.translate("book.augmentedaccessories.tooltip.iteminfo"));
-            possiblePage = AugmentAPI.manualRegistry.getPageForID(id);
-        } else
-            possiblePage = null;
+        drawItem(stack, x, y, mouseX, mouseY, true);
     }
 
     private class GuiChangeLayer extends GuiButton {

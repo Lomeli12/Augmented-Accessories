@@ -25,7 +25,6 @@ import net.lomeli.lomlib.util.LangUtil;
 
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.items.ModItems;
-import net.lomeli.augment.lib.INameable;
 
 public class TileAltar extends TileEntity implements INameable, IInventory, ITickable {
     private boolean master, activated;
