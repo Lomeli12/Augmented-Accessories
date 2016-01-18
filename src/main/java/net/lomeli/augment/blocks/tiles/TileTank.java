@@ -24,7 +24,7 @@ public class TileTank extends TileEntity implements IFluidHandler {
         int amount = tank.fill(resource, doFill);
         if (amount > 0 && doFill) {
             renderOffset += amount;
-            if(!worldObj.isRemote) {
+            if (!worldObj.isRemote) {
                 Augment.packetHandler.sendToAll(new MessageFluidUpdate(pos, tank.getFluid()));
             }
         }
@@ -43,7 +43,7 @@ public class TileTank extends TileEntity implements IFluidHandler {
         FluidStack amount = tank.drain(maxDrain, doDrain);
         if (amount != null && doDrain) {
             renderOffset -= amount.amount;
-            if(!worldObj.isRemote && worldObj instanceof WorldServer) {
+            if (!worldObj.isRemote && worldObj instanceof WorldServer) {
                 Augment.packetHandler.sendToClients((WorldServer) worldObj, pos, new MessageFluidUpdate(pos, tank.getFluid()));
             }
         }
@@ -98,6 +98,12 @@ public class TileTank extends TileEntity implements IFluidHandler {
 
     public boolean containsFluid() {
         return tank.getFluid() != null;
+    }
+
+    public int getBrightness() {
+        if (containsFluid())
+            return tank.getFluid().getFluid().getLuminosity();
+        return 0;
     }
 
     @SideOnly(Side.CLIENT)

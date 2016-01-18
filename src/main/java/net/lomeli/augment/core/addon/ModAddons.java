@@ -6,11 +6,16 @@ import java.util.List;
 
 import net.minecraftforge.fml.common.Loader;
 
+import net.lomeli.augment.lib.AugConfig;
+
 public class ModAddons {
     public static List<IAddon> addonList = Lists.newArrayList();
 
     public static void registerAddons() {
-        addonList.add(new BotaniaAddon());
+        if (AugConfig.botaniaAddon)
+            addonList.add(new BotaniaAddon());
+        if (AugConfig.thaumcraftAddon)
+            addonList.add(new ThaumcraftAddon());
     }
 
     public static void initAddons() {

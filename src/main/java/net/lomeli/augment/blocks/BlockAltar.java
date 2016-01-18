@@ -23,13 +23,13 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
-import net.lomeli.lomlib.util.EntityUtil;
 import net.lomeli.lomlib.util.ItemUtil;
 
 import net.lomeli.augment.Augment;
@@ -117,6 +117,15 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
     @Override
     public int damageDropped(IBlockState state) {
         return ((EnumAltarType) state.getValue(VARIANT)).getMetadata();
+    }
+
+    @Override
+    public int getLightValue(IBlockAccess world, BlockPos pos) {
+        TileEntity te = world.getTileEntity(pos);
+        if (!(te instanceof TileAltar))
+            return 0;
+        TileAltar tank = (TileAltar) te;
+        return tank.getBrightness();
     }
 
     @Override

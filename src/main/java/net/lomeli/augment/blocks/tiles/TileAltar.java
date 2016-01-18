@@ -8,6 +8,7 @@ import java.util.List;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -226,7 +227,6 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
 
     @Override
     public void setField(int id, int value) {
-
     }
 
     @Override
@@ -259,6 +259,16 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
     @Override
     public IChatComponent getDisplayName() {
         return new ChatComponentText(LangUtil.translate(hasCustomName() ? getName() : "tile.augmentedaccessories.altar." + (master ? 1 : 0) + ".name"));
+    }
+
+    public int getBrightness() {
+        ItemStack stack = getStackInSlot(0);
+        if (stack != null && stack.getItem() instanceof ItemBlock) {
+            ItemBlock itemBlock = (ItemBlock) stack.getItem();
+            if (itemBlock.getBlock() != null)
+                return itemBlock.getBlock().getLightValue();
+        }
+        return 0;
     }
 
     @Override

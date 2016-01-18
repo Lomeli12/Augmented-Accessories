@@ -27,12 +27,18 @@ public interface IAugmentRegistry {
     boolean augmentRegistered(String augmentID);
 
     /**
-     * Add new recipe for augment
+     * Add new recipe for augment with pre-made implementation of IAugmentRecipe
      * @param augmentID
      * @param level
      * @param inputs
      */
     void addSpellRecipe(String augmentID, int level, Object... inputs);
+
+    /**
+     * Add new recipe for augment with custom implementation of IAugmentRecipe
+     * @param recipe
+     */
+    void addSpellRecipe(IAugmentRecipe recipe);
 
     /**
      * Check if items can create agument. Return ID if they can
@@ -64,5 +70,5 @@ public interface IAugmentRegistry {
      */
     boolean playerHasAugment(EntityPlayer player, String augmentID);
 
-    List getAugmentRecipe(String augmentID);
+    List<IAugmentRecipe> getAugmentRecipes(String augmentID);
 }

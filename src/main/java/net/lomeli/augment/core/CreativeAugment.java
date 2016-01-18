@@ -14,6 +14,7 @@ import net.lomeli.augment.lib.ModNBT;
 public class CreativeAugment extends CreativeTabs {
     private Random rand;
     private final int l0, l1, l2;
+    private ItemStack tabStack;
 
     public static final CreativeAugment modTab = new CreativeAugment();
 
@@ -27,15 +28,17 @@ public class CreativeAugment extends CreativeTabs {
 
     @Override
     public ItemStack getIconItemStack() {
-        ItemStack stack = new ItemStack(getTabIconItem(), 1, 0);
-        NBTTagCompound tag = new NBTTagCompound();
-        tag.setInteger(ModNBT.LAYER_ONE, l0);
-        tag.setInteger(ModNBT.LAYER_TWO, l1);
-        tag.setInteger(ModNBT.GEM_COLOR, l2);
-        NBTTagCompound itemTag = new NBTTagCompound();
-        itemTag.setTag(ModNBT.RING_DATA, tag);
-        stack.setTagCompound(itemTag);
-        return stack;
+        if (tabStack == null) {
+            tabStack = new ItemStack(getTabIconItem(), 1, 0);
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setInteger(ModNBT.LAYER_ONE, l0);
+            tag.setInteger(ModNBT.LAYER_TWO, l1);
+            tag.setInteger(ModNBT.GEM_COLOR, l2);
+            NBTTagCompound itemTag = new NBTTagCompound();
+            itemTag.setTag(ModNBT.RING_DATA, tag);
+            tabStack.setTagCompound(itemTag);
+        }
+        return tabStack;
     }
 
     @Override

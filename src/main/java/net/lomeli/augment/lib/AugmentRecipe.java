@@ -1,4 +1,4 @@
-package net.lomeli.augment.core.augment;
+package net.lomeli.augment.lib;
 
 import com.google.common.collect.Lists;
 
@@ -14,7 +14,9 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import net.lomeli.lomlib.util.FluidUtil;
 
-public class AugmentRecipe {
+import net.lomeli.augment.api.augment.IAugmentRecipe;
+
+public class AugmentRecipe implements IAugmentRecipe {
     private final String augmentID;
     private final int level;
     public List inputs = Lists.newArrayList();
@@ -25,10 +27,7 @@ public class AugmentRecipe {
         this.level = level;
         for (Object in : recipe) {
             if (in instanceof ItemStack) {
-                if (FluidUtil.isFilledContainer((ItemStack) in))
-                    inputs.add(FluidUtil.getContainersForFluid(FluidUtil.getContainerFluid((ItemStack) in)));
-                else
-                    inputs.add(((ItemStack) in).copy());
+                inputs.add(((ItemStack) in).copy());
             } else if (in instanceof Item) {
                 ItemStack itemStack = new ItemStack((Item) in);
                 if (FluidUtil.isFilledContainer(itemStack))
@@ -55,6 +54,7 @@ public class AugmentRecipe {
         }
     }
 
+    @Override
     public boolean matches(List<ItemStack> items) {
         List<Object> required = Lists.newArrayList(inputs);
         for (int x = 0; x < items.size(); x++) {
@@ -88,10 +88,17 @@ public class AugmentRecipe {
         return required.isEmpty();
     }
 
+    @Override
+    public List getInputs() {
+        return inputs;
+    }
+
+    @Override
     public int getLevel() {
         return level;
     }
 
+    @Override
     public String getAugmentID() {
         return augmentID;
     }

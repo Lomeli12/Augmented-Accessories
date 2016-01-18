@@ -97,7 +97,11 @@ public class ClientProxy extends Proxy {
         AugmentAPI.manualRegistry.addItemPage((IItemPage) ModItems.ring);
         AugmentAPI.manualRegistry.addItemPage((IItemPage) ModBlocks.altar);
         AugmentAPI.manualRegistry.addMultiblockPage(new AltarMultiBlockPage());
-        AugmentAPI.manualRegistry.addAugmentPage("TestPage", Augment.MOD_ID + ":augments", "test_augment", true);
+
+        AugmentAPI.manualRegistry.addAugmentPage(Augment.MOD_ID + ":fire_resist", Augment.MOD_ID + ":augments", Augment.MOD_ID + ":fire_resist", true);
+        AugmentAPI.manualRegistry.addAugmentPage(Augment.MOD_ID + ":hidden", Augment.MOD_ID + ":augments", Augment.MOD_ID + ":hidden", true);
+        AugmentAPI.manualRegistry.addAugmentPage(Augment.MOD_ID + ":stilt_stride", Augment.MOD_ID + ":augments", Augment.MOD_ID + ":stilt_stride", true);
+
     }
 
     private void registerMetadataModel(Item item, ResourceLocation... files) {

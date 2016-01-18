@@ -19,7 +19,7 @@ import net.lomeli.augment.core.network.MessageFluidUpdate;
 import net.lomeli.augment.core.network.MessageRingName;
 import net.lomeli.augment.core.network.MessageSavePage;
 import net.lomeli.augment.core.network.MessageUpdateClientVigor;
-import net.lomeli.augment.core.vigor.VigorManager;
+import net.lomeli.augment.core.vigor.VigorRegistry;
 import net.lomeli.augment.lib.AugConfig;
 
 @Mod(modid = Augment.MOD_ID, name = Augment.MOD_NAME, version = Augment.VERSION, dependencies = Augment.DEPENDENCIES,
@@ -48,7 +48,7 @@ public class Augment {
 
     @Mod.EventHandler
     public void serverStartingEvent(FMLServerStartingEvent event) {
-        VigorManager.getInstance().startNewSession();
+        VigorRegistry.getInstance().startNewSession();
     }
 
     @Mod.EventHandler

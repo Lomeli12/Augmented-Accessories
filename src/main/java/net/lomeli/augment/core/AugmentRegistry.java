@@ -1,4 +1,4 @@
-package net.lomeli.augment.core.augment;
+package net.lomeli.augment.core;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -17,8 +17,10 @@ import net.lomeli.lomlib.util.NBTUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.augment.IAugment;
+import net.lomeli.augment.api.augment.IAugmentRecipe;
 import net.lomeli.augment.api.augment.IAugmentRegistry;
 import net.lomeli.augment.items.ModItems;
+import net.lomeli.augment.lib.AugmentRecipe;
 import net.lomeli.augment.lib.ModNBT;
 
 import baubles.api.BaublesApi;
@@ -32,7 +34,7 @@ public class AugmentRegistry implements IAugmentRegistry {
     }
 
     private Map<String, IAugment> augmentMap;
-    private List<AugmentRecipe> recipeList;
+    private List<IAugmentRecipe> recipeList;
 
     private AugmentRegistry() {
         augmentMap = Maps.newHashMap();
@@ -59,14 +61,22 @@ public class AugmentRegistry implements IAugmentRegistry {
 
     @Override
     public void addSpellRecipe(String augmentID, int level, Object... inputs) {
-        if (!augmentRegistered(augmentID) || level < 0 || inputs == null || inputs.length <= 0) return;
+        if (!augmentRegistered(augmentID) || level < 0 || inputs == null || inputs.length <= 0)
+            return;
         recipeList.add(new AugmentRecipe(augmentID, level, inputs));
+    }
+
+    @Override
+    public void addSpellRecipe(IAugmentRecipe recipe) {
+        if (recipe == null || !augmentRegistered(recipe.getAugmentID()) || recipe.getLevel() < 0 || recipe.getInputs() == null)
+            return;
+        recipeList.add(recipe);
     }
 
     @Override
     public String getAugmentFromInputs(List<ItemStack> items) {
         if (items == null || items.isEmpty() || recipeList.isEmpty()) return null;
-        for (AugmentRecipe recipe : recipeList) {
+        for (IAugmentRecipe recipe : recipeList) {
             if (recipe != null && recipe.matches(items) && augmentRegistered(recipe.getAugmentID()))
                 return recipe.getAugmentID();
         }
@@ -111,12 +121,13 @@ public class AugmentRegistry implements IAugmentRegistry {
     }
 
     @Override
-    public List getAugmentRecipe(String augmentID) {
+    public List<IAugmentRecipe> getAugmentRecipes(String augmentID) {
         if (!augmentRegistered(augmentID)) return null;
-        for (AugmentRecipe recipe : recipeList) {
+        List<IAugmentRecipe> recipes = Lists.newArrayList();
+        for (IAugmentRecipe recipe : recipeList) {
             if (recipe != null && recipe.getAugmentID().equals(augmentID))
-                return recipe.inputs;
+                recipes.add(recipe);
         }
-        return null;
+        return recipes;
     }
 }

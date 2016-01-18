@@ -1,6 +1,5 @@
 package net.lomeli.augment.client.gui.manual;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 
 import java.util.Map;
@@ -12,8 +11,8 @@ import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.manual.IGuiPage;
 import net.lomeli.augment.api.manual.IItemPage;
-import net.lomeli.augment.api.manual.IMultiBlockPage;
 import net.lomeli.augment.api.manual.IManualRegistry;
+import net.lomeli.augment.api.manual.IMultiBlockPage;
 import net.lomeli.augment.client.gui.manual.pages.GuiPageAugment;
 import net.lomeli.augment.client.gui.manual.pages.GuiPageItem;
 import net.lomeli.augment.client.gui.manual.pages.GuiPageList;

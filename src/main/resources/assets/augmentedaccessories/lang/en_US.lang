@@ -13,6 +13,7 @@ gui.augmentedaccessories.hud.shift=Shift
 gui.augmentedaccessories.button.back=Back
 gui.augmentedaccessories.button.prev=Previous Page
 gui.augmentedaccessories.button.next=Next Page
+gui.augmentedaccessories.augment.recipe.level=Ring Level: %s
 
 item.augmentedaccessories.iron_hammer.name=Iron Forge Hammer
 item.augmentedaccessories.diamond_hammer.name=Diamond Forge Hammer
@@ -44,6 +45,13 @@ tile.augmentedaccessories.tank.name=Iron Tank
 tile.augmentedaccessories.tank.empty=Empty
 tile.augmentedaccessories.tank.book=A Ring Forge's best pal.
 
+augment.augmentedaccessories.fire_resist=Fire-Proof Skin
+augment.augmentedaccessories.hot_head=Hot Head
+augment.augmentedaccessories.hidden=Hidden in Plain Sight
+augment.augmentedaccessories.green_thumb=
+augment.augmentedaccessories.gold_miner=Gold Miner
+augment.augmentedaccessories.stilt_stride=Stilt Stride
+
 potion.augmentedaccessories.regen_vigor=Vigor Regen
 
 config.augmentedaccessories.vigor.starting=The max amount of vigor the player starts with.
@@ -53,6 +61,8 @@ config.augmentedaccessories.vigor.regen.rate=Amount of vigor regained during reg
 config.augmentedaccessories.vigor.hud.position=Set corner in which the vigor bar is overlayed. 0 = Top Left; 1 = Top Right; 2 = Bottom Right; 3 = Bottom Left; 4 = Don't render.
 config.augmentedaccessories.vigor.potion.rate=The amount that your max vigor increases by when drinking a robust potion
 config.augmentedaccessories.book.rotate_items=Have rotating augment recipes in book.
+config.augmentedaccessories.addon.botania=Enable Botania addon
+config.augmentedaccessories.addon.thaumcraft=Enable Thaumcraft addon
 
 book.augmentedaccessories.main_page.title=Main Page
 book.augmentedaccessories.creating_ring.title=Creating a Ring

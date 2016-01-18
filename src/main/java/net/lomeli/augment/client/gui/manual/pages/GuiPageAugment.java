@@ -1,32 +1,42 @@
 package net.lomeli.augment.client.gui.manual.pages;
 
 import com.google.common.collect.Lists;
+import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 
 import net.lomeli.lomlib.util.LangUtil;
+import net.lomeli.lomlib.util.RenderUtils;
+import net.lomeli.lomlib.util.ResourceUtil;
 
+import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.api.augment.IAugment;
+import net.lomeli.augment.api.augment.IAugmentRecipe;
+import net.lomeli.augment.client.gui.PositionedStack;
 import net.lomeli.augment.client.gui.manual.GuiPage;
 import net.lomeli.augment.client.gui.manual.GuiPageButton;
 import net.lomeli.augment.client.handler.TickHandlerClient;
+import net.lomeli.augment.core.CreativeAugment;
 import net.lomeli.augment.lib.AugConfig;
-import net.lomeli.augment.client.gui.PositionedStack;
 
 public class GuiPageAugment extends GuiPage {
+    private final ResourceLocation CIRCLE_TEXTURE = ResourceUtil.getGuiResource(Augment.MOD_ID, "circle");
     private String augmentID;
     private String[] descs;
-    private int selected, maxSelected;
+    private int selected, maxSelected, level, selectedAugment;
     private float ticksElapsed = 0;
     public GuiPageButton buttonNextPage;
     public GuiPageButton buttonPreviousPage;
     private boolean recipe;
     private List<PositionedStack> recipeInputs;
+    private List<IAugmentRecipe> augmentRecipes;
 
     public GuiPageAugment(String id, String parentID, IAugment augment, boolean recipe, String... desc) {
         super(id, parentID, augment.getUnlocalizedName());
@@ -34,13 +44,31 @@ public class GuiPageAugment extends GuiPage {
         this.augmentID = augment.getID();
         this.descs = desc;
         this.recipeInputs = Lists.newArrayList();
+        this.augmentRecipes = Lists.newArrayList();
     }
 
-    private void getRecipe() {
+    private void getRecipeInit() {
         this.recipeInputs.clear();
-        List recipe = AugmentAPI.augmentRegistry.getAugmentRecipe(augmentID);
-        if (recipe != null) {
-            for (Object obj : recipe) {
+        this.augmentRecipes.clear();
+        List<IAugmentRecipe> recipes = AugmentAPI.augmentRegistry.getAugmentRecipes(augmentID);
+        if (recipes != null && !recipes.isEmpty()) {
+            this.augmentRecipes.addAll(recipes);
+            Iterator<IAugmentRecipe> it = this.augmentRecipes.iterator();
+            while (it.hasNext()) {
+                Object obj = it.next();
+                if (obj == null)
+                    it.remove();
+            }
+            getRecipe(this.augmentRecipes.get(0));
+        }
+    }
+
+    private void getRecipe(IAugmentRecipe recipe) {
+        recipeInputs.clear();
+        level = recipe.getLevel();
+        List recipeIn = recipe.getInputs();
+        if (recipeIn != null) {
+            for (Object obj : recipeIn) {
                 if (obj != null)
                     recipeInputs.add(new PositionedStack(obj, 0, 0));
             }
@@ -54,9 +82,9 @@ public class GuiPageAugment extends GuiPage {
         this.buttonList.add(this.buttonNextPage = new GuiPageButton(1, left + 120, top + 156, true));
         this.buttonList.add(this.buttonPreviousPage = new GuiPageButton(2, left + 38, top + 156, false));
         if (recipe) {
-            getRecipe();
-            if (!recipeInputs.isEmpty())
-                maxSelected++;
+            getRecipeInit();
+            if (!augmentRecipes.isEmpty())
+                maxSelected += augmentRecipes.size();
         }
         if (maxSelected < 2)
             this.buttonNextPage.visible = false;
@@ -81,7 +109,16 @@ public class GuiPageAugment extends GuiPage {
                     fontRendererObj.setUnicodeFlag(unicodeFlag);
                 }
             } else if (!recipeInputs.isEmpty()) {
+                fontRendererObj.drawStringWithShadow(LangUtil.translate("gui.augmentedaccessories.augment.recipe.level", level), left + 60, top + 140, 0x00FFFF);
                 GlStateManager.pushMatrix();
+                RenderUtils.bindTexture(CIRCLE_TEXTURE);
+                GL11.glColor3f(1.0F, 1.0F, 1.0F);
+                this.drawTexturedModalRect(left, top - 10, 0, 0, this.bookImageWidth, this.bookImageHeight);
+                GL11.glColor3f(1.0F, 1.0F, 1.0F);
+                GlStateManager.popMatrix();
+
+                GlStateManager.pushMatrix();
+                drawItem(CreativeAugment.modTab.getIconItemStack(), left + 83, top + 75, mouseX, mouseY, true);
                 int degreePerInput = (int) (360F / recipeInputs.size());
                 float currentDegree = AugConfig.bookRotateItems ? isShiftKeyDown() ? ticksElapsed : ticksElapsed + TickHandlerClient.partialTicks : 0;
                 for (PositionedStack stack : recipeInputs) {
@@ -98,9 +135,9 @@ public class GuiPageAugment extends GuiPage {
     private void drawItemAtAngle(PositionedStack stack, float angle, int mouseX, int mouseY) {
         if (stack != null && stack.getStack() != null && stack.getStack().getItem() != null) {
             angle -= 90;
-            int radius = 38;
+            int radius = 45;
             double xPos = left + 85 + Math.cos(angle * Math.PI / 180D) * radius;
-            double yPos = top + Math.sin(angle * Math.PI / 180D) * radius + 80;
+            double yPos = top + Math.sin(angle * Math.PI / 180D) * radius + 75;
             drawItem(stack.getStack(), (int) xPos, (int) yPos, mouseX, mouseY);
         }
     }
@@ -111,6 +148,11 @@ public class GuiPageAugment extends GuiPage {
         switch (button.id) {
             case 1:
                 ++selected;
+                if (selected >= descs.length) {
+                    selectedAugment = selected - descs.length;
+                    if (selectedAugment < augmentRecipes.size())
+                        getRecipe(augmentRecipes.get(selectedAugment));
+                }
                 if (selected >= maxSelected - 1) {
                     selected = maxSelected - 1;
                     this.buttonNextPage.visible = false;
@@ -120,6 +162,11 @@ public class GuiPageAugment extends GuiPage {
                 break;
             case 2:
                 --selected;
+                if (selected >= descs.length) {
+                    selectedAugment = selected - descs.length;
+                    if (selectedAugment < augmentRecipes.size())
+                        getRecipe(augmentRecipes.get(selectedAugment));
+                }
                 if (selected <= 0) {
                     selected = 0;
                     this.buttonPreviousPage.visible = false;

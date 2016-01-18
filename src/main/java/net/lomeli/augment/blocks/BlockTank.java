@@ -16,6 +16,7 @@ import net.minecraft.util.BlockPos;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatComponentTranslation;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fluids.FluidContainerRegistry;
@@ -95,11 +96,11 @@ public class BlockTank extends BlockBase implements ITileEntityProvider, IItemPa
             ((IFluidContainerItem) stack.getItem()).fill(stack, fillFluid, true);
         } else {
             ItemStack filledStack = FluidContainerRegistry.fillFluidContainer(fillFluid, stack);
-            if (!player.inventory.addItemStackToInventory(filledStack)) {
-                if (!player.worldObj.isRemote)
-                    player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, filledStack));
-            }
             if (!player.capabilities.isCreativeMode) {
+                if (!player.inventory.addItemStackToInventory(filledStack)) {
+                    if (!player.worldObj.isRemote)
+                        player.worldObj.spawnEntityInWorld(new EntityItem(player.worldObj, player.posX, player.posY, player.posZ, filledStack));
+                }
                 stack.stackSize -= 1;
                 if (stack.stackSize <= 0)
                     stack = null;
@@ -118,6 +119,15 @@ public class BlockTank extends BlockBase implements ITileEntityProvider, IItemPa
             if (!player.inventory.addItemStackToInventory(empty))
                 EntityUtil.entityDropItem(player, empty, 1d);
         }
+    }
+
+    @Override
+    public int getLightValue(IBlockAccess world, BlockPos pos) {
+        TileEntity te = world.getTileEntity(pos);
+        if (!(te instanceof TileTank))
+            return 0;
+        TileTank tank = (TileTank) te;
+        return tank.getBrightness();
     }
 
     @Override

@@ -19,16 +19,16 @@ import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.core.network.MessageUpdateClientVigor;
 import net.lomeli.augment.lib.AugConfig;
 
-public class VigorManager implements IVigorRegistry {
+public class VigorRegistry implements IVigorRegistry {
     private Map<UUID, VigorData> playerData;
-    private static VigorManager INSTANCE;
+    private static VigorRegistry INSTANCE;
 
-    public static VigorManager getInstance() {
-        if (INSTANCE == null) INSTANCE = new VigorManager();
+    public static VigorRegistry getInstance() {
+        if (INSTANCE == null) INSTANCE = new VigorRegistry();
         return INSTANCE;
     }
 
-    private VigorManager() {
+    private VigorRegistry() {
         playerData = Maps.newHashMap();
     }
 
