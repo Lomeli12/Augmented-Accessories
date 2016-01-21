@@ -27,7 +27,7 @@ import net.lomeli.augment.core.CreativeAugment;
 import net.lomeli.augment.lib.AugConfig;
 
 public class GuiPageAugment extends GuiPage {
-    private final ResourceLocation CIRCLE_TEXTURE = ResourceUtil.getGuiResource(Augment.MOD_ID, "circle");
+    private static final ResourceLocation CIRCLE_TEXTURE = ResourceUtil.getGuiResource(Augment.MOD_ID, "circle");
     private String augmentID;
     private String[] descs;
     private int selected, maxSelected, level, selectedAugment;
@@ -65,7 +65,7 @@ public class GuiPageAugment extends GuiPage {
 
     private void getRecipe(IAugmentRecipe recipe) {
         recipeInputs.clear();
-        level = recipe.getLevel();
+        level = AugmentAPI.augmentRegistry.getAugmentID(recipe.getAugmentID()).augmentLevel();
         List recipeIn = recipe.getInputs();
         if (recipeIn != null) {
             for (Object obj : recipeIn) {
@@ -109,13 +109,14 @@ public class GuiPageAugment extends GuiPage {
                     fontRendererObj.setUnicodeFlag(unicodeFlag);
                 }
             } else if (!recipeInputs.isEmpty()) {
-                fontRendererObj.drawStringWithShadow(LangUtil.translate("gui.augmentedaccessories.augment.recipe.level", level), left + 60, top + 140, 0x00FFFF);
                 GlStateManager.pushMatrix();
                 RenderUtils.bindTexture(CIRCLE_TEXTURE);
-                GL11.glColor3f(1.0F, 1.0F, 1.0F);
+                GL11.glColor4f(1F, 1F, 1F, 1F);
                 this.drawTexturedModalRect(left, top - 10, 0, 0, this.bookImageWidth, this.bookImageHeight);
-                GL11.glColor3f(1.0F, 1.0F, 1.0F);
+                GL11.glColor4f(1F, 1F, 1F, 1F);
                 GlStateManager.popMatrix();
+
+                fontRendererObj.drawStringWithShadow(LangUtil.translate("gui.augmentedaccessories.augment.recipe.level", level), left + 60, top + 140, 0x00FFFF);
 
                 GlStateManager.pushMatrix();
                 drawItem(CreativeAugment.modTab.getIconItemStack(), left + 83, top + 75, mouseX, mouseY, true);

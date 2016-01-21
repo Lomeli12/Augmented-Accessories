@@ -29,10 +29,9 @@ public interface IAugmentRegistry {
     /**
      * Add new recipe for augment with pre-made implementation of IAugmentRecipe
      * @param augmentID
-     * @param level
      * @param inputs
      */
-    void addSpellRecipe(String augmentID, int level, Object... inputs);
+    void addSpellRecipe(String augmentID, Object... inputs);
 
     /**
      * Add new recipe for augment with custom implementation of IAugmentRecipe

@@ -93,4 +93,9 @@ public class AugmentFireResist implements IAugment {
     public String getUnlocalizedName() {
         return "augment.augmentedaccessories.fire_resist";
     }
+
+    @Override
+    public int augmentLevel() {
+        return 0;
+    }
 }

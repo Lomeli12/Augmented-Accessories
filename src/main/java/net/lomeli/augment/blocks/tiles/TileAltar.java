@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
@@ -21,10 +22,13 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.ITickable;
 
+import net.lomeli.lomlib.util.EntityUtil;
 import net.lomeli.lomlib.util.ItemUtil;
 import net.lomeli.lomlib.util.LangUtil;
 
 import net.lomeli.augment.api.AugmentAPI;
+import net.lomeli.augment.api.augment.IAugment;
+import net.lomeli.augment.items.ItemRing;
 import net.lomeli.augment.items.ModItems;
 
 public class TileAltar extends TileEntity implements INameable, IInventory, ITickable {
@@ -124,8 +128,14 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         }
     }
 
-    public boolean activate() {
-        if (!activated) {
+    public boolean activate(EntityPlayer player) {
+        if (!EntityUtil.isFakePlayer(player) && !activated) {
+            ItemStack mainStack = getStackInSlot(0);
+            if (mainStack == null || !(mainStack.getItem() instanceof ItemRing)) {
+                if (!worldObj.isRemote)
+                    player.addChatComponentMessage(new ChatComponentText(LangUtil.translate("tile.augmentedaccessories.altar.missing_ring", mainStack == null ? Blocks.air.getLocalizedName() : mainStack.getDisplayName())));
+                return false;
+            }
             posList.clear();
             updateLocalList();
             for (BlockPos pos : posList) {
@@ -137,6 +147,13 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
             }
             augmentID = AugmentAPI.augmentRegistry.getAugmentFromInputs(Lists.newArrayList(ingredList));
             if (AugmentAPI.augmentRegistry.augmentRegistered(augmentID)) {
+                IAugment augment = AugmentAPI.augmentRegistry.getAugmentID(augmentID);
+                if (augment == null || ItemRing.getRingBoost(mainStack) < augment.augmentLevel()) {
+                    if (!worldObj.isRemote)
+                        player.addChatComponentMessage(new ChatComponentText(LangUtil.translate("tile.augmentedaccessories.altar.wrong_level")));
+                    augmentID = null;
+                    return false;
+                }
                 this.activated = true;
                 return true;
             }

@@ -19,6 +19,8 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
 import net.lomeli.lomlib.util.LangUtil;
+import net.lomeli.lomlib.util.RenderUtils;
+import net.lomeli.lomlib.util.ResourceUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.AugmentAPI;
@@ -28,7 +30,7 @@ import net.lomeli.augment.client.gui.IButtonToolTip;
 import net.lomeli.augment.core.network.MessageSavePage;
 
 public abstract class GuiPage extends GuiScreen implements IGuiPage {
-    public static final ResourceLocation BOOK_TEXTURE = new ResourceLocation("augmentedaccessories", "textures/gui/book.png");
+    public static final ResourceLocation BOOK_TEXTURE = ResourceUtil.getGuiResource(Augment.MOD_ID, "book");
     public static int WORD_WRAP = 115;
     public static int bookImageWidth = 192;
     public static int bookImageHeight = 192;
@@ -70,7 +72,7 @@ public abstract class GuiPage extends GuiScreen implements IGuiPage {
 
     protected void preDrawPage(int mouseX, int mouseY, float partialTicks) {
         GlStateManager.pushMatrix();
-        this.mc.getTextureManager().bindTexture(BOOK_TEXTURE);
+        RenderUtils.bindTexture(BOOK_TEXTURE);
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
         this.drawTexturedModalRect(left, top, 0, 0, this.bookImageWidth, this.bookImageHeight);
         GL11.glColor3f(1.0F, 1.0F, 1.0F);
@@ -164,7 +166,12 @@ public abstract class GuiPage extends GuiScreen implements IGuiPage {
             itemRender.renderItemIntoGUI(stack, x, y);
             boolean flag = mouseX >= x && mouseY >= y && mouseX < x + 16 && mouseY < y + 16;
             if (flag) {
-                addToolTip(stack.getDisplayName());
+                List<String> additionalInfo = stack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips);
+                if (additionalInfo != null && !additionalInfo.isEmpty()) {
+                    String[] stockArr = new String[additionalInfo.size()];
+                    stockArr = additionalInfo.toArray(stockArr);
+                    addToolTip(stockArr);
+                }
                 if (addLink) {
                     if (stack.getItem() instanceof IItemPage)
                         addItemPageLink(stack, (IItemPage) stack.getItem());
@@ -176,15 +183,18 @@ public abstract class GuiPage extends GuiScreen implements IGuiPage {
     }
 
     private void addItemPageLink(ItemStack stack, IItemPage page) {
-        String ln0, ln1 = "";
-        ln0 = EnumChatFormatting.GOLD + stack.getDisplayName();
-        String id = page.pageID(stack);
-        if (!Strings.isNullOrEmpty(id) && AugmentAPI.manualRegistry.getPageForID(id) != null) {
-            ln1 = "book.augmentedaccessories.tooltip.iteminfo";
-            possiblePage = AugmentAPI.manualRegistry.getPageForID(id);
-        } else
-            possiblePage = null;
-        addToolTip(ln0, ln1);
+        List<String> additionalInfo = stack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips);
+        if (additionalInfo != null && !additionalInfo.isEmpty()) {
+            additionalInfo.set(0, EnumChatFormatting.GOLD + additionalInfo.get(0));
+            String id = page.pageID(stack);
+            if (!Strings.isNullOrEmpty(id) && AugmentAPI.manualRegistry.getPageForID(id) != null) {
+                additionalInfo.add("book.augmentedaccessories.tooltip.iteminfo");
+                possiblePage = AugmentAPI.manualRegistry.getPageForID(id);
+            } else
+                possiblePage = null;
+            String[] tooltip = new String[additionalInfo.size()];
+            addToolTip(additionalInfo.toArray(tooltip));
+        }
     }
 
     public void renderText(int x, int y, int width, int color, String unlocalizedText) {

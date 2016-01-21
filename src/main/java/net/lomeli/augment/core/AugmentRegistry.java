@@ -60,15 +60,15 @@ public class AugmentRegistry implements IAugmentRegistry {
     }
 
     @Override
-    public void addSpellRecipe(String augmentID, int level, Object... inputs) {
-        if (!augmentRegistered(augmentID) || level < 0 || inputs == null || inputs.length <= 0)
+    public void addSpellRecipe(String augmentID, Object... inputs) {
+        if (!augmentRegistered(augmentID) || inputs == null || inputs.length <= 0)
             return;
-        recipeList.add(new AugmentRecipe(augmentID, level, inputs));
+        recipeList.add(new AugmentRecipe(augmentID, inputs));
     }
 
     @Override
     public void addSpellRecipe(IAugmentRecipe recipe) {
-        if (recipe == null || !augmentRegistered(recipe.getAugmentID()) || recipe.getLevel() < 0 || recipe.getInputs() == null)
+        if (recipe == null || !augmentRegistered(recipe.getAugmentID()) || recipe.getInputs() == null)
             return;
         recipeList.add(recipe);
     }

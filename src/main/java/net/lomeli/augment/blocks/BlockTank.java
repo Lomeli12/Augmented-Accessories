@@ -8,14 +8,12 @@ import java.util.List;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.ChatComponentTranslation;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.*;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -81,6 +79,21 @@ public class BlockTank extends BlockBase implements ITileEntityProvider, IItemPa
             }
         }
         return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    public void addCollisionBoxesToList(World world, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+        this.setBlockBounds(0.0f, 0.0f, 0.0f, 1f, 0.25f, 1f);
+        super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
+        this.setBlockBounds(0.0f, 0.0f, 0.0f, 1f, 1f, 0.065f);
+        super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
+        this.setBlockBounds(0.0f, 0.0f, 0.935f, 1f, 1f, 1f);
+        super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
+        this.setBlockBounds(0.0f, 0.0f, 0.0f, 0.065f, 1f, 1f);
+        super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
+        this.setBlockBounds(0.935f, 0f, 0f, 1f, 1f, 1f);
+        super.addCollisionBoxesToList(world, pos, state, mask, list, collidingEntity);
+        this.setBlockBounds(0f, 0f, 0f, 1f, 1f, 1f);
     }
 
     private FluidStack getFilledFluid(TileTank tank, ItemStack stack) {

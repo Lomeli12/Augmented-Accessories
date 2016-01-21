@@ -105,4 +105,9 @@ public class AugmentStiltStride implements IAugment {
     public String getUnlocalizedName() {
         return "augment.augmentedaccessories.stilt_stride";
     }
+
+    @Override
+    public int augmentLevel() {
+        return 1;
+    }
 }

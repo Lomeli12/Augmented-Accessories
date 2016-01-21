@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 repositories {
     maven {
         name = 'Lomeli Repo'
-        url = "http://lomeli12.net/maven/"
+        url = "http://maven.lomeli12.net/"
     }
 }
 
@@ -36,6 +36,8 @@ loadProperties 'build.properties'
 group = "$group"
 archivesBaseName = "$baseName"
 version = "$releaseVersion"
+sourceCompatibility = "$targetJDK"
+targetCompatibility = "$targetJDK"
 
 minecraft {
     version = "$mcVersion-$mcfVersion"

@@ -15,11 +15,13 @@ import net.minecraft.block.properties.PropertyEnum;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMultiTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
@@ -66,7 +68,7 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
                 player.setCurrentItemOrArmor(0, playerHand);
             } else if (altarStack != null && (playerHand == null || !OreDictionary.itemMatches(altarStack, playerHand, false))) {
                 if (altar.isMaster() && (playerHand != null && playerHand.getItem() == ModItems.manual) && altarStack.getItem() == ModItems.ring) {
-                    altar.activate();
+                    altar.activate(player);
                 } else {
                     if (!world.isRemote)
                         ItemUtil.dropItemStackIntoWorld(altarStack, world, pos.getX(), pos.getY() + 1, pos.getZ(), false);
@@ -76,6 +78,12 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
             return true;
         }
         return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
+    }
+
+    @Override
+    public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+        this.setBlockBounds(0.09f, 0.0f, 0.09f, 0.91f, 1.022f, 0.91f);
+        super.addCollisionBoxesToList(worldIn, pos, state, mask, list, collidingEntity);
     }
 
     @Override

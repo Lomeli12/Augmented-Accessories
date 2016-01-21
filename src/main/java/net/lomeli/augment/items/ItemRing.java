@@ -46,7 +46,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         return false;
     }
 
-    public int getRingColor(ItemStack stack, int layer) {
+    public static int getRingColor(ItemStack stack, int layer) {
         if (stack != null && stack.hasTagCompound()) {
             NBTTagCompound tagCompound = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
             if (tagCompound != null) {
@@ -63,7 +63,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         return 0xFFFFFF;
     }
 
-    public void setRingColor(ItemStack stack, int layer, int color) {
+    public static void setRingColor(ItemStack stack, int layer, int color) {
         if (stack != null) {
             NBTTagCompound ringTag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
             switch (layer) {
@@ -81,7 +81,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         }
     }
 
-    public void setRingBoost(ItemStack stack, int boost) {
+    public static void setRingBoost(ItemStack stack, int boost) {
         if (stack != null) {
             NBTTagCompound ringData = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
             ringData.setInteger(ModNBT.RING_BOOST, boost);
@@ -89,7 +89,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         }
     }
 
-    public int getRingBoost(ItemStack stack) {
+    public static int getRingBoost(ItemStack stack) {
         if (stack != null && stack.hasTagCompound()) {
             NBTTagCompound ringTag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
             return ringTag.getInteger(ModNBT.RING_BOOST);

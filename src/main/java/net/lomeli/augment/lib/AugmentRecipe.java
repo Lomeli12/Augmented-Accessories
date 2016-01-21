@@ -18,13 +18,11 @@ import net.lomeli.augment.api.augment.IAugmentRecipe;
 
 public class AugmentRecipe implements IAugmentRecipe {
     private final String augmentID;
-    private final int level;
     public List inputs = Lists.newArrayList();
 
     // Copied from ShapelessFluidRecipe
-    public AugmentRecipe(String augmentID, int level, Object... recipe) {
+    public AugmentRecipe(String augmentID, Object... recipe) {
         this.augmentID = augmentID;
-        this.level = level;
         for (Object in : recipe) {
             if (in instanceof ItemStack) {
                 inputs.add(((ItemStack) in).copy());
@@ -91,11 +89,6 @@ public class AugmentRecipe implements IAugmentRecipe {
     @Override
     public List getInputs() {
         return inputs;
-    }
-
-    @Override
-    public int getLevel() {
-        return level;
     }
 
     @Override

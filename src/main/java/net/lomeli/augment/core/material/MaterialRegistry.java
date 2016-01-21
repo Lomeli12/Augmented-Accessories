@@ -73,17 +73,17 @@ public class MaterialRegistry implements IMaterialRegistry {
             Material gemMaterial = getMaterial(gem, true);
             if (material0 != null && material1 != null) {
                 ring = new ItemStack(ModItems.ring);
-                ((ItemRing) ModItems.ring).setRingColor(ring, 0, material0.getColor());
-                ((ItemRing) ModItems.ring).setRingColor(ring, 1, material1.getColor());
+                ItemRing.setRingColor(ring, 0, material0.getColor());
+                ItemRing.setRingColor(ring, 1, material1.getColor());
                 float level = (float) material0.getLevel() + (float) material1.getLevel();
                 float div = 2;
                 if (gemMaterial != null) {
-                    ((ItemRing) ModItems.ring).setRingColor(ring, 2, gemMaterial.getColor());
+                    ItemRing.setRingColor(ring, 2, gemMaterial.getColor());
                     level += (float) gemMaterial.getLevel();
                     div++;
                 }
                 level /= div;
-                ((ItemRing) ModItems.ring).setRingBoost(ring, MathHelper.ceil(level));
+                ItemRing.setRingBoost(ring, MathHelper.ceil(level));
                 if (!Strings.isNullOrEmpty(name))
                     ring.setStackDisplayName(name);
             }

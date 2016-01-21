@@ -93,4 +93,9 @@ public class AugmentHidden implements IAugment {
     public String getUnlocalizedName() {
         return "augment.augmentedaccessories.hidden";
     }
+
+    @Override
+    public int augmentLevel() {
+        return 2;
+    }
 }

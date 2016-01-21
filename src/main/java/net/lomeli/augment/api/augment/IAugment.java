@@ -46,6 +46,8 @@ public interface IAugment {
      */
     boolean isPassive(ItemStack stack);
 
+    int augmentLevel();
+
     String getID();
 
     String getUnlocalizedName();

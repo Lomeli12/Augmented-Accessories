@@ -9,7 +9,5 @@ public interface IAugmentRecipe {
 
     List getInputs();
 
-    int getLevel();
-
     String getAugmentID();
 }
