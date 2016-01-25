@@ -27,11 +27,7 @@ public class AugmentRecipe implements IAugmentRecipe {
             if (in instanceof ItemStack) {
                 inputs.add(((ItemStack) in).copy());
             } else if (in instanceof Item) {
-                ItemStack itemStack = new ItemStack((Item) in);
-                if (FluidUtil.isFilledContainer(itemStack))
-                    inputs.add(FluidUtil.getContainersForFluid(FluidUtil.getContainerFluid(itemStack)));
-                else
-                    inputs.add(new ItemStack((Item) in));
+                inputs.add(new ItemStack((Item) in));
             } else if (in instanceof Block)
                 inputs.add(new ItemStack((Block) in));
             else if (in instanceof String) {

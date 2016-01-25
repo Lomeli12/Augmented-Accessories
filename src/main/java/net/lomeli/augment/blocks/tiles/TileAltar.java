@@ -101,8 +101,9 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
     private void dropAndReset() {
         if (!dropList.isEmpty()) {
             for (ItemStack stack : dropList) {
-                if (!worldObj.isRemote)
+                if (!worldObj.isRemote) {
                     ItemUtil.dropItemStackIntoWorld(stack, worldObj, this.pos.getX(), this.pos.getY() + 0.5, this.pos.getZ(), false);
+                }
             }
         }
         resetAltar();
@@ -132,8 +133,9 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         if (!EntityUtil.isFakePlayer(player) && !activated) {
             ItemStack mainStack = getStackInSlot(0);
             if (mainStack == null || !(mainStack.getItem() instanceof ItemRing)) {
-                if (!worldObj.isRemote)
+                if (!worldObj.isRemote) {
                     player.addChatComponentMessage(new ChatComponentText(LangUtil.translate("tile.augmentedaccessories.altar.missing_ring", mainStack == null ? Blocks.air.getLocalizedName() : mainStack.getDisplayName())));
+                }
                 return false;
             }
             posList.clear();
@@ -149,8 +151,9 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
             if (AugmentAPI.augmentRegistry.augmentRegistered(augmentID)) {
                 IAugment augment = AugmentAPI.augmentRegistry.getAugmentID(augmentID);
                 if (augment == null || ItemRing.getRingBoost(mainStack) < augment.augmentLevel()) {
-                    if (!worldObj.isRemote)
+                    if (!worldObj.isRemote) {
                         player.addChatComponentMessage(new ChatComponentText(LangUtil.translate("tile.augmentedaccessories.altar.wrong_level")));
+                    }
                     augmentID = null;
                     return false;
                 }

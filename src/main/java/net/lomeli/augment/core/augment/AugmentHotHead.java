@@ -4,54 +4,55 @@ import com.google.common.collect.Lists;
 
 import java.util.List;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.BlockPos;
+import net.minecraft.util.DamageSource;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+
+import net.lomeli.lomlib.util.EntityUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.vigor.VigorData;
 
-public class AugmentStiltStride implements IAugment {
-    private int cost = 2;
+public class AugmentHotHead implements IAugment {
+    private int cost = 30;
     private List<String> playerList = Lists.newArrayList();
 
-    public AugmentStiltStride() {
+    public AugmentHotHead() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
-    public void playerUpdate(LivingEvent.LivingUpdateEvent event) {
-        if (event.entityLiving instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) event.entityLiving;
+    public void attackEvent(LivingAttackEvent event) {
+        if (event.entityLiving.worldObj.isRemote)
+            return;
+        Entity sourceEntity = EntityUtil.getSourceOfDamage(event.source);
+        if (sourceEntity instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) sourceEntity;
             if (playerList.contains(player.getPersistentID().toString())) {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
                 if (data != null) {
-                    if (data.loseEnergy(cost, true) >= cost) {
-                        if (player.isSneaking())
-                            player.stepHeight = 0.50001F; // Not 0.5F because that is the default
-                        else
-                            player.stepHeight = 1F;
-
-                        if ((player.onGround || player.capabilities.isFlying) && player.moveForward > 0F && !player.isInsideOfMaterial(Material.water)) {
-                            float speed = 0.04f;
-                            player.moveFlying(0F, 1F, player.capabilities.isFlying ? speed : speed);
-
-                            if (player.worldObj.getWorldTime() % 10L == 0)
-                                data.loseEnergy(cost, false);
+                    if (!player.isPotionActive(Potion.damageBoost) && player.worldObj.rand.nextFloat() < 0.4f) {
+                        player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 50, 1 + player.worldObj.rand.nextInt(3)));
+                        if (data.loseEnergy(cost, true) >= cost) {
+                            data.loseEnergy(cost, false);
+                        } else {
+                            float damage = player.getMaxHealth() * 0.1f;
+                            player.attackEntityFrom(DamageSource.magic, damage);
                         }
-
-                        AugmentAPI.vigorRegistry.updateData(data);
-                    } else
-                        player.stepHeight = 0.5F;
+                    }
+                    AugmentAPI.vigorRegistry.updateData(data);
                 }
             }
         }
@@ -70,6 +71,7 @@ public class AugmentStiltStride implements IAugment {
 
     @Override
     public void onWornTick(ItemStack stack, EntityLivingBase entity, VigorData data) {
+
     }
 
     @Override
@@ -87,8 +89,6 @@ public class AugmentStiltStride implements IAugment {
             EntityPlayer player = (EntityPlayer) entity;
             if (playerList.contains(player.getPersistentID().toString()))
                 playerList.remove(player.getPersistentID().toString());
-            if (player.stepHeight != 0.5F)
-                player.stepHeight = 0.5F;
         }
     }
 
@@ -98,17 +98,17 @@ public class AugmentStiltStride implements IAugment {
     }
 
     @Override
+    public int augmentLevel() {
+        return 2;
+    }
+
+    @Override
     public String getID() {
-        return Augment.MOD_ID + ":stilt_stride";
+        return Augment.MOD_ID + ":hot_head";
     }
 
     @Override
     public String getUnlocalizedName() {
-        return "augment.augmentedaccessories.stilt_stride";
-    }
-
-    @Override
-    public int augmentLevel() {
-        return 1;
+        return "augment.augmentedaccessories.hot_head";
     }
 }

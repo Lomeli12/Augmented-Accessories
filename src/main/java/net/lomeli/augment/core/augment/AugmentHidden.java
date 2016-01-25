@@ -22,7 +22,7 @@ import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.vigor.VigorData;
 
 public class AugmentHidden implements IAugment {
-
+    private int cost = 3;
     private List<String> playerList = Lists.newArrayList();
 
     public AugmentHidden() {
@@ -36,9 +36,9 @@ public class AugmentHidden implements IAugment {
                 EntityPlayer player = (EntityPlayer) event.target;
                 if (playerList.contains(player.getPersistentID().toString())) {
                     VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
-                    if (data != null && data.loseEnergy(3, true) >= 3 && event.entityLiving.getDistanceToEntity(player) > 5f) {
+                    if (data != null && data.loseEnergy(cost, true) >= cost && event.entityLiving.getDistanceToEntity(player) > 5f) {
                         ((EntityLiving) event.entityLiving).setAttackTarget(null);
-                        data.loseEnergy(3, false);
+                        data.loseEnergy(cost, false);
 
                         AugmentAPI.vigorRegistry.updateData(data);
                     }

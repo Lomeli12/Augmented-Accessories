@@ -20,6 +20,7 @@ import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.vigor.VigorData;
 
 public class AugmentFireResist implements IAugment {
+    private int cost = 1;
 
     private List<String> playerList = Lists.newArrayList();
 
@@ -33,10 +34,10 @@ public class AugmentFireResist implements IAugment {
             EntityPlayer player = (EntityPlayer) event.entityLiving;
             if (playerList.contains(player.getPersistentID().toString())) {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
-                if (data != null && event.source.isFireDamage() && data.loseEnergy(1, true) >= 1) {
+                if (data != null && event.source.isFireDamage() && data.loseEnergy(cost, true) >= cost) {
                     event.setCanceled(true);
                     if (player.worldObj.getWorldTime() % 10L == 0)
-                        data.loseEnergy(1, false);
+                        data.loseEnergy(cost, false);
 
                     AugmentAPI.vigorRegistry.updateData(data);
                 }
@@ -57,7 +58,7 @@ public class AugmentFireResist implements IAugment {
 
     @Override
     public void onWornTick(ItemStack stack, EntityLivingBase entity, VigorData data) {
-        if (entity.isBurning() && data.loseEnergy(1, true) >= 1)
+        if (entity.isBurning() && data.loseEnergy(cost, true) >= cost)
             entity.extinguish();
     }
 
