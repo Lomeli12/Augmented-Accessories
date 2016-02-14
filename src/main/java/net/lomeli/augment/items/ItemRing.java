@@ -38,6 +38,30 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         this.setHasSubtypes(true);
     }
 
+    public static boolean isPassive(ItemStack stack) {
+        if (stack != null && stack.hasTagCompound()) {
+            IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(stack);
+            return augment != null && augment.isPassive(stack);
+        }
+        return false;
+    }
+
+    public static boolean isDisabled(ItemStack stack) {
+        if (stack != null) {
+            NBTTagCompound mainTag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
+            return mainTag.getBoolean(ModNBT.RING_DISABLED);
+        }
+        return false;
+    }
+
+    public static void setDisabled(ItemStack stack, boolean flag) {
+        if (stack != null) {
+            NBTTagCompound mainTag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
+            mainTag.setBoolean(ModNBT.RING_DISABLED, flag);
+            NBTUtil.setCompound(stack, ModNBT.RING_DATA, mainTag);
+        }
+    }
+
     public static boolean hasGem(ItemStack stack) {
         if (stack != null) {
             NBTTagCompound mainTag = NBTUtil.getCompound(stack, ModNBT.RING_DATA);
@@ -145,6 +169,8 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
         IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(itemstack);
         if (augment != null && augment.isPassive(itemstack) && player instanceof EntityPlayer) {
+            if (augment.isPassive(itemstack) || isDisabled(itemstack))
+                return;
             VigorData data = AugmentAPI.vigorRegistry.getPlayerData((EntityPlayer) player);
             if (data != null) {
                 augment.onWornTick(itemstack, player, data);
@@ -156,6 +182,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
         player.playSound(Augment.MOD_ID + ":equipBauble", 0.5f, 1f);
+
         IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(itemstack);
         if (augment != null && player instanceof EntityPlayer)
             augment.onEquipped(itemstack, player);

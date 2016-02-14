@@ -16,8 +16,12 @@ import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidHandler;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import net.lomeli.lomlib.util.BlockUtil;
 import net.lomeli.lomlib.util.FluidUtil;
@@ -32,6 +36,7 @@ public class TileRingForge extends TileEntity implements INameable, IInventory, 
     private String ringName, tileName;
     private List<BlockPos> posList;
     private int fluidCapacity, fluidAmount;
+    private IItemHandler itemHandler = new InvWrapper(this);
 
     public TileRingForge() {
         inventory = new ItemStack[6];
@@ -352,5 +357,12 @@ public class TileRingForge extends TileEntity implements INameable, IInventory, 
         super.onDataPacket(net, pkt);
         NBTTagCompound tag = pkt != null ? pkt.getNbtCompound() : new NBTTagCompound();
         readFromNBT(tag);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) itemHandler;
+        return super.getCapability(capability, facing);
     }
 }

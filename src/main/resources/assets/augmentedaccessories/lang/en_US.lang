@@ -14,6 +14,8 @@ gui.augmentedaccessories.button.back=Back
 gui.augmentedaccessories.button.prev=Previous Page
 gui.augmentedaccessories.button.next=Next Page
 gui.augmentedaccessories.augment.recipe.level=Ring Level: %s
+gui.augmentedaccessories.ring.disabled.true=/&7/&o%s is enabled./&r
+gui.augmentedaccessories.ring.disabled.false=/&7/&o%s is disabled./&r
 
 item.augmentedaccessories.iron_hammer.name=Iron Forge Hammer
 item.augmentedaccessories.diamond_hammer.name=Diamond Forge Hammer
@@ -65,6 +67,8 @@ config.augmentedaccessories.vigor.potion.rate=The amount that your max vigor inc
 config.augmentedaccessories.book.rotate_items=Have rotating augment recipes in book.
 config.augmentedaccessories.addon.botania=Enable Botania addon
 config.augmentedaccessories.addon.thaumcraft=Enable Thaumcraft addon
+config.augmentedaccessories.key.top=Use top ring.
+config.augmentedaccessories.key.bottom=Use bottom ring;
 
 book.augmentedaccessories.main_page.title=Main Page
 book.augmentedaccessories.creating_ring.title=Creating a Ring

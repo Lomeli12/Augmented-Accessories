@@ -11,7 +11,7 @@ import net.lomeli.lomlib.core.recipes.ShapedFluidRecipe;
 import net.lomeli.lomlib.core.recipes.ShapelessFluidRecipe;
 
 import net.lomeli.augment.blocks.ModBlocks;
-import net.lomeli.augment.items.DustType;
+import net.lomeli.augment.lib.DustType;
 import net.lomeli.augment.items.ModItems;
 
 public class ModRecipes {

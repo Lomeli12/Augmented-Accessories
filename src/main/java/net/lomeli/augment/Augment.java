@@ -4,10 +4,7 @@ import java.io.File;
 
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.*;
 
 import net.lomeli.lomlib.core.config.ModConfig;
 import net.lomeli.lomlib.core.network.PacketHandler;
@@ -15,10 +12,8 @@ import net.lomeli.lomlib.core.version.VersionChecker;
 import net.lomeli.lomlib.util.LogHelper;
 
 import net.lomeli.augment.core.Proxy;
-import net.lomeli.augment.core.network.MessageFluidUpdate;
-import net.lomeli.augment.core.network.MessageRingName;
-import net.lomeli.augment.core.network.MessageSavePage;
-import net.lomeli.augment.core.network.MessageUpdateClientVigor;
+import net.lomeli.augment.core.handler.IMCHandler;
+import net.lomeli.augment.core.network.*;
 import net.lomeli.augment.core.vigor.VigorRegistry;
 import net.lomeli.augment.lib.AugConfig;
 
@@ -52,12 +47,17 @@ public class Augment {
     }
 
     @Mod.EventHandler
+    public void handleIMC(FMLInterModComms.IMCEvent event) {
+        IMCHandler.processMessages(event.getMessages());
+    }
+
+    @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         log.logInfo("Pre-Init");
         config = new ModConfig(MOD_ID, event.getSuggestedConfigurationFile(), AugConfig.class);
         versionChecker = new VersionChecker(UPDATE_URL, MOD_ID, MOD_NAME, MAJOR, MINOR, REV);
-        packetHandler = new PacketHandler(MOD_ID, MessageSavePage.class, MessageUpdateClientVigor.class,
-                MessageRingName.class, MessageFluidUpdate.class);
+        packetHandler = new PacketHandler(MOD_ID, MessageSavePage.class, MessageUpdateClientVigor.class, MessageRingName.class,
+                MessageFluidUpdate.class, MessageKeyPressed.class);
         customMaterialsFile = new File(event.getModConfigurationDirectory(), MOD_ID + "_materials.json");
         proxy.preInit();
     }

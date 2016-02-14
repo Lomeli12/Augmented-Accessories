@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import net.lomeli.augment.lib.DustType;
+
 public class ItemDust extends ItemBase {
     public ItemDust() {
         super("dust");

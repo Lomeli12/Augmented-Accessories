@@ -104,8 +104,10 @@ public class GuiRingForge extends GuiContainer {
             this.drawTexturedModalRect(k + 85, l + 65, 0, 166, 84, 16);
 
         FluidStack stack = new FluidStack(FluidRegistry.LAVA, tile.getFluidAmount());
-        if (stack != null && stack.getFluid() != null)
-            RenderUtils.drawFluid(this.mc, stack, k + 177, l + 62, zLevel, 16, 56, tile.getFluidCapacity());
+        if (stack != null && stack.getFluid() != null) {
+            int h = (int) (56 * (float) stack.amount / (float) tile.getFluidCapacity());
+            RenderUtils.drawFluid(k + 177, (l + 62) - h, 16, h, zLevel, stack);
+        }
 
         RenderUtils.bindTexture(guiTexture);
         this.drawTexturedModalRect(k + 183, l + 6, 202, 0, 10, 56);

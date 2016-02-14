@@ -17,10 +17,12 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
-import net.minecraft.util.ITickable;
+import net.minecraft.util.*;
+
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.wrapper.InvWrapper;
 
 import net.lomeli.lomlib.util.EntityUtil;
 import net.lomeli.lomlib.util.ItemUtil;
@@ -38,7 +40,8 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
     private List<BlockPos> posList;
     private List<ItemStack> ingredList, dropList;
     private String augmentID;
-    private long CONSUME_DELAY = 40L;
+    private long worldTick, CONSUME_DELAY = 40L;
+    private IItemHandler itemHandler = new InvWrapper(this);
 
     public TileAltar(boolean master) {
         this.master = master;
@@ -65,7 +68,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
                     ItemStack mainStack = getStackInSlot(0);
                     if (mainStack == null || mainStack.getItem() != ModItems.ring)
                         dropAndReset();
-                    if (!posList.isEmpty() && worldObj.getWorldTime() % CONSUME_DELAY == 0) {
+                    if (!posList.isEmpty() && worldTick++ % CONSUME_DELAY == 0) {
                         int index = posList.size() > 1 ? worldObj.rand.nextInt(posList.size()) : 0;
                         BlockPos pos = posList.get(index);
                         TileEntity tile = worldObj.getTileEntity(pos);
@@ -79,7 +82,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
                         }
                         posList.remove(index);
                     }
-                    if (posList.isEmpty() && worldObj.getWorldTime() % (CONSUME_DELAY + 10L) == 0) {
+                    if (posList.isEmpty() && worldTick++ % (CONSUME_DELAY + 10L) == 0) {
                         if (ingredList.size() == 0) {
                             AugmentAPI.augmentRegistry.addAugmentToStack(this.getStackInSlot(0), augmentID);
                             worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, getPos().getX(), getPos().getY(), getPos().getZ()));
@@ -115,6 +118,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         posList.clear();
         activated = false;
         augmentID = null;
+        worldTick = 0;
     }
 
     private void updateLocalList() {
@@ -337,5 +341,12 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         super.onDataPacket(net, pkt);
         NBTTagCompound tag = pkt != null ? pkt.getNbtCompound() : new NBTTagCompound();
         readFromNBT(tag);
+    }
+
+    @Override
+    public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
+        if (capability == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+            return (T) itemHandler;
+        return super.getCapability(capability, facing);
     }
 }

@@ -8,6 +8,7 @@ public class ModNBT {
     public static String GEM_COLOR = "GEM_COLOR";
     public static String RING_BOOST = "RING_BOOST";
     public static String SPELL_ID = "SPELL_ID";
+    public static String RING_DISABLED = "RING_DISABLED";
 
     // Manual
     public static String OBTAINED_MANUAL = "OBTAINED_MANUAL";
