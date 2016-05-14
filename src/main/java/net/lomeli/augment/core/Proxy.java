@@ -15,6 +15,7 @@ import net.lomeli.augment.api.vigor.VigorData;
 import net.lomeli.augment.blocks.ModBlocks;
 import net.lomeli.augment.blocks.tiles.TileRingForge;
 import net.lomeli.augment.client.handler.GuiHandler;
+import net.lomeli.augment.client.lib.EnumModParticles;
 import net.lomeli.augment.core.addon.ModAddons;
 import net.lomeli.augment.core.handler.CustomMaterialHandler;
 import net.lomeli.augment.core.handler.PlayerHandler;
@@ -73,5 +74,8 @@ public class Proxy {
 
     public VigorData getLocalData() {
         return null;
+    }
+
+    public void spawnParticle(EnumModParticles particle, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
     }
 }

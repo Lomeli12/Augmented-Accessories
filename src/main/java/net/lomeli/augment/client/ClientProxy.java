@@ -1,10 +1,12 @@
 package net.lomeli.augment.client;
 
+import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -24,9 +26,11 @@ import net.lomeli.augment.blocks.tiles.TileAltar;
 import net.lomeli.augment.blocks.tiles.TileTank;
 import net.lomeli.augment.client.gui.manual.ManualBuilder;
 import net.lomeli.augment.client.handler.*;
+import net.lomeli.augment.client.lib.EnumModParticles;
 import net.lomeli.augment.client.render.tile.RenderAltar;
 import net.lomeli.augment.client.render.tile.RenderTank;
 import net.lomeli.augment.core.Proxy;
+import net.lomeli.augment.items.ItemCard;
 import net.lomeli.augment.items.ModItems;
 
 public class ClientProxy extends Proxy {
@@ -64,6 +68,12 @@ public class ClientProxy extends Proxy {
         registerModel(ModItems.ironHammer, new BasicItemMesh(Augment.MOD_ID + ":hammer_iron"));
         registerModel(ModItems.diamondHammer, new BasicItemMesh(Augment.MOD_ID + ":hammer_diamond"));
         registerModel(ModItems.manual, new BasicItemMesh(Augment.MOD_ID + ":manual"));
+        ResourceLocation[] resources = new ResourceLocation[ItemCard.types];
+        for (int i = 0; i < ItemCard.types; i++) {
+            resources[i] = new ResourceLocation(Augment.MOD_ID + ":card_" + i);
+            registerModel(ModItems.card, i, Augment.MOD_ID + ":card_" + i);
+        }
+        registerMetadataModel(ModItems.card, resources);
     }
 
     private void registerBlockModels() {
@@ -123,5 +133,11 @@ public class ClientProxy extends Proxy {
     @Override
     public VigorData getLocalData() {
         return this.localData;
+    }
+
+    @Override
+    public void spawnParticle(EnumModParticles particle, World world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        EntityFX fx = particle.getParticle(world, x, y, z, xSpeed, ySpeed, zSpeed);
+        FMLClientHandler.instance().getClient().effectRenderer.addEffect(fx);
     }
 }

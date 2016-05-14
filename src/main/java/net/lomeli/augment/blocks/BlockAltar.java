@@ -52,7 +52,7 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
     @Override
     public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
-        if (!player.isSneaking() && !world.isRemote && tile != null && tile instanceof TileAltar) {
+        if (!player.isSneaking() && tile != null && tile instanceof TileAltar) {
             TileAltar altar = (TileAltar) tile;
             ItemStack altarStack = altar.getStackInSlot(0);
             ItemStack playerHand = player.getHeldItem();
@@ -70,7 +70,7 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
                 if (altar.isMaster() && (playerHand != null && playerHand.getItem() == ModItems.manual) && altarStack.getItem() == ModItems.ring) {
                     altar.activate(player);
                 } else {
-                    //if (!world.isRemote)
+                    if (!world.isRemote)
                         ItemUtil.dropItemStackIntoWorld(altarStack, world, pos.getX(), pos.getY() + 1, pos.getZ(), false);
                     altar.removeStackFromSlot(0);
                 }

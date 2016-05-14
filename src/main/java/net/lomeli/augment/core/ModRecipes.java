@@ -32,6 +32,7 @@ public class ModRecipes {
         addShaped(new ItemStack(ModItems.ironHammer), true, " OS", " SO", "S  ", 'S', "stickWood", 'O', "ingotIron");
         addShaped(new ItemStack(ModItems.diamondHammer), true, " OS", " SO", "S  ", 'S', "stickWood", 'O', "gemDiamond");
         addShapeless(new ItemStack(ModItems.manual), "forgeHammer", Items.book);
+        addShapeless(new ItemStack(ModItems.card, 2), Items.paper, Items.paper, Blocks.stone_slab);
         dustRecipes();
     }
 

@@ -12,6 +12,10 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class TickHandlerClient {
     public static float ticksInGame;
     public static float partialTicks = 0;
+    /**
+     * Used to stop input spam
+     */
+    public static int inputDelay = 25;
 
     @SubscribeEvent
     public void renderTick(TickEvent.RenderTickEvent event) {
@@ -22,6 +26,8 @@ public class TickHandlerClient {
     @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
+            if (inputDelay < 25)
+                inputDelay++;
             if (Minecraft.getMinecraft().inGameHasFocus)
                 ticksInGame++;
             else {

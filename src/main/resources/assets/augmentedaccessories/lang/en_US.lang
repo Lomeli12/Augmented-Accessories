@@ -14,8 +14,8 @@ gui.augmentedaccessories.button.back=Back
 gui.augmentedaccessories.button.prev=Previous Page
 gui.augmentedaccessories.button.next=Next Page
 gui.augmentedaccessories.augment.recipe.level=Ring Level: %s
-gui.augmentedaccessories.ring.disabled.true=/&7/&o%s is enabled./&r
-gui.augmentedaccessories.ring.disabled.false=/&7/&o%s is disabled./&r
+gui.augmentedaccessories.ring.disabled.true=/&7/&o%s has been deactivated./&r
+gui.augmentedaccessories.ring.disabled.false=/&7/&o%s has been activated./&r
 
 item.augmentedaccessories.iron_hammer.name=Iron Forge Hammer
 item.augmentedaccessories.diamond_hammer.name=Diamond Forge Hammer
@@ -34,6 +34,13 @@ item.augmentedaccessories.void.1.name=Pocket Void
 item.augmentedaccessories.book.name=Mystical Accessories - Vol. 2
 item.augmentedaccessories.potion.0.name=Robust Potion
 item.augmentedaccessories.potion.1.name=
+item.augmentedaccessories.card.0.name=Blank Card
+item.augmentedaccessories.card.1.name=Terra Card
+item.augmentedaccessories.card.2.name=Ignis Card
+item.augmentedaccessories.card.3.name=Eau Card
+item.augmentedaccessories.card.4.name=Vento Card
+item.augmentedaccessories.card.5.name=Void Card
+item.augmentedaccessories.card.6.name=Alma Card
 
 tile.augmentedaccessories.ring_forge.name=Ring Forge
 tile.augmentedaccessories.ring_forge.book=Origin of all rings.
@@ -55,6 +62,8 @@ augment.augmentedaccessories.hidden=Obscuro Inimicis
 augment.augmentedaccessories.green_thumb=
 augment.augmentedaccessories.gold_miner=Gold Miner
 augment.augmentedaccessories.stilt_stride=Stilt Stride
+augment.augmentedaccessories.flame_tornado=Fire Burst
+augment.augmentedaccessories.mist=Mist
 
 potion.augmentedaccessories.regen_vigor=Vigor Regen
 

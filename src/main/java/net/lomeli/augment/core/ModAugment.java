@@ -15,6 +15,8 @@ public class ModAugment {
         AugmentAPI.augmentRegistry.registerAugment(new AugmentStiltStride());
         AugmentAPI.augmentRegistry.registerAugment(new AugmentHotHead());
         AugmentAPI.augmentRegistry.registerAugment(new AugmentGoldMiner());
+        AugmentAPI.augmentRegistry.registerAugment(new AugmentFlameTornado());
+        AugmentAPI.augmentRegistry.registerAugment(new AugmentMist());
 
         augmentRecipes();
     }
@@ -30,5 +32,6 @@ public class ModAugment {
                 Items.spider_eye, new ItemStack(Items.potionitem, 1, 8201), new ItemStack(Items.potionitem, 1, 8204));
         AugmentAPI.augmentRegistry.addSpellRecipe(Augment.MOD_ID + ":gold_miner", Items.golden_carrot, new ItemStack(Items.golden_apple, 1, 1),
                 Items.gold_nugget, Items.gold_ingot, Blocks.gold_block, Items.diamond_pickaxe);
+        AugmentAPI.augmentRegistry.addSpellRecipe(Augment.MOD_ID + ":mist", Blocks.dirt);
     }
 }

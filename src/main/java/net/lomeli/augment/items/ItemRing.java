@@ -121,6 +121,21 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
         return 0;
     }
 
+    public static void useRingAugment(ItemStack stack, EntityPlayer player, World world, BlockPos pos) {
+        if (player != null && stack != null && world != null) {
+            if (!player.isSneaking()) {
+                IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(stack);
+                if (augment != null && !augment.isPassive(stack)) {
+                    VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
+                    if (data != null) {
+                        augment.onUse(stack, player, pos, data);
+                        AugmentAPI.vigorRegistry.updateData(data);
+                    }
+                }
+            }
+        }
+    }
+    /*
     @Override
     public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
         if (!player.isSneaking()) {
@@ -152,7 +167,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
             }
         }
         return super.onItemUseFirst(stack, player, world, pos, side, hitX, hitY, hitZ);
-    }
+    }*/
 
     @SideOnly(Side.CLIENT)
     @Override
@@ -169,7 +184,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
     public void onWornTick(ItemStack itemstack, EntityLivingBase player) {
         IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(itemstack);
         if (augment != null && augment.isPassive(itemstack) && player instanceof EntityPlayer) {
-            if (augment.isPassive(itemstack) || isDisabled(itemstack))
+            if (augment.isPassive(itemstack) && isDisabled(itemstack))
                 return;
             VigorData data = AugmentAPI.vigorRegistry.getPlayerData((EntityPlayer) player);
             if (data != null) {
