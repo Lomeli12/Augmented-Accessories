@@ -3,7 +3,18 @@
   "display": {
     "thirdperson": {
       "rotation": [ 10, -45, 0 ],
-      "translation": [ 0, 1.5, -2.75 ]
+      "translation": [ 0, 1.5, -2.75 ],
+      "scale": [ 0.175, 0.175, 0.175 ]
+    },
+    "firstperson_righthand": {
+      "scale": [ 0.375, 0.375, 0.375 ]
+    },
+    "firstperson_lefthand": {
+      "scale": [ 0.375, 0.375, 0.375 ]
+    },
+    "ground": {
+      "translation": [ 0, 2, 0],
+      "scale": [ 0.375, 0.375, 0.375 ]
     }
   }
 }

@@ -2,6 +2,7 @@ package net.lomeli.augment.client.gui.manual;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.mojang.realmsclient.gui.ChatFormatting;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
@@ -13,9 +14,9 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 
 import net.lomeli.lomlib.util.LangUtil;
@@ -140,7 +141,7 @@ public abstract class GuiPage extends GuiScreen implements IGuiPage {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         if (possiblePage != null) {
-            mc.getSoundHandler().playSound(PositionedSoundRecord.create(new ResourceLocation("gui.button.press"), 1.0F));
+            mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ui_button_click, 1.0F));
             mc.displayGuiScreen(possiblePage.openPage(this.getID()));
             possiblePage = null;
         }
@@ -185,7 +186,7 @@ public abstract class GuiPage extends GuiScreen implements IGuiPage {
     private void addItemPageLink(ItemStack stack, IItemPage page) {
         List<String> additionalInfo = stack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips);
         if (additionalInfo != null && !additionalInfo.isEmpty()) {
-            additionalInfo.set(0, EnumChatFormatting.GOLD + additionalInfo.get(0));
+            additionalInfo.set(0, ChatFormatting.GOLD + additionalInfo.get(0));
             String id = page.pageID(stack);
             if (!Strings.isNullOrEmpty(id) && AugmentAPI.manualRegistry.getPageForID(id) != null) {
                 additionalInfo.add("book.augmentedaccessories.tooltip.iteminfo");

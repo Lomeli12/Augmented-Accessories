@@ -18,9 +18,10 @@ import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemTool;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
+import net.lomeli.lomlib.client.models.IModelHolder;
 import net.lomeli.lomlib.util.ItemUtil;
 import net.lomeli.lomlib.util.EntityUtil;
 
@@ -29,12 +30,15 @@ import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.core.CreativeAugment;
 import net.lomeli.augment.lib.DustType;
 
-public class ItemHammer extends ItemTool implements IItemPage {
+public class ItemHammer extends ItemTool implements IItemPage, IModelHolder {
     private static final Set<Block> EFFECTIVE_ON = Sets.newHashSet(new Block[]{Blocks.activator_rail, Blocks.coal_ore, Blocks.cobblestone, Blocks.detector_rail, Blocks.diamond_block, Blocks.diamond_ore, Blocks.double_stone_slab, Blocks.golden_rail, Blocks.gold_block, Blocks.gold_ore, Blocks.ice, Blocks.iron_block, Blocks.iron_ore, Blocks.lapis_block, Blocks.lapis_ore, Blocks.lit_redstone_ore, Blocks.mossy_cobblestone, Blocks.netherrack, Blocks.packed_ice, Blocks.rail, Blocks.redstone_ore, Blocks.sandstone, Blocks.red_sandstone, Blocks.stone, Blocks.stone_slab});
 
-    public ItemHammer(String name, ToolMaterial toolMaterial) {
-        super(2.5f, toolMaterial, EFFECTIVE_ON);
+    private String model;
+
+    public ItemHammer(String name, ToolMaterial toolMaterial, String model) {
+        super(toolMaterial, EFFECTIVE_ON);
         this.setUnlocalizedName(name);
+        this.model = model;
     }
 
     @Override
@@ -43,13 +47,13 @@ public class ItemHammer extends ItemTool implements IItemPage {
     }
 
     @Override
-    public boolean onBlockDestroyed(ItemStack stack, World world, Block block, BlockPos pos, EntityLivingBase player) {
-        super.onBlockDestroyed(stack, world, block, pos, player);
-        if (!world.isRemote && player instanceof EntityPlayer) {
-            if (block == Blocks.bookshelf && !EntityUtil.isFakePlayer((EntityPlayer) player))
+    public boolean onBlockDestroyed(ItemStack stack, World world, IBlockState state, BlockPos pos, EntityLivingBase player) {
+        super.onBlockDestroyed(stack, world, state, pos, player);
+        if (!world.isRemote && player instanceof EntityPlayer && state != null) {
+            if (state.getBlock() == Blocks.bookshelf && !EntityUtil.isFakePlayer((EntityPlayer) player))
                 ItemUtil.dropItemStackIntoWorld(new ItemStack(ModItems.manual), world, pos.getX(), pos.getY(), pos.getZ(), true);
             else {
-                int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.fortune.effectId, stack);
+                int fortune = EnchantmentHelper.getEnchantmentLevel(Enchantment.getEnchantmentByID(35), stack);
                 dropDust(world, (EntityPlayer) player, pos, fortune);
             }
         }
@@ -124,5 +128,10 @@ public class ItemHammer extends ItemTool implements IItemPage {
     @Override
     public String worldDescription(ItemStack stack) {
         return "";
+    }
+
+    @Override
+    public String[] getVariants() {
+        return new String[]{model};
     }
 }

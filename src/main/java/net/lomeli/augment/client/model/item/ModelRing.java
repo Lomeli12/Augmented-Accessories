@@ -1,19 +1,20 @@
 package net.lomeli.augment.client.model.item;
 
+import com.google.common.collect.ImmutableList;
+
 import java.util.List;
 
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.ItemCameraTransforms;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.IBakedModel;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
-
-import net.minecraftforge.client.model.ISmartItemModel;
+import net.minecraft.world.World;
 
 import net.lomeli.augment.items.ItemRing;
 
-public class ModelRing implements ISmartItemModel {
+public class ModelRing implements IBakedModel {
     private IBakedModel baseModel, gemLess;
 
     public ModelRing(IBakedModel baseModel, IBakedModel gemLessModel) {
@@ -22,18 +23,8 @@ public class ModelRing implements ISmartItemModel {
     }
 
     @Override
-    public IBakedModel handleItemState(ItemStack stack) {
-        return ItemRing.hasGem(stack) ? baseModel : gemLess;
-    }
-
-    @Override
-    public List<BakedQuad> getFaceQuads(EnumFacing side) {
-        return baseModel.getFaceQuads(side);
-    }
-
-    @Override
-    public List<BakedQuad> getGeneralQuads() {
-        return baseModel.getGeneralQuads();
+    public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
+        return baseModel.getQuads(state, side, rand);
     }
 
     @Override
@@ -59,5 +50,32 @@ public class ModelRing implements ISmartItemModel {
     @Override
     public ItemCameraTransforms getItemCameraTransforms() {
         return baseModel.getItemCameraTransforms();
+    }
+
+    @Override
+    public ItemOverrideList getOverrides() {
+        return RingItemOverride.INSTANCE;
+    }
+
+    public IBakedModel getBaseModel() {
+        return baseModel;
+    }
+
+    public IBakedModel getGemLess() {
+        return gemLess;
+    }
+
+    private static final class RingItemOverride extends ItemOverrideList {
+        public static final RingItemOverride INSTANCE = new RingItemOverride();
+
+        private RingItemOverride() {
+            super(ImmutableList.<ItemOverride>of());
+        }
+
+        @Override
+        public IBakedModel handleItemState(IBakedModel originalModel, ItemStack stack, World world, EntityLivingBase entity) {
+            ModelRing model = (ModelRing) originalModel;
+            return ItemRing.hasGem(stack) ? model.getBaseModel() : model.getGemLess();
+        }
     }
 }

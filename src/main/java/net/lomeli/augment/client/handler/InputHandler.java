@@ -3,8 +3,8 @@ package net.lomeli.augment.client.handler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -56,8 +56,8 @@ public class InputHandler {
             ItemStack stack = baubles.getStackInSlot(slot);
             if (stack != null && stack.getItem() instanceof ItemRing && !ItemRing.isPassive(stack)) {
                 BlockPos pos = new BlockPos(-1, -1, -1);
-                MovingObjectPosition mov = FMLClientHandler.instance().getClient().objectMouseOver;
-                if (mov != null && mov.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+                RayTraceResult mov = FMLClientHandler.instance().getClient().objectMouseOver;
+                if (mov != null && mov.typeOfHit == RayTraceResult.Type.BLOCK)
                     pos = mov.getBlockPos();
                 ItemRing.useRingAugment(stack, player, player.worldObj, (pos.getX() == -1 && pos.getY() == -1 && pos.getZ() == -1) ? null : pos);
             }

@@ -3,9 +3,9 @@ package net.lomeli.augment.core.network;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentString;
 
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -27,10 +27,10 @@ public class MessageKeyPressed extends Message<MessageKeyPressed> {
     public MessageKeyPressed() {
     }
 
-    public MessageKeyPressed(int id, MovingObjectPosition mov) {
+    public MessageKeyPressed(int id, RayTraceResult mov) {
         this.keyID = id;
         this.pos = new BlockPos(-1, -1, -1);
-        if (mov != null && mov.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK)
+        if (mov != null && mov.typeOfHit == RayTraceResult.Type.BLOCK)
             this.pos = mov.getBlockPos();
     }
 
@@ -47,7 +47,7 @@ public class MessageKeyPressed extends Message<MessageKeyPressed> {
                     if (ItemRing.isPassive(stack)) {
                         ItemRing.setDisabled(stack, !ItemRing.isDisabled(stack));
                         String text = ItemRing.isDisabled(stack) ? "gui.augmentedaccessories.ring.disabled.true" : "gui.augmentedaccessories.ring.disabled.false";
-                        player.addChatComponentMessage(new ChatComponentText(LangUtil.translate(text, stack.getDisplayName())));
+                        player.addChatComponentMessage(new TextComponentString(LangUtil.translate(text, stack.getDisplayName())));
                     } else
                         ItemRing.useRingAugment(stack, player, player.worldObj, (pos.getX() == -1 && pos.getY() == -1 && pos.getZ() == -1) ? null : pos);
                 }

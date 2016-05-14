@@ -6,6 +6,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentDurability;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Enchantments;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
@@ -36,8 +37,8 @@ public class SlotRingOutput extends Slot {
         this.tile.decrStackSize(TileRingForge.GEM, 1);
         ItemStack hammer = this.tile.getStackInSlot(TileRingForge.HAMMER);
         boolean damage = false;
-        if (EnchantUtil.stackHasEnchant(hammer, Enchantment.unbreaking))
-            damage = EnchantmentDurability.negateDamage(hammer, EnchantmentHelper.getEnchantmentLevel(Enchantment.unbreaking.effectId, hammer), rand);
+        if (EnchantUtil.stackHasEnchant(hammer, Enchantments.unbreaking))
+            damage = EnchantmentDurability.negateDamage(hammer, EnchantmentHelper.getEnchantmentLevel(Enchantments.unbreaking, hammer), rand);
         if (!damage) {
             this.tile.getStackInSlot(TileRingForge.HAMMER).setItemDamage(hammer.getItemDamage() + 1);
             if (this.tile.getStackInSlot(TileRingForge.HAMMER).getItemDamage() >= hammer.getMaxDamage())

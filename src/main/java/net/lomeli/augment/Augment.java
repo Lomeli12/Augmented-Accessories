@@ -21,7 +21,7 @@ import net.lomeli.augment.lib.AugConfig;
         guiFactory = Augment.CONFIG_FACTORY, acceptedMinecraftVersions = Augment.MC_VERSION)
 public class Augment {
     public static final String MOD_ID = "augmentedaccessories", MOD_NAME = "Augmented Accessories",
-            DEPENDENCIES = "required-after:LomLib@[5,);required-after:Baubles@[1.1.3,)";
+            DEPENDENCIES = "required-after:LomLib;required-after:Baubles@[1.1.3,)";
     public static final int MAJOR = 1, MINOR = 0, REV = 0;
     public static final String VERSION = MAJOR + "." + MINOR + "." + REV,
             PROXY = "net.lomeli.augment.core.Proxy", CLIENT = "net.lomeli.augment.client.ClientProxy",

@@ -10,7 +10,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.DamageSource;
 
 import net.minecraftforge.common.MinecraftForge;
@@ -35,16 +35,17 @@ public class AugmentHotHead implements IAugment {
 
     @SubscribeEvent
     public void attackEvent(LivingAttackEvent event) {
-        if (event.entityLiving.worldObj.isRemote)
+        if (event.getEntityLiving().worldObj.isRemote)
             return;
-        Entity sourceEntity = EntityUtil.getSourceOfDamage(event.source);
+        Entity sourceEntity = EntityUtil.getSourceOfDamage(event.getSource());
         if (sourceEntity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) sourceEntity;
             if (playerList.contains(player.getPersistentID().toString())) {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
                 if (data != null) {
-                    if (!player.isPotionActive(Potion.damageBoost) && player.worldObj.rand.nextFloat() < 0.4f) {
-                        player.addPotionEffect(new PotionEffect(Potion.damageBoost.id, 50, 1 + player.worldObj.rand.nextInt(3)));
+                    Potion strength = Potion.getPotionById(5);
+                    if (!player.isPotionActive(strength) && player.worldObj.rand.nextFloat() < 0.4f) {
+                        player.addPotionEffect(new PotionEffect(strength, 50, 1 + player.worldObj.rand.nextInt(3)));
                         if (data.loseEnergy(cost, true) >= cost) {
                             data.loseEnergy(cost, false);
                         } else {

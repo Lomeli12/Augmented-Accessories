@@ -14,8 +14,8 @@ import net.lomeli.augment.api.vigor.VigorData;
 
 public class PotionRegenVigor extends Potion {
 
-    public PotionRegenVigor(ResourceLocation location, int color) {
-        super(location, false, color);
+    public PotionRegenVigor(int color) {
+        super(false, color);
         this.setIconIndex(0, 0);
     }
 

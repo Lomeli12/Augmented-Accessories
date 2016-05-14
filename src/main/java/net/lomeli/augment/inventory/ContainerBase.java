@@ -2,6 +2,7 @@ package net.lomeli.augment.inventory;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -11,12 +12,13 @@ import net.lomeli.lomlib.util.ItemUtil;
 import net.lomeli.augment.inventory.slot.IPhantomSlot;
 
 public class ContainerBase extends Container {
+
     @Override
-    public ItemStack slotClick(int slotNum, int mouseButton, int modifier, EntityPlayer player) {
-        Slot slot = slotNum < 0 ? null : this.inventorySlots.get(slotNum);
+    public ItemStack func_184996_a(int slotNum, int dragType, ClickType clickTypeIn, EntityPlayer player) {
+        Slot slot = (slotNum < 0 || slotNum >= this.inventorySlots.size()) ? null : this.inventorySlots.get(slotNum);
         if (slot instanceof IPhantomSlot)
-            return slotClickPhantom(slot, mouseButton, modifier, player);
-        return super.slotClick(slotNum, mouseButton, modifier, player);
+            return slotClickPhantom(slot, dragType, clickTypeIn.ordinal(), player);
+        return super.func_184996_a(slotNum, dragType, clickTypeIn, player);
     }
 
     private ItemStack slotClickPhantom(Slot slot, int mouseButton, int modifier, EntityPlayer player) {

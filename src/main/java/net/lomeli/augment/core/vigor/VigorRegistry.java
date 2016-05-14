@@ -10,6 +10,8 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 
+import net.minecraftforge.fml.common.FMLCommonHandler;
+
 import net.lomeli.lomlib.util.EntityUtil;
 import net.lomeli.lomlib.util.NBTUtil;
 
@@ -60,7 +62,7 @@ public class VigorRegistry implements IVigorRegistry {
         if (data == null || !data.isChanged()) return;
         data.reset();
         playerData.put(data.getPlayerID(), data);
-        EntityPlayerMP player = MinecraftServer.getServer().getConfigurationManager().getPlayerByUUID(data.getPlayerID());
+        EntityPlayerMP player = FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayerByUUID(data.getPlayerID());
         if (player != null)
             Augment.packetHandler.sendTo(new MessageUpdateClientVigor(data), player);
     }

@@ -1,9 +1,10 @@
 package net.lomeli.augment.client.handler;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fml.common.network.IGuiHandler;
@@ -43,7 +44,7 @@ public class GuiHandler implements IGuiHandler {
                         return new GuiRingForge((TileRingForge) tile, player.inventory, world);
                 }
             case 1:
-                ItemStack stack = player.getCurrentEquippedItem();
+                ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
                 if (stack != null) {
                     String id = NBTUtil.getString(stack, ModNBT.LAST_PAGE);
                     IGuiPage page = AugmentAPI.manualRegistry.getPageForID(id);

@@ -12,17 +12,20 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemMultiTexture;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.world.IBlockAccess;
@@ -32,6 +35,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.OreDictionary;
 
+import net.lomeli.lomlib.client.models.IModelVariant;
 import net.lomeli.lomlib.util.ItemUtil;
 
 import net.lomeli.augment.Augment;
@@ -39,7 +43,7 @@ import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.blocks.tiles.TileAltar;
 import net.lomeli.augment.items.ModItems;
 
-public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemPage {
+public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemPage, IModelVariant {
     public static final PropertyEnum VARIANT = PropertyEnum.create("altartype", EnumAltarType.class);
 
     public BlockAltar() {
@@ -50,24 +54,23 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
         if (!player.isSneaking() && tile != null && tile instanceof TileAltar) {
             TileAltar altar = (TileAltar) tile;
             ItemStack altarStack = altar.getStackInSlot(0);
-            ItemStack playerHand = player.getHeldItem();
-            if (altarStack == null && playerHand != null) {
-                ItemStack newStack = playerHand.copy();
+            if (altarStack == null && heldItem != null) {
+                ItemStack newStack = heldItem.copy();
                 newStack.stackSize = 1;
                 if (!player.capabilities.isCreativeMode) {
-                    playerHand.stackSize -= 1;
-                    if (playerHand.stackSize <= 0)
-                        playerHand = null;
+                    heldItem.stackSize -= 1;
+                    if (heldItem.stackSize <= 0)
+                        heldItem = null;
                 }
                 altar.setInventorySlotContents(0, newStack);
-                player.setCurrentItemOrArmor(0, playerHand);
-            } else if (altarStack != null && (playerHand == null || !OreDictionary.itemMatches(altarStack, playerHand, false))) {
-                if (altar.isMaster() && (playerHand != null && playerHand.getItem() == ModItems.manual) && altarStack.getItem() == ModItems.ring) {
+                player.setItemStackToSlot(EntityEquipmentSlot.MAINHAND, heldItem);
+            } else if (altarStack != null && (heldItem == null || !OreDictionary.itemMatches(altarStack, heldItem, false))) {
+                if (altar.isMaster() && (heldItem != null && heldItem.getItem() == ModItems.manual) && altarStack.getItem() == ModItems.ring) {
                     altar.activate(player);
                 } else {
                     if (!world.isRemote)
@@ -77,14 +80,14 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
             }
             return true;
         }
-        return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
     }
 
     @Override
-    public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
-        this.setBlockBounds(0.09f, 0.0f, 0.09f, 0.91f, 1.022f, 0.91f);
-        super.addCollisionBoxesToList(worldIn, pos, state, mask, list, collidingEntity);
+    public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity) {
+        this.addCollisionBoxToList(pos, mask, list, new AxisAlignedBB(0.09f, 0.0f, 0.09f, 0.91f, 1.022f, 0.91f));
     }
+
 
     @Override
     public TileEntity createNewTileEntity(World worldIn, int meta) {
@@ -100,27 +103,29 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean isOpaqueCube() {
+    public boolean isOpaqueCube(IBlockState state) {
         return false;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean isFullCube() {
+    public boolean isFullCube(IBlockState state) {
         return false;
     }
 
     @SideOnly(Side.CLIENT)
     @Override
-    public boolean isTranslucent() {
+    public boolean isTranslucent(IBlockState state) {
         return true;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public int getRenderType() {
-        return 2;
+    public EnumBlockRenderType getRenderType(IBlockState state) {
+        return EnumBlockRenderType.ENTITYBLOCK_ANIMATED;
     }
+
+    @SideOnly(Side.CLIENT)
+
 
     @Override
     public int damageDropped(IBlockState state) {
@@ -128,12 +133,11 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
     }
 
     @Override
-    public int getLightValue(IBlockAccess world, BlockPos pos) {
+    public int getLightValue(IBlockState state, IBlockAccess world, BlockPos pos) {
         TileEntity te = world.getTileEntity(pos);
-        if (!(te instanceof TileAltar))
-            return 0;
-        TileAltar tank = (TileAltar) te;
-        return tank.getBrightness();
+        if (te instanceof TileAltar)
+            return ((TileAltar) te).getBrightness();
+        return 0;
     }
 
     @Override
@@ -142,8 +146,8 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
     }
 
     @Override
-    protected BlockState createBlockState() {
-        return new BlockState(this, new IProperty[]{VARIANT});
+    protected BlockStateContainer createBlockState() {
+        return new BlockStateContainer(this, new IProperty[]{VARIANT});
     }
 
     @Override
@@ -191,6 +195,22 @@ public class BlockAltar extends BlockBase implements ITileEntityProvider, IItemP
     @Override
     public String worldDescription(ItemStack stack) {
         return stack.getItemDamage() == 1 ? "tile.augmentedaccessories.altar.master.book" : "tile.augmentedaccessories.altar.basic.book";
+    }
+
+    @Override
+    public String[] getModelTypes() {
+        return new String[] {
+                "altartype=basic",
+                "altartype=master"
+        };
+    }
+
+    @Override
+    public String[] getVariants() {
+        return new String[] {
+                Augment.MOD_ID + ":altar",
+                Augment.MOD_ID + ":master_altar"
+        };
     }
 
     public enum EnumAltarType implements IStringSerializable {

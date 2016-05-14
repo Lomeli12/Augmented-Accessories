@@ -22,6 +22,11 @@ public class ModBlocks {
         GameRegistry.registerBlock(tank, "tank");
     }
 
+    private static void registerBlock(Block block, String name) {
+        block.setRegistryName(name);
+        GameRegistry.register(block);
+    }
+
     public static void registerTiles() {
         BlockUtil.registerTile(TileRingForge.class);
         BlockUtil.registerTile(TileAltar.class);

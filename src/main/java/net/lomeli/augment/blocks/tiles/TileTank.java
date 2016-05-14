@@ -3,7 +3,7 @@ package net.lomeli.augment.blocks.tiles;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.WorldServer;
@@ -82,15 +82,15 @@ public class TileTank extends TileEntity implements IFluidHandler {
     }
 
     @Override
-    public Packet getDescriptionPacket() {
-        S35PacketUpdateTileEntity packet = (S35PacketUpdateTileEntity) super.getDescriptionPacket();
+    public Packet<?> getDescriptionPacket() {
+        SPacketUpdateTileEntity packet = (SPacketUpdateTileEntity) super.getDescriptionPacket();
         NBTTagCompound dataTag = packet != null ? packet.getNbtCompound() : new NBTTagCompound();
         writeToNBT(dataTag);
-        return new S35PacketUpdateTileEntity(pos, 1, dataTag);
+        return new SPacketUpdateTileEntity(pos, 1, dataTag);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         super.onDataPacket(net, pkt);
         NBTTagCompound tag = pkt != null ? pkt.getNbtCompound() : new NBTTagCompound();
         readFromNBT(tag);

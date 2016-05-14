@@ -20,7 +20,6 @@ public class RenderTank extends TileEntitySpecialRenderer<TileTank> {
     private ModelTank modelTank = new ModelTank();
 
     public RenderTank() {
-
     }
 
     @Override

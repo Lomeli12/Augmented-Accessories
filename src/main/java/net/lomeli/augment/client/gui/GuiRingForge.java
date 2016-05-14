@@ -65,7 +65,7 @@ public class GuiRingForge extends GuiContainer {
             if (!FMLClientHandler.instance().getClient().isSingleplayer())
                 Augment.packetHandler.sendToServer(new MessageRingName(this.textField.getText()));
             ((ContainerForge) this.inventorySlots).setRingName(this.textField.getText());
-            Augment.proxy.setForgeName(tile.getPos(), tile.getWorld().provider.getDimensionId(), this.textField.getText());
+            Augment.proxy.setForgeName(tile.getPos(), tile.getWorld().provider.getDimension(), this.textField.getText());
         } else
             super.keyTyped(typedChar, keyCode);
     }
@@ -117,7 +117,7 @@ public class GuiRingForge extends GuiContainer {
     public void onGuiClosed() {
         super.onGuiClosed();
         ((ContainerForge) this.inventorySlots).setRingName("");
-        Augment.proxy.setForgeName(tile.getPos(), tile.getWorld().provider.getDimensionId(), null);
+        Augment.proxy.setForgeName(tile.getPos(), tile.getWorld().provider.getDimension(), null);
     }
 
     public GuiTextField getTextField() {

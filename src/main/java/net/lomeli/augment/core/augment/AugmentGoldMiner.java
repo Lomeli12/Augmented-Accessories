@@ -9,7 +9,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -33,9 +33,9 @@ public class AugmentGoldMiner implements IAugment {
 
     @SubscribeEvent
     public void deathEvent(LivingDeathEvent event) {
-        if (!EntityUtil.isHostileEntity(event.entityLiving) && event.entityLiving.worldObj.isRemote)
+        if (!EntityUtil.isHostileEntity(event.getEntityLiving()) && event.getEntityLiving().worldObj.isRemote)
             return;
-        Entity sourceEntity = EntityUtil.getSourceOfDamage(event.source);
+        Entity sourceEntity = EntityUtil.getSourceOfDamage(event.getSource());
         if (sourceEntity instanceof EntityPlayer) {
             EntityPlayer player = (EntityPlayer) sourceEntity;
             if (playerList.contains(player.getPersistentID().toString())) {
@@ -43,7 +43,7 @@ public class AugmentGoldMiner implements IAugment {
                 if (data != null) {
                     if (data.loseEnergy(cost, true) >= cost && player.worldObj.rand.nextFloat() >= 0.7f) {
                         data.loseEnergy(cost, false);
-                        EntityUtil.entityDropItem(event.entityLiving, new ItemStack(Items.gold_ingot, player.worldObj.rand.nextInt(5)), 1f);
+                        EntityUtil.entityDropItem(event.getEntityLiving(), new ItemStack(Items.gold_ingot, player.worldObj.rand.nextInt(5)), 1f);
                     }
                     AugmentAPI.vigorRegistry.updateData(data);
                 }

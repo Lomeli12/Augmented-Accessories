@@ -15,15 +15,18 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+
+import net.lomeli.lomlib.client.models.IModelHolder;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.blocks.tiles.TileRingForge;
 
-public class BlockForge extends BlockBase implements ITileEntityProvider, IItemPage {
+public class BlockForge extends BlockBase implements ITileEntityProvider, IItemPage, IModelHolder {
 
     public BlockForge() {
         super("ring_forge", Material.iron);
@@ -32,7 +35,7 @@ public class BlockForge extends BlockBase implements ITileEntityProvider, IItemP
     }
 
     @Override
-    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumFacing side, float hitX, float hitY, float hitZ) {
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, ItemStack heldItem, EnumFacing side, float hitX, float hitY, float hitZ) {
         TileEntity tile = world.getTileEntity(pos);
         if (tile instanceof TileRingForge) {
             if (!player.isSneaking())
@@ -41,7 +44,7 @@ public class BlockForge extends BlockBase implements ITileEntityProvider, IItemP
                 System.out.println(((TileRingForge) tile).getFluidAmount() + "/" + ((TileRingForge) tile).getFluidCapacity());
             return true;
         }
-        return super.onBlockActivated(world, pos, state, player, side, hitX, hitY, hitZ);
+        return super.onBlockActivated(world, pos, state, player, hand, heldItem, side, hitX, hitY, hitZ);
     }
 
     @Override
@@ -132,5 +135,10 @@ public class BlockForge extends BlockBase implements ITileEntityProvider, IItemP
     @Override
     public String worldDescription(ItemStack stack) {
         return "tile.augmentedaccessories.ring_forge.book";
+    }
+
+    @Override
+    public String[] getVariants() {
+        return new String[]{Augment.MOD_ID + ":ring_forge"};
     }
 }

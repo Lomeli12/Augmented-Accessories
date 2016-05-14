@@ -2,8 +2,7 @@ package net.lomeli.augment.client;
 
 import net.minecraft.client.particle.EntityFX;
 import net.minecraft.client.renderer.ItemMeshDefinition;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -13,7 +12,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 
-import net.lomeli.lomlib.client.BasicItemMesh;
+import net.lomeli.lomlib.client.models.ModelHandler;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.AugmentAPI;
@@ -30,7 +29,6 @@ import net.lomeli.augment.client.lib.EnumModParticles;
 import net.lomeli.augment.client.render.tile.RenderAltar;
 import net.lomeli.augment.client.render.tile.RenderTank;
 import net.lomeli.augment.core.Proxy;
-import net.lomeli.augment.items.ItemCard;
 import net.lomeli.augment.items.ModItems;
 
 public class ClientProxy extends Proxy {
@@ -41,19 +39,20 @@ public class ClientProxy extends Proxy {
         super.preInit();
         AugmentAPI.manualRegistry = ManualBuilder.getInstance();
         ManualBuilder.getInstance().initializeManual();
-        MinecraftForge.EVENT_BUS.register(new BakeModelHandler());
+        SoundHandler.registerSounds();
+        registerItemModels();
+        registerBlockModels();
     }
 
     @Override
     public void init() {
         super.init();
+        registerTileRenderers();
         MinecraftForge.EVENT_BUS.register(Augment.config);
         MinecraftForge.EVENT_BUS.register(new TickHandlerClient());
         MinecraftForge.EVENT_BUS.register(new HUDHandler());
         MinecraftForge.EVENT_BUS.register(new InputHandler());
-        registerItemModels();
-        registerBlockModels();
-        registerTileRenderers();
+        MinecraftForge.EVENT_BUS.register(new BakeModelHandler());
     }
 
     private void registerTileRenderers() {
@@ -62,30 +61,18 @@ public class ClientProxy extends Proxy {
     }
 
     private void registerItemModels() {
-        registerModel(ModItems.ring, 0, Augment.MOD_ID + ":ring");
-        registerMetadataModel(ModItems.ring, new ResourceLocation(Augment.MOD_ID + ":ring"), new ResourceLocation(Augment.MOD_ID + ":ring_gem"));
-        registerModel(ModItems.dust, new BasicItemMesh(Augment.MOD_ID + ":dust"));
-        registerModel(ModItems.ironHammer, new BasicItemMesh(Augment.MOD_ID + ":hammer_iron"));
-        registerModel(ModItems.diamondHammer, new BasicItemMesh(Augment.MOD_ID + ":hammer_diamond"));
-        registerModel(ModItems.manual, new BasicItemMesh(Augment.MOD_ID + ":manual"));
-        ResourceLocation[] resources = new ResourceLocation[ItemCard.types];
-        for (int i = 0; i < ItemCard.types; i++) {
-            resources[i] = new ResourceLocation(Augment.MOD_ID + ":card_" + i);
-            registerModel(ModItems.card, i, Augment.MOD_ID + ":card_" + i);
-        }
-        registerMetadataModel(ModItems.card, resources);
+        ModelHandler.registerModel(ModItems.ring);
+        ModelHandler.registerModel(ModItems.dust);
+        ModelHandler.registerModel(ModItems.ironHammer);
+        ModelHandler.registerModel(ModItems.diamondHammer);
+        ModelHandler.registerModel(ModItems.manual);
+        ModelHandler.registerModel(ModItems.card);
     }
 
     private void registerBlockModels() {
-        registerModel(Item.getItemFromBlock(ModBlocks.ringForge), 0, Augment.MOD_ID + ":ring_forge");
-        registerModel(Item.getItemFromBlock(ModBlocks.altar), 0, Augment.MOD_ID + ":altar");
-        registerModel(Item.getItemFromBlock(ModBlocks.altar), 1, Augment.MOD_ID + ":master_altar");
-        registerModel(Item.getItemFromBlock(ModBlocks.tank), new BasicItemMesh(Augment.MOD_ID + ":tank"));
-        registerMetadataModel(Item.getItemFromBlock(ModBlocks.altar), new ResourceLocation(Augment.MOD_ID, "altar"), new ResourceLocation(Augment.MOD_ID, "master_altar"));
-        ModelLoader.registerItemVariants(Item.getItemFromBlock(ModBlocks.altar), new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=basic"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.altar), 0, new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=basic"));
-        ModelLoader.registerItemVariants(Item.getItemFromBlock(ModBlocks.altar), new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=master"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(ModBlocks.altar), 1, new ModelResourceLocation(Augment.MOD_ID + ":altar", "altartype=master"));
+        ModelHandler.registerModel(ModBlocks.ringForge);
+        ModelHandler.registerModel(ModBlocks.altar);
+        ModelHandler.registerModel(ModBlocks.tank);
     }
 
     @Override
@@ -114,11 +101,11 @@ public class ClientProxy extends Proxy {
     }
 
     private void registerMetadataModel(Item item, ResourceLocation... files) {
-        ModelBakery.registerItemVariants(item, files);
+        ModelLoader.registerItemVariants(item, files);
     }
 
     private void registerModel(Item item, int metaData, String name) {
-        FMLClientHandler.instance().getClient().getRenderItem().getItemModelMesher().register(item, metaData, new ModelResourceLocation(name, "inventory"));
+        ModelLoader.setCustomModelResourceLocation(item, metaData, new ModelResourceLocation(name, "inventory"));
     }
 
     private void registerModel(Item item, ItemMeshDefinition mesh) {

@@ -46,11 +46,7 @@ public class GuiPageItem extends GuiPage {
 
     private void calculateRecipe() {
         this.recipeList.clear();
-        List avaliableRecipes = CraftingManager.getInstance().getRecipeList();
-        for (Object obj : avaliableRecipes) {
-            if (obj instanceof IRecipe)
-                checkRecipe((IRecipe) obj);
-        }
+        CraftingManager.getInstance().getRecipeList().stream().filter(obj -> obj instanceof IRecipe).forEach(obj -> checkRecipe((IRecipe) obj));
     }
 
     private void checkRecipe(IRecipe recipe) {

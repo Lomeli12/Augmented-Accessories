@@ -15,9 +15,12 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
-import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -85,7 +88,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
                     if (posList.isEmpty() && worldTick++ % (CONSUME_DELAY + 10L) == 0) {
                         if (ingredList.size() == 0) {
                             AugmentAPI.augmentRegistry.addAugmentToStack(this.getStackInSlot(0), augmentID);
-                            worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, getPos().getX(), getPos().getY(), getPos().getZ()));
+                            worldObj.spawnEntityInWorld(new EntityLightningBolt(worldObj, getPos().getX(), getPos().getY(), getPos().getZ(), false));
                             resetAltar();
                         } else
                             dropAndReset();
@@ -138,7 +141,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
             ItemStack mainStack = getStackInSlot(0);
             if (mainStack == null || !(mainStack.getItem() instanceof ItemRing)) {
                 if (!worldObj.isRemote) {
-                    player.addChatComponentMessage(new ChatComponentText(LangUtil.translate("tile.augmentedaccessories.altar.missing_ring", mainStack == null ? Blocks.air.getLocalizedName() : mainStack.getDisplayName())));
+                    player.addChatComponentMessage(new TextComponentString(LangUtil.translate("tile.augmentedaccessories.altar.missing_ring", mainStack == null ? Blocks.air.getLocalizedName() : mainStack.getDisplayName())));
                 }
                 return false;
             }
@@ -156,7 +159,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
                 IAugment augment = AugmentAPI.augmentRegistry.getAugmentID(augmentID);
                 if (augment == null || ItemRing.getRingBoost(mainStack) < augment.augmentLevel()) {
                     if (!worldObj.isRemote) {
-                        player.addChatComponentMessage(new ChatComponentText(LangUtil.translate("tile.augmentedaccessories.altar.wrong_level")));
+                        player.addChatComponentMessage(new TextComponentString(LangUtil.translate("tile.augmentedaccessories.altar.wrong_level")));
                     }
                     augmentID = null;
                     return false;
@@ -280,9 +283,11 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         return !Strings.isNullOrEmpty(getName());
     }
 
+
+
     @Override
-    public IChatComponent getDisplayName() {
-        return new ChatComponentText(LangUtil.translate(hasCustomName() ? getName() : "tile.augmentedaccessories.altar." + (master ? 1 : 0) + ".name"));
+    public ITextComponent getDisplayName() {
+        return new TextComponentString(LangUtil.translate(hasCustomName() ? getName() : "tile.augmentedaccessories.altar." + (master ? 1 : 0) + ".name"));
     }
 
     public int getBrightness() {
@@ -290,7 +295,7 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
         if (stack != null && stack.getItem() instanceof ItemBlock) {
             ItemBlock itemBlock = (ItemBlock) stack.getItem();
             if (itemBlock.getBlock() != null)
-                return itemBlock.getBlock().getLightValue();
+                return itemBlock.getBlock().getLightValue(null);
         }
         return 0;
     }
@@ -329,15 +334,15 @@ public class TileAltar extends TileEntity implements INameable, IInventory, ITic
     }
 
     @Override
-    public Packet getDescriptionPacket() {
-        S35PacketUpdateTileEntity packet = (S35PacketUpdateTileEntity) super.getDescriptionPacket();
+    public Packet<?> getDescriptionPacket() {
+        SPacketUpdateTileEntity packet = (SPacketUpdateTileEntity) super.getDescriptionPacket();
         NBTTagCompound dataTag = packet != null ? packet.getNbtCompound() : new NBTTagCompound();
         writeToNBT(dataTag);
-        return new S35PacketUpdateTileEntity(pos, 1, dataTag);
+        return new SPacketUpdateTileEntity(pos, 1, dataTag);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
+    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity pkt) {
         super.onDataPacket(net, pkt);
         NBTTagCompound tag = pkt != null ? pkt.getNbtCompound() : new NBTTagCompound();
         readFromNBT(tag);

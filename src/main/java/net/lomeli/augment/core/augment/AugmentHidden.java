@@ -8,7 +8,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
@@ -31,13 +31,13 @@ public class AugmentHidden implements IAugment {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void setTargetEvent(LivingSetAttackTargetEvent event) {
-        if (!event.entityLiving.worldObj.isRemote && event.entityLiving instanceof EntityLiving) {
-            if (event.target instanceof EntityPlayer) {
-                EntityPlayer player = (EntityPlayer) event.target;
+        if (!event.getEntityLiving().worldObj.isRemote && event.getEntityLiving() instanceof EntityLiving) {
+            if (event.getTarget() instanceof EntityPlayer) {
+                EntityPlayer player = (EntityPlayer) event.getTarget();
                 if (playerList.contains(player.getPersistentID().toString())) {
                     VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
-                    if (data != null && data.loseEnergy(cost, true) >= cost && event.entityLiving.getDistanceToEntity(player) > 5f) {
-                        ((EntityLiving) event.entityLiving).setAttackTarget(null);
+                    if (data != null && data.loseEnergy(cost, true) >= cost && event.getEntityLiving().getDistanceToEntity(player) > 5f) {
+                        ((EntityLiving) event.getEntityLiving()).setAttackTarget(null);
                         data.loseEnergy(cost, false);
 
                         AugmentAPI.vigorRegistry.updateData(data);

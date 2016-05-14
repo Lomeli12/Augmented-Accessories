@@ -1,6 +1,7 @@
 package net.lomeli.augment.core.network;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
@@ -28,7 +29,7 @@ public class MessageSavePage extends Message<MessageSavePage> {
     @Override
     public IMessage handleMessage(MessageContext ctx) {
         EntityPlayer player = ctx.getServerHandler().playerEntity;
-        ItemStack stack = player.getCurrentEquippedItem();
+        ItemStack stack = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
         if (stack != null)
             NBTUtil.setString(stack, ModNBT.LAST_PAGE, id);
         return this;

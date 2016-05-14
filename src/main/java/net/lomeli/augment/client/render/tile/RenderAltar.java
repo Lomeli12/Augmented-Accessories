@@ -4,20 +4,12 @@ import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.RenderEntityItem;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.client.resources.model.IBakedModel;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
-
-import net.minecraftforge.client.model.Attributes;
-import net.minecraftforge.client.model.pipeline.LightUtil;
 
 import net.lomeli.lomlib.util.RenderUtils;
 import net.lomeli.lomlib.util.ResourceUtil;
@@ -80,7 +72,8 @@ public class RenderAltar extends TileEntitySpecialRenderer<TileAltar> {
             GlStateManager.scale(scale, scale, scale);
             GlStateManager.translate(0f, 0.2f, 0f);
 
-            renderEntityItem.doRender(ghostEntityItem, 0, 0, 0, 0, 0);
+            if (renderEntityItem != null)
+                renderEntityItem.doRender(ghostEntityItem, 0, 0, 0, 0, 0);
 
             GlStateManager.enableLighting();
             GlStateManager.enableCull();

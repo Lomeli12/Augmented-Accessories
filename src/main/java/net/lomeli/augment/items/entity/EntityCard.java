@@ -2,8 +2,8 @@ package net.lomeli.augment.items.entity;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.MathHelper;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 
 public class EntityCard extends EntityItem {
     public EntityCard(EntityItem item) {
@@ -13,8 +13,13 @@ public class EntityCard extends EntityItem {
     }
 
     @Override
+    protected void entityInit() {
+        super.entityInit();
+    }
+
+    @Override
     public void onUpdate() {
-        ItemStack stack = this.getDataWatcher().getWatchableObjectItemStack(10);
+        ItemStack stack = getEntityItem();
         if (stack != null && stack.getItem() != null && stack.getItem().onEntityItemUpdate(this)) return;
         if (this.getEntityItem() == null)
             this.setDead();
@@ -46,7 +51,7 @@ public class EntityCard extends EntityItem {
 
             this.handleWaterMovement();
 
-            ItemStack item = getDataWatcher().getWatchableObjectItemStack(10);
+            ItemStack item = getEntityItem();
 
             if (!this.worldObj.isRemote && this.age >= lifespan) {
                 int hook = net.minecraftforge.event.ForgeEventFactory.onItemExpire(this, item);

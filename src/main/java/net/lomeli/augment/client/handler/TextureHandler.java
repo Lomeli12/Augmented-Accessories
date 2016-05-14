@@ -25,7 +25,7 @@ public class TextureHandler {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void stitchTexture(TextureStitchEvent.Pre event) {
         for (ResourceLocation resource : baseTextures) {
-            event.map.registerSprite(resource);
+            event.getMap().registerSprite(resource);
         }
     }
 }

@@ -5,34 +5,39 @@ import com.google.common.collect.Lists;
 import java.util.Collection;
 import java.util.List;
 
+import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import net.lomeli.lomlib.client.models.IColorProvider;
+import net.lomeli.lomlib.client.models.IModelHolder;
 import net.lomeli.lomlib.util.LangUtil;
 import net.lomeli.lomlib.util.NBTUtil;
+import net.lomeli.lomlib.util.SoundUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.AugmentAPI;
 import net.lomeli.augment.api.augment.IAugment;
 import net.lomeli.augment.api.manual.IItemPage;
 import net.lomeli.augment.api.vigor.VigorData;
+import net.lomeli.augment.client.handler.SoundHandler;
 import net.lomeli.augment.core.CreativeAugment;
 import net.lomeli.augment.lib.ModNBT;
 
 import baubles.api.BaubleType;
 import baubles.api.IBauble;
 
-public class ItemRing extends ItemBase implements IBauble, IItemPage {
+public class ItemRing extends ItemBase implements IBauble, IItemPage, IItemColor, IColorProvider, IModelHolder {
     public ItemRing() {
         super("ring");
         this.setHasSubtypes(true);
@@ -171,8 +176,13 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
 
     @SideOnly(Side.CLIENT)
     @Override
-    public int getColorFromItemStack(ItemStack stack, int renderPass) {
+    public int getColorFromItemstack(ItemStack stack, int renderPass) {
         return getRingColor(stack, renderPass);
+    }
+
+    @Override
+    public IItemColor getColor() {
+        return this;
     }
 
     @Override
@@ -196,8 +206,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
 
     @Override
     public void onEquipped(ItemStack itemstack, EntityLivingBase player) {
-        player.playSound(Augment.MOD_ID + ":equipBauble", 0.5f, 1f);
-
+        SoundUtil.playSoundAtEntity(player, SoundHandler.EQUIP_BAUBLE, SoundCategory.PLAYERS, 0.5f, 1f);
         IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(itemstack);
         if (augment != null && player instanceof EntityPlayer)
             augment.onEquipped(itemstack, player);
@@ -205,7 +214,7 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
 
     @Override
     public void onUnequipped(ItemStack itemstack, EntityLivingBase player) {
-        player.playSound(Augment.MOD_ID + ":equipBauble", 0.5f, 1.5f);
+        SoundUtil.playSoundAtEntity(player, SoundHandler.EQUIP_BAUBLE, SoundCategory.PLAYERS, 0.5f, 1.5f);
         IAugment augment = AugmentAPI.augmentRegistry.getAugmentFromStack(itemstack);
         if (augment != null && player instanceof EntityPlayer)
             augment.onUnEquipped(itemstack, player);
@@ -274,5 +283,13 @@ public class ItemRing extends ItemBase implements IBauble, IItemPage {
     @Override
     public String worldDescription(ItemStack stack) {
         return "";
+    }
+
+    @Override
+    public String[] getVariants() {
+        return new String[] {
+                Augment.MOD_ID + ":ring",
+                Augment.MOD_ID + ":ring_gem"
+        };
     }
 }

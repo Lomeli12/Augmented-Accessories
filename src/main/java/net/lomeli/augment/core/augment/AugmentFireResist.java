@@ -7,7 +7,7 @@ import java.util.List;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -30,11 +30,11 @@ public class AugmentFireResist implements IAugment {
 
     @SubscribeEvent
     public void playerTakeDamage(LivingAttackEvent event) {
-        if (event.entityLiving instanceof EntityPlayer) {
-            EntityPlayer player = (EntityPlayer) event.entityLiving;
+        if (event.getEntityLiving() instanceof EntityPlayer) {
+            EntityPlayer player = (EntityPlayer) event.getEntityLiving();
             if (playerList.contains(player.getPersistentID().toString())) {
                 VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
-                if (data != null && event.source.isFireDamage() && data.loseEnergy(cost, true) >= cost) {
+                if (data != null && event.getSource().isFireDamage() && data.loseEnergy(cost, true) >= cost) {
                     event.setCanceled(true);
                     if (player.worldObj.getWorldTime() % 10L == 0)
                         data.loseEnergy(cost, false);

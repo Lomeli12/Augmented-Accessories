@@ -1,16 +1,18 @@
 package net.lomeli.augment.client.handler;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
+
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.profiler.Profiler;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.RayTraceResult;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -44,15 +46,15 @@ public class HUDHandler {
     public void renderOverlay(RenderGameOverlayEvent.Post event) {
         Profiler profiler = mc.mcProfiler;
         EntityPlayer player = mc.thePlayer;
-        ItemStack hand = player.getCurrentEquippedItem();
-        MovingObjectPosition pos = mc.objectMouseOver;
-        if (event.type == RenderGameOverlayEvent.ElementType.CROSSHAIRS) {
+        ItemStack hand = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
+        RayTraceResult pos = mc.objectMouseOver;
+        if (event.getType() == RenderGameOverlayEvent.ElementType.ALL) {
             profiler.startSection(Augment.MOD_ID + "-hud");
 
             VigorData data = AugmentAPI.vigorRegistry.getPlayerData(player);
             if (data != null && displayVigor(player)) {
                 profiler.startSection(Augment.MOD_ID + "-vigorBar");
-                renderVigorHud(event.resolution, data);
+                renderVigorHud(event.getResolution(), data);
                 profiler.endSection();
             }
 
@@ -62,7 +64,7 @@ public class HUDHandler {
                     IBlockState state = mc.theWorld.getBlockState(pos.getBlockPos());
                     if (state != null && state.getBlock() instanceof IItemPage) {
                         ItemStack stack = new ItemStack(state.getBlock(), 1, state.getBlock().getMetaFromState(state));
-                        renderBookOverlay(event.resolution, stack, (IItemPage) state.getBlock());
+                        renderBookOverlay(event.getResolution(), stack, (IItemPage) state.getBlock());
                     }
                 }
                 profiler.endSection();
@@ -80,7 +82,7 @@ public class HUDHandler {
             GlStateManager.pushMatrix();
             GlStateManager.color(1f, 1f, 1f);
             mc.fontRendererObj.drawStringWithShadow(stack.getDisplayName(), sx + 39, sy - 13, 0x00BFFF);
-            mc.fontRendererObj.drawStringWithShadow(EnumChatFormatting.ITALIC + LangUtil.translate(page.worldDescription(stack)), sx + 39, sy - 4, 0xBABABA);
+            mc.fontRendererObj.drawStringWithShadow(ChatFormatting.ITALIC + LangUtil.translate(page.worldDescription(stack)), sx + 39, sy - 4, 0xBABABA);
             GlStateManager.color(1f, 1f, 1f);
             GlStateManager.popMatrix();
         } else {
@@ -148,7 +150,7 @@ public class HUDHandler {
 
     private boolean displayVigor(EntityPlayer player) {
         boolean flag = false;
-        ItemStack hand = player.getCurrentEquippedItem();
+        ItemStack hand = player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
         if (hand != null && hand.getItem() != null && hand.getItem() == ModItems.ring)
             flag = true;
         IInventory baubleInventory = BaublesApi.getBaubles(player);

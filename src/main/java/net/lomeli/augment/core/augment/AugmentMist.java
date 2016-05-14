@@ -4,11 +4,14 @@ import java.util.Collection;
 
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+
+import net.lomeli.lomlib.util.SoundUtil;
 
 import net.lomeli.augment.Augment;
 import net.lomeli.augment.api.augment.IAugment;
@@ -26,19 +29,19 @@ public class AugmentMist implements IAugment {
         if (entity != null && data.loseEnergy(cost, true) >= cost) {
             Collection<PotionEffect> effectList = entity.getActivePotionEffects();
             for (PotionEffect effect : effectList) {
-                System.out.println(effect);
-                if (effect != null && Potion.potionTypes[effect.getPotionID()].isBadEffect()) {
+                if (effect != null && effect.getPotion().isBadEffect()) {
                     data.loseEnergy(cost, false);
                     double d0 = entity.posX;
                     double d1 = entity.posY;
                     double d2 = entity.posZ;
-                    entity.worldObj.playSoundEffect(d0 + 0.5D, d1 + 0.5D, d2 + 0.5D, "random.fizz", 0.5F, 2.6F + (entity.worldObj.rand.nextFloat() - entity.worldObj.rand.nextFloat()) * 0.8F);
+                    //TODO Sound handler
+                    SoundUtil.playSoundAtEntity(entity, SoundEvents.block_lava_extinguish, SoundCategory.BLOCKS, 0.5f, 2.6F + (entity.worldObj.rand.nextFloat() - entity.worldObj.rand.nextFloat()) * 0.8F);
 
                     for (int i = 0; i < 8; ++i) {
                         entity.worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d0 + Math.random(), d1 + 1.2D, d2 + Math.random(), 0.0D, 0.0D, 0.0D, new int[0]);
                     }
                     if (!entity.worldObj.isRemote)
-                        entity.removePotionEffect(effect.getPotionID());
+                        entity.removePotionEffect(effect.getPotion());
                 }
             }
         }
